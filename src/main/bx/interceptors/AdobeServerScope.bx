@@ -37,7 +37,7 @@ component{
 	 */
 	function onScopeCreation( data ){
 		// Only listen to server scope
-		if( data.scopeName.getName() == "server" ){
+		if( data.scopeName.getName().equals( "server" ) ){
 			// Add coldfusion struct
 			data.scope.put(
 				Key.coldfusion,
