@@ -42,7 +42,9 @@ jobs:
           java-version: 17
 
       - name: Format Java Source
-        run: ./gradlew spotlessApply --stacktrace
+        run: |
+          java --version
+          ./gradlew spotlessApply --stacktrace
 
       - name: Format BoxLang Source
         uses: Ortus-Solutions/commandbox-action@v1.0.3
