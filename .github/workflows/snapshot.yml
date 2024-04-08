@@ -45,7 +45,7 @@ jobs:
         run: ./gradlew spotlessApply --stacktrace
 
       - name: Format BoxLang Source
-        uses: Ortus-Solutions/commandbox-action@v1.0.2
+        uses: Ortus-Solutions/commandbox-action@v1.0.3
         with:
           cmd: run-script format
 
