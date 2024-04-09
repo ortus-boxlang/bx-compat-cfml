@@ -70,8 +70,8 @@ jobs:
 
       - name: Test Module
         run: |
-          gradle downloadBoxLang
-          gradle build --stacktrace --console=plain
+          ./gradlew downloadBoxLang
+          ./gradlew build --stacktrace --console=plain
 
       - name: Upload Test Results
         if: always()
