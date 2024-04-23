@@ -12,9 +12,8 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package com.ortussolutions.bifs.cache;
+package ortus.boxlang.compat.bifs.cache;
 
-import java.util.Optional;
 import java.util.Set;
 
 import ortus.boxlang.runtime.bifs.BIF;
@@ -25,55 +24,63 @@ import ortus.boxlang.runtime.context.IBoxContext;
 import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Argument;
-import ortus.boxlang.runtime.types.Array;
 import ortus.boxlang.runtime.validation.Validator;
 
 @BoxBIF
-public class CacheGet extends BIF {
+public class CacheGetMetadataReport extends BIF {
 
 	private static final Validator cacheExistsValidator = new CacheExistsValidator();
 
 	/**
 	 * Constructor
 	 */
-	public CacheGet() {
+	public CacheGetMetadataReport() {
 		super();
 		declaredArguments = new Argument[] {
-		    new Argument( true, Argument.ANY, Key.id ),
-		    new Argument( false, Argument.STRING, Key.cacheName, Key._DEFAULT, Set.of( cacheExistsValidator ) ),
-		    new Argument( false, Argument.ANY, Key.defaultValue )
+		    new Argument( false, Argument.NUMERIC, Key.limit, Integer.MAX_VALUE ),
+		    new Argument( false, Argument.STRING, Key.cacheName, Key._DEFAULT, Set.of( cacheExistsValidator ) )
 		};
 	}
 
 	/**
-	 * Get an item from the cache. If the item is not found, the default value will be returned if provided, else null will be returned.
-	 * By default, the {@code cacheName} is set to {@code default}.
+	 * Get a structure of all the keys in the cache with their appropriate metadata structures.
+	 * This is used to build the reporting for the cache provider
+	 * Example:
+	 *
+	 * <pre>
+	 * {
+	 *    "key1": {
+	 * 	  "hits": 0,
+	 * 	  "lastAccessed": 0,
+	 * 	  "lastUpdated": 0,
+	 * 	   ...
+	 *   },
+	 *  "key2": {
+	 * 	  "hits": 0,
+	 * 	  "lastAccessed": 0,
+	 * 	  "lastUpdated": 0,
+	 * 	  ...
+	 *  }
+	 * }
+	 * </pre>
+	 *
+	 * The {@code getStoreMetadataKeyMap} method is used to get the keys that
+	 * this method returns as metadata in order to build the reports.
+	 *
+	 * Careful, this will be a large structure if the cache is large.
 	 *
 	 * @param context   The context in which the BIF is being invoked.
 	 * @param arguments Argument scope for the BIF.
 	 *
-	 * @argument.id The cache id to retrieve, or an array of ids to retrieve
+	 * @argument.limit The maximum number of keys to return, defaults to all keys if not passed
 	 *
 	 * @argument.cacheName The cache name to retrieve the id from, defaults to {@code default}
 	 *
-	 * @argument.defaultValue The default value to return if the id is not found in the cache. Only applies to single ids.
 	 *
-	 * @return The value of the object in the cache or null if not found, or the default value if provided
+	 * @return A struct of metadata report for the keys in the cache.
 	 */
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
-		// Get the requested cache
 		ICacheProvider cache = cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
-
-		// Single or multiple ids
-		if ( arguments.get( Key.id ) instanceof Array casteId ) {
-			// Convert the BoxLang array to an array of Strings
-			return cache.get( ( String[] ) casteId.stream().map( Object::toString ).toArray() );
-		}
-
-		// Get the value
-		Optional<Object> results = cache.get( arguments.getAsString( Key.id ) );
-		// If we have a value return it, else do we have a defaultValue, else return null
-		return results.orElse( arguments.get( Key.defaultValue ) );
-
+		return cache.getStoreMetadataReport( arguments.getAsDouble( Key.limit ).intValue() );
 	}
 }

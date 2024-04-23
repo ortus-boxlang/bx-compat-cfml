@@ -12,8 +12,9 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package com.ortussolutions.bifs.cache;
+package ortus.boxlang.compat.bifs.cache;
 
+import java.util.Optional;
 import java.util.Set;
 
 import ortus.boxlang.runtime.bifs.BIF;
@@ -27,33 +28,39 @@ import ortus.boxlang.runtime.types.Argument;
 import ortus.boxlang.runtime.validation.Validator;
 
 @BoxBIF
-@BoxBIF( alias = "cacheCount" )
-public class CacheGetSize extends BIF {
+public class CacheGetAsOptional extends BIF {
 
 	private static final Validator cacheExistsValidator = new CacheExistsValidator();
 
 	/**
 	 * Constructor
 	 */
-	public CacheGetSize() {
+	public CacheGetAsOptional() {
 		super();
 		declaredArguments = new Argument[] {
+		    new Argument( true, Argument.STRING, Key.id ),
 		    new Argument( false, Argument.STRING, Key.cacheName, Key._DEFAULT, Set.of( cacheExistsValidator ) )
 		};
 	}
 
 	/**
-	 * Get how many items are in the cache. By default, the {@code cacheName} is set to {@code default}.
+	 * Get an item from the cache and return it as a Java {@link Optional}.
+	 * By default, the {@code cacheName} is set to {@code default}.
 	 *
 	 * @param context   The context in which the BIF is being invoked.
 	 * @param arguments Argument scope for the BIF.
 	 *
-	 * @argument.cacheName The cache name to retrieve the data from, defaults to {@code default}
+	 * @argument.id The cache id to retrieve
 	 *
-	 * @return The number of items in the cache
+	 * @argument.cacheName The cache name to retrieve the id from, defaults to {@code default}
+	 *
+	 * @return The object from the cache, or an empty {@link Optional} if the object does not exist.
 	 */
-	public Integer _invoke( IBoxContext context, ArgumentsScope arguments ) {
+	public Optional<Object> _invoke( IBoxContext context, ArgumentsScope arguments ) {
+		// Get the requested cache
 		ICacheProvider cache = cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
-		return cache.getSize();
+		// Get it
+		return cache.get( arguments.getAsString( Key.id ) );
+
 	}
 }

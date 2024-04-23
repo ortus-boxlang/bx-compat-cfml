@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ortussolutions.bifs.cache;
+package ortus.boxlang.compat.bifs.cache;
 
 import static com.google.common.truth.Truth.assertThat;
 

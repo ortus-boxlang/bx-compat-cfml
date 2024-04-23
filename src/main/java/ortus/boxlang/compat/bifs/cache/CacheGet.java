@@ -12,7 +12,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package com.ortussolutions.bifs.cache;
+package ortus.boxlang.compat.bifs.cache;
 
 import java.util.Optional;
 import java.util.Set;
@@ -25,42 +25,55 @@ import ortus.boxlang.runtime.context.IBoxContext;
 import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Argument;
+import ortus.boxlang.runtime.types.Array;
 import ortus.boxlang.runtime.validation.Validator;
 
 @BoxBIF
-public class CacheGetAsOptional extends BIF {
+public class CacheGet extends BIF {
 
 	private static final Validator cacheExistsValidator = new CacheExistsValidator();
 
 	/**
 	 * Constructor
 	 */
-	public CacheGetAsOptional() {
+	public CacheGet() {
 		super();
 		declaredArguments = new Argument[] {
-		    new Argument( true, Argument.STRING, Key.id ),
-		    new Argument( false, Argument.STRING, Key.cacheName, Key._DEFAULT, Set.of( cacheExistsValidator ) )
+		    new Argument( true, Argument.ANY, Key.id ),
+		    new Argument( false, Argument.STRING, Key.cacheName, Key._DEFAULT, Set.of( cacheExistsValidator ) ),
+		    new Argument( false, Argument.ANY, Key.defaultValue )
 		};
 	}
 
 	/**
-	 * Get an item from the cache and return it as a Java {@link Optional}.
+	 * Get an item from the cache. If the item is not found, the default value will be returned if provided, else null will be returned.
 	 * By default, the {@code cacheName} is set to {@code default}.
 	 *
 	 * @param context   The context in which the BIF is being invoked.
 	 * @param arguments Argument scope for the BIF.
 	 *
-	 * @argument.id The cache id to retrieve
+	 * @argument.id The cache id to retrieve, or an array of ids to retrieve
 	 *
 	 * @argument.cacheName The cache name to retrieve the id from, defaults to {@code default}
 	 *
-	 * @return The object from the cache, or an empty {@link Optional} if the object does not exist.
+	 * @argument.defaultValue The default value to return if the id is not found in the cache. Only applies to single ids.
+	 *
+	 * @return The value of the object in the cache or null if not found, or the default value if provided
 	 */
-	public Optional<Object> _invoke( IBoxContext context, ArgumentsScope arguments ) {
+	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
 		// Get the requested cache
 		ICacheProvider cache = cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
-		// Get it
-		return cache.get( arguments.getAsString( Key.id ) );
+
+		// Single or multiple ids
+		if ( arguments.get( Key.id ) instanceof Array casteId ) {
+			// Convert the BoxLang array to an array of Strings
+			return cache.get( ( String[] ) casteId.stream().map( Object::toString ).toArray() );
+		}
+
+		// Get the value
+		Optional<Object> results = cache.get( arguments.getAsString( Key.id ) );
+		// If we have a value return it, else do we have a defaultValue, else return null
+		return results.orElse( arguments.get( Key.defaultValue ) );
 
 	}
 }

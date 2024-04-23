@@ -59,6 +59,7 @@ compileTestJava{
 	// Make sure the service loaders are created before testing
 	dependsOn compileJava, serviceLoaderBuild
 }
+compileTestJava.finalizedBy( shadowJar )
 
 javadoc {
     // To avoid our own doclet issues
@@ -131,11 +132,11 @@ task createModuleStructure(type: Copy) {
     from( 'src/main/bx' ) {
 		include '**/*.bx'
 		// Token Replacements Go Here
-		filter( line -> line.replaceAll( '@build.version@', project.version ) )
+		filter{ line -> line.replaceAll( '@build.version@', project.version ) }
 		if( project.branch == "development" ){
-			filter( line -> line.replaceAll( '\\+@build.number@', '-SNAPSHOT' ) )
+			filter{ line -> line.replaceAll( '\\+@build.number@', '-SNAPSHOT' ) }
 		} else {
-			filter( line -> line.replaceAll( '@build.number@', project.buildID ) )
+			filter{ line -> line.replaceAll( '@build.number@', project.buildID ) }
 		}
     }
     from( '.' ) {
@@ -143,11 +144,11 @@ task createModuleStructure(type: Copy) {
 		include 'readme.md'
 		include 'changelog.md'
 		// Token Replacements Go Here
-		filter( line -> line.replaceAll( '@build.version@', project.version ) )
+		filter{ line -> line.replaceAll( '@build.version@', project.version ) }
 		if( project.branch == "development" ){
-			filter( line -> line.replaceAll( '\\+@build.number@', '-SNAPSHOT' ) )
+			filter{ line -> line.replaceAll( '\\+@build.number@', '-SNAPSHOT' ) }
 		} else {
-			filter( line -> line.replaceAll( '@build.number@', project.buildID ) )
+			filter{ line -> line.replaceAll( '@build.number@', project.buildID ) }
 		}
     }
 
