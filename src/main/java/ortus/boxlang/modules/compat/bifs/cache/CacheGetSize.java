@@ -12,7 +12,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package ortus.boxlang.compat.bifs.cache;
+package ortus.boxlang.modules.compat.bifs.cache;
 
 import java.util.Set;
 
@@ -24,49 +24,36 @@ import ortus.boxlang.runtime.context.IBoxContext;
 import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Argument;
-import ortus.boxlang.runtime.types.Array;
 import ortus.boxlang.runtime.validation.Validator;
 
 @BoxBIF
-public class CacheClear extends BIF {
+@BoxBIF( alias = "cacheCount" )
+public class CacheGetSize extends BIF {
 
 	private static final Validator cacheExistsValidator = new CacheExistsValidator();
 
 	/**
 	 * Constructor
 	 */
-	public CacheClear() {
+	public CacheGetSize() {
 		super();
 		declaredArguments = new Argument[] {
-		    new Argument( true, Argument.ANY, Key.id ),
 		    new Argument( false, Argument.STRING, Key.cacheName, Key._DEFAULT, Set.of( cacheExistsValidator ) )
 		};
 	}
 
 	/**
-	 * Clear an id or an array of id's from the specified cache.
-	 * If no cache name is provided, the default cache is used.
+	 * Get how many items are in the cache. By default, the {@code cacheName} is set to {@code default}.
 	 *
 	 * @param context   The context in which the BIF is being invoked.
 	 * @param arguments Argument scope for the BIF.
 	 *
-	 * @argument.id The id or array of id's to clear
+	 * @argument.cacheName The cache name to retrieve the data from, defaults to {@code default}
 	 *
-	 * @argument.cacheName The name of the cache to get the keys from. Default is the default cache.
-	 *
-	 * @return Boolean if a single id, or a Struct with the status of each key
+	 * @return The number of items in the cache
 	 */
-	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
+	public Integer _invoke( IBoxContext context, ArgumentsScope arguments ) {
 		ICacheProvider cache = cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
-
-		// Build the right filter
-		// Single or multiple ids
-		if ( arguments.get( Key.id ) instanceof Array casteId ) {
-			// Convert the BoxLang array to an array of Strings
-			return cache.clear( ( String[] ) casteId.stream().map( Object::toString ).toArray() );
-		}
-
-		// Clear one
-		return cache.clear( arguments.getAsString( Key.id ) );
+		return cache.getSize();
 	}
 }

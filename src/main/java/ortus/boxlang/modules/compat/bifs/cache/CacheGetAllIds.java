@@ -12,7 +12,7 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package ortus.boxlang.compat.bifs.cache;
+package ortus.boxlang.modules.compat.bifs.cache;
 
 import java.util.Set;
 
@@ -27,17 +27,18 @@ import ortus.boxlang.runtime.context.IBoxContext;
 import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Argument;
+import ortus.boxlang.runtime.types.Array;
 import ortus.boxlang.runtime.validation.Validator;
 
 @BoxBIF
-public class CacheGetKeysStream extends BIF {
+public class CacheGetAllIds extends BIF {
 
 	private static final Validator cacheExistsValidator = new CacheExistsValidator();
 
 	/**
 	 * Constructor
 	 */
-	public CacheGetKeysStream() {
+	public CacheGetAllIds() {
 		super();
 		declaredArguments = new Argument[] {
 		    new Argument( false, Argument.STRING, Key.filter, "" ),
@@ -47,7 +48,7 @@ public class CacheGetKeysStream extends BIF {
 	}
 
 	/**
-	 * Get all the keys in the cache but return a stream instead of an array.
+	 * Get all the keys in the cache.
 	 * If no cache name is provided, the default cache is used.
 	 * If a filter is provided, only keys that match the filter will be returned.
 	 * A filter is a simple string that can contain wildcards and will leverage the {@link WildcardFilter} to match keys.
@@ -61,22 +62,22 @@ public class CacheGetKeysStream extends BIF {
 	 *
 	 * @argument.useRegex If true, the filter will be treated as a full regular expression filter. Default is false.
 	 *
-	 * @return A stream of keys from the cache.
+	 * @return The keys in the cache that match the filter.
 	 */
-	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
+	public Array _invoke( IBoxContext context, ArgumentsScope arguments ) {
 		ICacheProvider	cache		= cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
 		String			filter		= arguments.getAsString( Key.filter );
 		Boolean			useRegex	= arguments.getAsBoolean( Key.useRegex );
 
 		// No filter? get all of them
 		if ( filter.isEmpty() ) {
-			return cache.getKeysStream();
+			return new Array( cache.getKeys() );
 		}
 
 		// Build the right filter
 		ICacheKeyFilter keyFilter = useRegex ? new RegexFilter( filter ) : new WildcardFilter( filter );
 
 		// Filter the keys
-		return cache.getKeysStream( keyFilter );
+		return new Array( cache.getKeys( keyFilter ) );
 	}
 }

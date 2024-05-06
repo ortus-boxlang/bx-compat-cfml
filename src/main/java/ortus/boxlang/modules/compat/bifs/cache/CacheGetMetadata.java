@@ -12,9 +12,8 @@
  * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-package ortus.boxlang.compat.bifs.cache;
+package ortus.boxlang.modules.compat.bifs.cache;
 
-import java.util.Optional;
 import java.util.Set;
 
 import ortus.boxlang.runtime.bifs.BIF;
@@ -26,54 +25,62 @@ import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Argument;
 import ortus.boxlang.runtime.types.Array;
+import ortus.boxlang.runtime.types.Struct;
 import ortus.boxlang.runtime.validation.Validator;
 
 @BoxBIF
-public class CacheGet extends BIF {
+public class CacheGetMetadata extends BIF {
 
 	private static final Validator cacheExistsValidator = new CacheExistsValidator();
 
 	/**
 	 * Constructor
 	 */
-	public CacheGet() {
+	public CacheGetMetadata() {
 		super();
 		declaredArguments = new Argument[] {
-		    new Argument( true, Argument.ANY, Key.id ),
-		    new Argument( false, Argument.STRING, Key.cacheName, Key._DEFAULT, Set.of( cacheExistsValidator ) ),
-		    new Argument( false, Argument.ANY, Key.defaultValue )
+		    new Argument( true, Argument.ANY, Key.key ),
+		    new Argument( false, Argument.STRING, Key.cacheName, Key._DEFAULT, Set.of( cacheExistsValidator ) )
 		};
 	}
 
 	/**
-	 * Get an item from the cache. If the item is not found, the default value will be returned if provided, else null will be returned.
+	 * Get the item metadata for a specific entry or entries.
 	 * By default, the {@code cacheName} is set to {@code default}.
+	 *
+	 * The default metadata for a BoxCache is:
+	 * - cacheName : The cachename the entry belongs to
+	 * - hits : How many hits the entry has
+	 * - timeout : The timeout in seconds
+	 * - lastAccessTimeout : The last access timeout in seconds
+	 * - created : When the entry was created
+	 * - lastAccessed : When the entry was last accessed
+	 * - key : The key used to cache it
+	 * - metadata : Any extra metadata stored with the entry
+	 * - isEternal : If the object has a timeout of 0
 	 *
 	 * @param context   The context in which the BIF is being invoked.
 	 * @param arguments Argument scope for the BIF.
 	 *
-	 * @argument.id The cache id to retrieve, or an array of ids to retrieve
+	 * @argument.key The cache key to retrieve, or an array of keys to retrieve
 	 *
 	 * @argument.cacheName The cache name to retrieve the id from, defaults to {@code default}
 	 *
-	 * @argument.defaultValue The default value to return if the id is not found in the cache. Only applies to single ids.
-	 *
-	 * @return The value of the object in the cache or null if not found, or the default value if provided
+	 * @return A struct of metadata about a cache entry
 	 */
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
 		// Get the requested cache
 		ICacheProvider cache = cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
 
 		// Single or multiple ids
-		if ( arguments.get( Key.id ) instanceof Array casteId ) {
-			// Convert the BoxLang array to an array of Strings
-			return cache.get( ( String[] ) casteId.stream().map( Object::toString ).toArray() );
+		if ( arguments.get( Key.key ) instanceof Array aKeys ) {
+			var results = new Struct();
+			aKeys.stream().forEach( key -> results.put( Key.of( key ), cache.getCachedObjectMetadata( ( String ) key ) ) );
+			return results;
 		}
 
-		// Get the value
-		Optional<Object> results = cache.get( arguments.getAsString( Key.id ) );
-		// If we have a value return it, else do we have a defaultValue, else return null
-		return results.orElse( arguments.get( Key.defaultValue ) );
+		// Get a single value
+		return cache.getCachedObjectMetadata( arguments.getAsString( Key.key ) );
 
 	}
 }
