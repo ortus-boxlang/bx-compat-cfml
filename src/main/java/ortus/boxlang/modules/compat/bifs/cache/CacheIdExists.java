@@ -28,15 +28,14 @@ import ortus.boxlang.runtime.types.Array;
 import ortus.boxlang.runtime.validation.Validator;
 
 @BoxBIF
-@BoxBIF( alias = "cacheIdExists" )
-public class CacheLookup extends BIF {
+public class CacheIdExists extends BIF {
 
 	private static final Validator cacheExistsValidator = new CacheExistsValidator();
 
 	/**
 	 * Constructor
 	 */
-	public CacheLookup() {
+	public CacheIdExists() {
 		super();
 		declaredArguments = new Argument[] {
 		    new Argument( true, Argument.ANY, Key.id ),
