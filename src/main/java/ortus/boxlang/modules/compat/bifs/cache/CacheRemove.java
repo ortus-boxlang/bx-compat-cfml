@@ -29,6 +29,7 @@ import ortus.boxlang.runtime.types.exceptions.BoxRuntimeException;
 import ortus.boxlang.runtime.validation.Validator;
 
 @BoxBIF
+@BoxBIF( alias = "cacheDelete" )
 public class CacheRemove extends BIF {
 
 	private static final Validator cacheExistsValidator = new CacheExistsValidator();
