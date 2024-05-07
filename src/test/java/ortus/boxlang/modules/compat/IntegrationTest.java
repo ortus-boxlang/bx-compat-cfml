@@ -4,6 +4,8 @@ import static com.google.common.truth.Truth.assertThat;
 
 import java.nio.file.Paths;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +23,24 @@ import ortus.boxlang.runtime.services.ModuleService;
  */
 public class IntegrationTest {
 
+	static BoxRuntime		runtime;
+	static ModuleService	moduleService;
+	static Key				result	= new Key( "result" );
+	IBoxContext				context;
+	IScope					variables;
+
+	@BeforeAll
+	public static void setup() {
+		runtime			= BoxRuntime.getInstance( true );
+		moduleService	= runtime.getModuleService();
+	}
+
+	@BeforeEach
+	public void setupEach() {
+		context		= new ScriptingRequestBoxContext();
+		variables	= context.getScopeNearby( VariablesScope.name );
+	}
+
 	@DisplayName( "Test the module loads in BoxLang" )
 	@Test
 	public void testModuleLoads() {
@@ -28,10 +48,6 @@ public class IntegrationTest {
 		Key				moduleName		= new Key( "compat" );
 		String			physicalPath	= Paths.get( "./build/module" ).toAbsolutePath().toString();
 		ModuleRecord	moduleRecord	= new ModuleRecord( physicalPath );
-		IBoxContext		context			= new ScriptingRequestBoxContext();
-		BoxRuntime		runtime			= BoxRuntime.getInstance( true );
-		ModuleService	moduleService	= runtime.getModuleService();
-		IScope			variables		= context.getScopeNearby( VariablesScope.name );
 
 		// When
 		moduleRecord
