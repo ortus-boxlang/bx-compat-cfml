@@ -5,12 +5,11 @@ build/**
 ### IntelliJ IDEA ###
 .idea/
 
-
-
 ### Mac OS ###
 .DS_Store
 
 ### BOXLANG ###
+grapher/**
 /libs/
 src/test/resources/libs/
 grapher/*

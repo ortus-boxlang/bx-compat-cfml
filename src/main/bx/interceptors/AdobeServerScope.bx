@@ -22,7 +22,7 @@ import java:ortus.boxlang.runtime.scopes.Key;
 /**
  * Adds collaborations to the server scope as per the Adobe server
  */
-component{
+class{
 
 	function configure(){
 		// Nothing to do here
