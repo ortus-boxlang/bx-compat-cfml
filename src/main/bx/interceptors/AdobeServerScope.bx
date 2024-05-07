@@ -35,7 +35,7 @@ class{
 	 * - scope : The scope that was created
 	 * - scopeName : The name of the scope
 	 */
-	function onScopeCreation( data ){
+	function onServerScopeCreation( data ){
 		// Only listen to server scope
 		if( data.scopeName.getName().equals( "server" ) ){
 			// Add coldfusion struct
