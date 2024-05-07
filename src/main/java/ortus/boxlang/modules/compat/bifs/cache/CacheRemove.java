@@ -24,21 +24,22 @@ import ortus.boxlang.runtime.context.IBoxContext;
 import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Argument;
+import ortus.boxlang.runtime.types.Array;
 import ortus.boxlang.runtime.types.exceptions.BoxRuntimeException;
 import ortus.boxlang.runtime.validation.Validator;
 
 @BoxBIF
-public class CacheDelete extends BIF {
+public class CacheRemove extends BIF {
 
 	private static final Validator cacheExistsValidator = new CacheExistsValidator();
 
 	/**
 	 * Constructor
 	 */
-	public CacheDelete() {
+	public CacheRemove() {
 		super();
 		declaredArguments = new Argument[] {
-		    new Argument( true, Argument.STRING, Key.id ),
+		    new Argument( true, Argument.ANY, Key.id ),
 		    new Argument( false, Argument.BOOLEAN, Key.throwOnError, false ),
 		    new Argument( false, Argument.STRING, Key.cacheName, Key._DEFAULT, Set.of( cacheExistsValidator ) )
 		};
@@ -50,28 +51,36 @@ public class CacheDelete extends BIF {
 	 * @param context   The context in which the BIF is being invoked.
 	 * @param arguments Argument scope for the BIF.
 	 *
-	 * @argument.id The id to clear
+	 * @argument.id A single ID or an array of IDs to remove from the cache.
 	 *
 	 * @argument.throwOnError If true, throw an exception if the key is not found. Default is false.
 	 *
 	 * @argument.cacheName The name of the cache to get the keys from. Default is the default cache.
 	 *
-	 * @return Clears the key if found, else it throws an exception
+	 * @return Clears the key if found, else it throws an exception. If the key is an array,
+	 *         it returns a Struct with the keys and their results.
 	 */
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
 		ICacheProvider	cache			= cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
 		Boolean			throwOnError	= arguments.getAsBoolean( Key.throwOnError );
-		String			cacheKey		= arguments.getAsString( Key.id );
+		Boolean			results			= false;
 
-		// Clear one
-		if ( cache.clear( cacheKey ) ) {
-			return true;
+		// One key
+		if ( arguments.get( Key.id ) instanceof String castedKey ) {
+			results = cache.clear( castedKey );
+		}
+
+		// Array of keys
+		if ( arguments.get( Key.id ) instanceof Array castedArrayOfKeys ) {
+			// Get the ids from the array to native java Array
+			String[] keys = castedArrayOfKeys.toArray( String[]::new );
+			return cache.clear( keys );
 		}
 
 		// Throw it
-		if ( throwOnError ) {
+		if ( !results && throwOnError ) {
 			throw new BoxRuntimeException(
-			    "Cache id [" + cacheKey + "] not found in cache [" + arguments.getAsKey( Key.cacheName ) + "]"
+			    "Cache id [" + arguments.get( Key.id ).toString() + "] not found in cache [" + arguments.getAsKey( Key.cacheName ) + "]"
 			);
 		}
 
