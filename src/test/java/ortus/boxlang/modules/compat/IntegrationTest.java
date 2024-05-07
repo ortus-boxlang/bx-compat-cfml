@@ -46,7 +46,7 @@ public class IntegrationTest {
 	public void testModuleLoads() {
 		// Given
 		Key				moduleName		= new Key( "compat" );
-		String			physicalPath	= Paths.get( "./build/module" ).toAbsolutePath().toString();
+		String			physicalPath	= Paths.get( "/build/module" ).toAbsolutePath().toString();
 		ModuleRecord	moduleRecord	= new ModuleRecord( physicalPath );
 
 		// When
