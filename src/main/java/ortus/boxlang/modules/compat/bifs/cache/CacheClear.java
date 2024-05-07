@@ -16,15 +16,19 @@ package ortus.boxlang.modules.compat.bifs.cache;
 
 import java.util.Set;
 
+import ortus.boxlang.modules.compat.util.KeyDictionary;
 import ortus.boxlang.runtime.bifs.BIF;
 import ortus.boxlang.runtime.bifs.BoxBIF;
+import ortus.boxlang.runtime.cache.filters.WildcardFilter;
 import ortus.boxlang.runtime.cache.providers.ICacheProvider;
 import ortus.boxlang.runtime.cache.util.CacheExistsValidator;
 import ortus.boxlang.runtime.context.IBoxContext;
+import ortus.boxlang.runtime.dynamic.casters.StringCaster;
 import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Argument;
 import ortus.boxlang.runtime.types.Array;
+import ortus.boxlang.runtime.types.exceptions.BoxRuntimeException;
 import ortus.boxlang.runtime.validation.Validator;
 
 @BoxBIF
@@ -38,7 +42,7 @@ public class CacheClear extends BIF {
 	public CacheClear() {
 		super();
 		declaredArguments = new Argument[] {
-		    new Argument( true, Argument.ANY, Key.id ),
+		    new Argument( false, Argument.ANY, KeyDictionary.filterOrTags, "" ),
 		    new Argument( false, Argument.STRING, Key.cacheName, Key._DEFAULT, Set.of( cacheExistsValidator ) )
 		};
 	}
@@ -57,16 +61,24 @@ public class CacheClear extends BIF {
 	 * @return Boolean if a single id, or a Struct with the status of each key
 	 */
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
-		ICacheProvider cache = cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
+		ICacheProvider	cache	= cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
+		Object			filter	= arguments.get( KeyDictionary.filterOrTags );
 
-		// Build the right filter
-		// Single or multiple ids
-		if ( arguments.get( Key.id ) instanceof Array casteId ) {
-			// Convert the BoxLang array to an array of Strings
-			return cache.clear( ( String[] ) casteId.stream().map( Object::toString ).toArray() );
+		// We only support strings not array
+		if ( filter instanceof Array ) {
+			throw new BoxRuntimeException( "We don't support an array of tags in our compat module" );
+		}
+		var	filterOrTags	= StringCaster.cast( filter ).trim();
+		var	size			= cache.getSize();
+
+		// No Filter
+		if ( filterOrTags.isEmpty() ) {
+			cache.clearAll();
 		}
 
-		// Clear one
-		return cache.clear( arguments.getAsString( Key.id ) );
+		// Clear with filter
+		cache.clearAll( new WildcardFilter( filterOrTags ) );
+
+		return size;
 	}
 }
