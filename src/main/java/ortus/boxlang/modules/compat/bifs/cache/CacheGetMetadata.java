@@ -39,7 +39,7 @@ public class CacheGetMetadata extends BIF {
 	public CacheGetMetadata() {
 		super();
 		declaredArguments = new Argument[] {
-		    new Argument( true, Argument.ANY, Key.key ),
+		    new Argument( true, Argument.ANY, Key.id ),
 		    new Argument( false, Argument.STRING, Key.cacheName, Key._DEFAULT, Set.of( cacheExistsValidator ) )
 		};
 	}
@@ -73,14 +73,14 @@ public class CacheGetMetadata extends BIF {
 		ICacheProvider cache = cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
 
 		// Single or multiple ids
-		if ( arguments.get( Key.key ) instanceof Array aKeys ) {
+		if ( arguments.get( Key.id ) instanceof Array aKeys ) {
 			var results = new Struct();
 			aKeys.stream().forEach( key -> results.put( Key.of( key ), cache.getCachedObjectMetadata( ( String ) key ) ) );
 			return results;
 		}
 
 		// Get a single value
-		return cache.getCachedObjectMetadata( arguments.getAsString( Key.key ) );
+		return cache.getCachedObjectMetadata( arguments.getAsString( Key.id ) );
 
 	}
 }
