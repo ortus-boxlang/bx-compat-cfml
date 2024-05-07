@@ -27,15 +27,14 @@ import ortus.boxlang.runtime.types.Argument;
 import ortus.boxlang.runtime.validation.Validator;
 
 @BoxBIF
-@BoxBIF( alias = "cacheCount" )
-public class CacheGetSize extends BIF {
+public class CacheCount extends BIF {
 
 	private static final Validator cacheExistsValidator = new CacheExistsValidator();
 
 	/**
 	 * Constructor
 	 */
-	public CacheGetSize() {
+	public CacheCount() {
 		super();
 		declaredArguments = new Argument[] {
 		    new Argument( false, Argument.STRING, Key.cacheName, Key._DEFAULT, Set.of( cacheExistsValidator ) )
