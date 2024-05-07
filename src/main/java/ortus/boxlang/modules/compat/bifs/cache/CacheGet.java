@@ -40,8 +40,7 @@ public class CacheGet extends BIF {
 		super();
 		declaredArguments = new Argument[] {
 		    new Argument( true, Argument.ANY, Key.id ),
-		    new Argument( false, Argument.STRING, Key.cacheName, Key._DEFAULT, Set.of( cacheExistsValidator ) ),
-		    new Argument( false, Argument.ANY, Key.defaultValue )
+		    new Argument( false, Argument.STRING, Key.cacheName, Key._DEFAULT, Set.of( cacheExistsValidator ) )
 		};
 	}
 
@@ -55,8 +54,6 @@ public class CacheGet extends BIF {
 	 * @argument.id The cache id to retrieve, or an array of ids to retrieve
 	 *
 	 * @argument.cacheName The cache name to retrieve the id from, defaults to {@code default}
-	 *
-	 * @argument.defaultValue The default value to return if the id is not found in the cache. Only applies to single ids.
 	 *
 	 * @return The value of the object in the cache or null if not found, or the default value if provided
 	 */
@@ -73,7 +70,7 @@ public class CacheGet extends BIF {
 		// Get the value
 		Optional<Object> results = cache.get( arguments.getAsString( Key.id ) );
 		// If we have a value return it, else do we have a defaultValue, else return null
-		return results.orElse( arguments.get( Key.defaultValue ) );
+		return results.orElse( null );
 
 	}
 }
