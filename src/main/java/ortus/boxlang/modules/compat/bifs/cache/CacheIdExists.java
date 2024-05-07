@@ -28,6 +28,7 @@ import ortus.boxlang.runtime.types.Array;
 import ortus.boxlang.runtime.validation.Validator;
 
 @BoxBIF
+@BoxBIF( alias = "cacheIdExists" )
 public class CacheIdExists extends BIF {
 
 	private static final Validator cacheExistsValidator = new CacheExistsValidator();
