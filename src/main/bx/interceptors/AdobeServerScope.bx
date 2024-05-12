@@ -36,23 +36,20 @@ class{
 	 * - scopeName : The name of the scope
 	 */
 	function onServerScopeCreation( data ){
-		// Only listen to server scope
-		if( data.scopeName.getName().equals( "server" ) ){
-			// Add coldfusion struct
-			data.scope.put(
-				Key.coldfusion,
-				new ImmutableStruct( {
-					"InstallKit" : "",
-					"appserver" : "J2EE",
-					"expiration" : "",
-					"productlevel" : "Enterprise",
-					"productname" : "ColdFusion Server",
-					"productversion" : "2023,0,06,330617",
-					"rootdir" : "'",
-					"updatelevel" : "0"
-				} )
-			);
-		}
+		// Add coldfusion struct
+		data.scope.put(
+			Key.coldfusion,
+			new ImmutableStruct( {
+				"InstallKit" : "",
+				"appserver" : "J2EE",
+				"expiration" : "",
+				"productlevel" : "Enterprise",
+				"productname" : "ColdFusion Server",
+				"productversion" : "2023,0,06,330617",
+				"rootdir" : "'",
+				"updatelevel" : "0"
+			} )
+		);
 	}
 
 }

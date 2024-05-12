@@ -1,0 +1,32 @@
+/**
+ * Lucee Function: Writes the given object to the output stream
+ */
+import java.lang.System;
+
+@BoxBIF
+class{
+
+	/**
+	 * The execution of this BIF with amazing BoxLang arguments
+	 * @obj The object to output
+	 * @addNewLine Print with a line break or without one. Defaults to false
+	 * @doErrorStream If true, it sends it to the error stream
+	 */
+	function invoke( required any obj, boolean addNewLine = false, boolean doErrorStream = false  ){
+		if( !arguments.doErrorStream ){
+			if( arguments.addNewLine ){
+				println( arguments.obj );
+			} else {
+				print( arguments.obj );
+			}
+			return null;
+		}
+
+		if( arguments.addNewLine ){
+			System.err.println( arguments.obj );
+		} else {
+			System.err.print( arguments.obj );
+		}
+	}
+
+}

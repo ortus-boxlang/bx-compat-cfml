@@ -36,33 +36,30 @@ class{
 	 * - scopeName : The name of the scope
 	 */
 	function onServerScopeCreation( data ){
-		// Only listen to server scope
-		if( data.scopeName.getName().equals( "server" ) ){
-			// Add coldfusion struct
-			data.scope.put(
-				Key.coldfusion,
-				new ImmutableStruct( {
-					"productlevel" : "os",
-					"productname" : "Lucee",
-					"productversion" : "2016,0,03,300357"
-				} )
-			);
+		// Add coldfusion struct
+		data.scope.put(
+			Key.coldfusion,
+			new ImmutableStruct( {
+				"productlevel" : "os",
+				"productname" : "Lucee",
+				"productversion" : "2016,0,03,300357"
+			} )
+		);
 
-			// Add lucee struct
-			data.scope.put(
-				Key.lucee,
-				new ImmutableStruct( {
-					"environment" : "boxlang",
-					"loaderPath" : "",
-					"loaderVersion" : "0",
-					"release-date" : now(),
-					"state" : "stable",
-					"version" : "6.0.0",
-					"versionName" : "Lucee",
-					"versionNameExplanation" : ""
-				} )
-			);
-		}
+		// Add lucee struct
+		data.scope.put(
+			Key.lucee,
+			new ImmutableStruct( {
+				"environment" : "boxlang",
+				"loaderPath" : "",
+				"loaderVersion" : "0",
+				"release-date" : now(),
+				"state" : "stable",
+				"version" : "6.0.0",
+				"versionName" : "Lucee",
+				"versionNameExplanation" : ""
+			} )
+		);
 	}
 
 }
