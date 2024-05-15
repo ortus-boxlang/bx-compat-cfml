@@ -14,10 +14,8 @@
 	"slug": "bx-compat",
 	"shortDescription": "Compatibility module for BoxLang so it behaves like a CFML engine",
 	"type": "boxlang-modules",
-	"keywords": [
-		"boxlang"
-	],
 	"private": false,
+	"listed": false,
 	"license": [
 		{
 			"type": "Apache-2.0",
