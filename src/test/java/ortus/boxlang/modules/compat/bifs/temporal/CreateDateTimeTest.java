@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import ortus.boxlang.runtime.BoxRuntime;
+import ortus.boxlang.runtime.bifs.BIFDescriptor;
 import ortus.boxlang.runtime.context.IBoxContext;
 import ortus.boxlang.runtime.context.ScriptingRequestBoxContext;
 import ortus.boxlang.runtime.scopes.IScope;
@@ -25,6 +26,8 @@ public class CreateDateTimeTest {
 	@BeforeAll
 	public static void setUp() {
 		instance = BoxRuntime.getInstance( true );
+		BIFDescriptor descriptor = instance.getFunctionService().getGlobalFunction( "createDateTime" );
+		assertEquals( "ortus.boxlang.modules.compat.bifs.temporal.CreateDateTime", descriptor.BIFClass.getName() );
 	}
 
 	@AfterAll
