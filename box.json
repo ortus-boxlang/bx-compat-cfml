@@ -1,7 +1,6 @@
 {
 	"name": "BoxLang Compat Module",
 	"version": "@build.version@+@build.number@",
-	"unlisted": true,
 	"location": "https://downloads.ortussolutions.com/ortussolutions/boxlang-modules/bx-compat/@build.version@/bx-compat-@build.version@.zip",
 	"author": "Ortus Solutions",
 	"homepage": "https://github.com/ortus-boxlang/bx-compat",
