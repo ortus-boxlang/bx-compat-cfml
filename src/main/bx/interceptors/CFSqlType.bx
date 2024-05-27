@@ -1,0 +1,48 @@
+/**
+ * [BoxLang]
+ *
+ * Copyright [2023] [Ortus Solutions, Corp]
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import java:ortus.boxlang.runtime.types.immutable.ImmutableStruct;
+import java:ortus.boxlang.runtime.scopes.Key;
+
+/**
+ * Renames `cfsqltype` to `sqltype` in the query parameters for improved CFML compatibility.
+ */
+class{
+
+	function configure(){
+		// Nothing to do here
+	}
+
+	/**
+	 * Listen to query construction and modify the query parameters, copying `cfsqltype` to `sqltype`
+	 *
+	 * Incoming data:
+	 * - sql : The SQL string
+	 * - parameters : The parameters to be used in the query
+	 * - pendingQuery : The BoxLang query class used to build and execute queries
+	 */
+	function onQueryBuild( struct data ){
+		// Add coldfusion struct
+		data.parameters.map( ( param ) -> {
+			if( param.keyExists( "cfsqltype" ) ){
+				param.sqltype = param.cfsqltype;
+			}
+		});
+	}
+
+}

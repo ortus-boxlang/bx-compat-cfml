@@ -137,6 +137,17 @@
 				moduleRecord
 			);
 		}
+		// Register SQLType compatibility interceptor
+		interceptorService.newAndRegister(
+			// Class path
+			"#moduleRecord.invocationPath#.interceptors.CFSqlType",
+			// Properties Struct
+			settings,
+			// Unique Name
+			"CFSqlType@compat",
+			// Module Record
+			moduleRecord
+		);
 	}
 
 	/**
