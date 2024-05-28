@@ -20,7 +20,12 @@ import java:ortus.boxlang.runtime.types.immutable.ImmutableStruct;
 import java:ortus.boxlang.runtime.scopes.Key;
 
 /**
- * Renames `cfsqltype` to `sqltype` in the query parameters for improved CFML compatibility.
+ * Improves queryExecute() and Query component compatibility with CFML syntax and options.
+ *
+ * <ul>
+ * <li>Alias `cfsqltype` to `sqltype` in the query parameters</li>
+ * <li>Adds  `blockfactor` to `fetchsize` in the query options.</li>
+ * </ul>
  */
 class{
 
@@ -35,12 +40,19 @@ class{
 	 * - sql : The SQL string
 	 * - parameters : The parameters to be used in the query
 	 * - pendingQuery : The BoxLang query class used to build and execute queries
+	 * - options : A struct of query options, if any, set at query time via `queryExecute()` or `<bx:query>`
 	 */
 	function onQueryBuild( struct data ){
-		// Add coldfusion struct
 		data.parameters.map( ( param ) -> {
-			if( param.keyExists( "cfsqltype" ) ){
+			if( param.keyExists( "cfsqltype" ) && !param.keyExists( "sqltype" ) ){
 				param.sqltype = param.cfsqltype;
+			}
+		});
+
+		// add blockfactor -> fetchsize alias
+		data.options.map( ( param ) -> {
+			if( param.keyExists( "blockfactor" ) && !param.keyExists( "fetchSize" ) ){
+				param.fetchSize = param.blockfactor;
 			}
 		});
 	}
