@@ -55,26 +55,29 @@ Depending on which engine you select an interceptor will be loaded that will see
 
 The compat module will contribute the following functions globally:
 
-* cacheClear
-* cacheCount
-* cacheGet
-* cacheGetAll
-* cacheGetAllIds
-* cacheGetAsOptional
-* cacheGetDefaultCacheName
-* cacheGetEngineProperties
-* cacheGetMetadata
-* cacheGetOrFail
-* cacheGetProperties
-* cacheGetSession
-* cacheIdExists
-* cachePut
-* cacheRegionExists
-* cacheRegionNew
-* cacheRegionRemove
-* cacheRemove
-* cacheRemoveAll
-* cacheSetProperties
+* `cacheClear` - Learn more here: https://cfdocs.org/cacheClear
+* `cacheCount` - Learn more here: https://cfdocs.org/cacheCount
+* `cacheGet` - Learn more here: https://cfdocs.org/cacheGet
+* `cacheGetAll` - Learn more here: https://cfdocs.org/cacheGetAll
+* `cacheGetAllIds` - Learn more here: https://cfdocs.org/cacheGetAllIds
+* `cacheGetAsOptional` - Learn more here: https://cfdocs.org/cacheGetAsOptional
+* `cacheGetDefaultCacheName` - Learn more here: https://cfdocs.org/cacheGetDefaultCacheName
+* `cacheGetEngineProperties` - Learn more here: https://cfdocs.org/cacheGetEngineProperties
+* `cacheGetMetadata` - Learn more here: https://cfdocs.org/cacheGetMetadata
+* `cacheGetOrFail` - Learn more here: https://cfdocs.org/cacheGetOrFail
+* `cacheGetProperties` - Learn more here: https://cfdocs.org/cacheGetProperties
+* `cacheGetSession` - Learn more here: https://cfdocs.org/cacheGetSession
+* `cacheIdExists` - Learn more here: https://cfdocs.org/cacheIdExists
+* `cachePut` - Learn more here: https://cfdocs.org/cachePut
+* `cacheRegionExists` - Learn more here: https://cfdocs.org/cacheRegionExists
+* `cacheRegionNew` - Learn more here: https://cfdocs.org/cacheRegionNew
+* `cacheRegionRemove` - Learn more here: https://cfdocs.org/cacheRegionRemove
+* `cacheRemove` - Learn more here: https://cfdocs.org/cacheRemove
+* `cacheRemoveAll` - Learn more here: https://cfdocs.org/cacheRemoveAll
+* `cacheSetProperties` - Learn more here: https://cfdocs.org/cacheSetProperties
+* `getComponentMetadata` - Learn more here: https://cfdocs.org/getComponentMetadata
+* `getMetaData` - Learn more here: https://cfdocs.org/getMetaData
+* `systemOutput` - Learn more here: https://cfdocs.org/systemOutput
 
 
 ## Ortus Sponsors
