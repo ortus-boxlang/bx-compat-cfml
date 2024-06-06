@@ -17,7 +17,10 @@ package ortus.boxlang.modules.compat.bifs.system;
 import ortus.boxlang.runtime.bifs.BIF;
 import ortus.boxlang.runtime.bifs.BoxBIF;
 import ortus.boxlang.runtime.context.IBoxContext;
+import ortus.boxlang.runtime.interop.DynamicInteropService;
+import ortus.boxlang.runtime.interop.DynamicObject;
 import ortus.boxlang.runtime.loader.ClassLocator;
+import ortus.boxlang.runtime.runnables.BoxInterface;
 import ortus.boxlang.runtime.runnables.IClassRunnable;
 import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
@@ -55,11 +58,24 @@ public class GetComponentMetadata extends BIF {
 		}
 
 		// Else we have a path, let's get the data
-		IClassRunnable boxClass = ( IClassRunnable ) CLASS_LOCATOR
-		    .load( context, ( String ) path, ClassLocator.BX_PREFIX, true, context.getCurrentImports() )
-		    .invokeConstructor( context, Key.noInit )
-		    .unWrapBoxLangClass();
+		DynamicObject loadedClass = CLASS_LOCATOR.load(
+		    context,
+		    ( String ) path,
+		    ClassLocator.BX_PREFIX,
+		    true,
+		    context.getCurrentImports()
+		);
 
-		return boxClass.getMetaData();
+		// Check if the class is an interface
+		if ( DynamicInteropService.isInterface( loadedClass.getTargetClass() ) ) {
+			BoxInterface boxInterface = ( BoxInterface ) loadedClass.unWrapBoxLangClass();
+			return boxInterface.getMetaData();
+		}
+		// Else we have a class
+		else {
+			loadedClass.invokeConstructor( context, Key.noInit );
+			IClassRunnable boxClass = ( IClassRunnable ) loadedClass.unWrapBoxLangClass();
+			return boxClass.getMetaData();
+		}
 	}
 }
