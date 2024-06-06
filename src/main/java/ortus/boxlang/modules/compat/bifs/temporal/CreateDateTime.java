@@ -30,7 +30,6 @@ public class CreateDateTime extends ortus.boxlang.runtime.bifs.global.temporal.C
 	 * @argument.second The second of the date-time object.
 	 */
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
-		System.out.println( "CreateDateTime._invoke" );
 		if ( !arguments.isEmpty() && !arguments.getAsInteger( Key.year ).equals( 0 ) && arguments.getAsInteger( Key.year ) < 100 ) {
 			DateTime	currentDate			= new DateTime();
 			Integer		currentYear			= new DateTime().getWrapped().getYear();
