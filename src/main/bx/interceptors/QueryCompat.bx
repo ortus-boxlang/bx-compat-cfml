@@ -43,18 +43,24 @@ class{
 	 * - options : A struct of query options, if any, set at query time via `queryExecute()` or `<bx:query>`
 	 */
 	function onQueryBuild( struct data ){
-		data.parameters.map( ( param ) -> {
-			if( param.keyExists( "cfsqltype" ) && !param.keyExists( "sqltype" ) ){
-				param.sqltype = param.cfsqltype;
-			}
-		});
+		if ( IsStruct( data.bindings ) ){
+			data.bindings.each( ( key, param ) -> {
+				if( isStruct( param ) && param.keyExists( "cfsqltype" ) && !param.keyExists( "sqltype" ) ){
+					param.sqltype = param.cfsqltype;
+				}
+			});
+		} else if ( IsArray( data.bindings ) ){
+			data.bindings.map( ( param ) -> {
+				if( isStruct( param ) && param.keyExists( "cfsqltype" ) && !param.keyExists( "sqltype" ) ){
+					param.sqltype = param.cfsqltype;
+				}
+			});
+		}
 
 		// add blockfactor -> fetchsize alias
-		data.options.map( ( param ) -> {
-			if( param.keyExists( "blockfactor" ) && !param.keyExists( "fetchSize" ) ){
-				param.fetchSize = param.blockfactor;
-			}
-		});
+		if( data.options.keyExists( "blockfactor" ) && !data.options.keyExists( "fetchSize" ) ){
+			data.options.fetchSize = data.options.blockfactor;
+		}
 	}
 
 }
