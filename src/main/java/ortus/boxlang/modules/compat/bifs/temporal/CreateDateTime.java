@@ -41,6 +41,6 @@ public class CreateDateTime extends ortus.boxlang.runtime.bifs.global.temporal.C
 				arguments.put( Key.year, arguments.getAsInteger( Key.year ) + ( currentMillenium - 100 ) );
 			}
 		}
-		return new ortus.boxlang.runtime.bifs.global.temporal.CreateDateTime()._invoke( context, arguments );
+		return super._invoke( context, arguments );
 	}
 }

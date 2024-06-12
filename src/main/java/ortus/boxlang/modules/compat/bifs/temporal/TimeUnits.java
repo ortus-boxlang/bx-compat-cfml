@@ -82,7 +82,7 @@ public class TimeUnits extends ortus.boxlang.runtime.bifs.global.temporal.TimeUn
 			    .format( dateRef );
 		}
 
-		return new ortus.boxlang.runtime.bifs.global.temporal.TimeUnits()._invoke( context, arguments );
+		return super._invoke( context, arguments );
 	}
 
 }
