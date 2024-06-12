@@ -19,6 +19,7 @@
 package ortus.boxlang.modules.compat.bifs.temporal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Locale;
 
@@ -74,6 +75,14 @@ public class TimeUnitsTest {
 		    context );
 		String test = variables.getAsString( result );
 		assertEquals( test, "Sunday" );
+
+		instance.executeSource(
+		    """
+		    result = dayOfWeekAsString( now() );
+		    """,
+		    context );
+		assertTrue( variables.get( result ) instanceof String );
+
 	}
 
 	@DisplayName( "It tests the BIF DayOfWeekAsString will keep the same week start but return a different language" )
