@@ -26,7 +26,7 @@ If there are any issues, please report them to the [BoxLang JIRA](https://ortuss
 
 The module has the following available / default settings:
 
-```json
+```js
 settings = {
     isAdobe = true,
     isLucee = true
