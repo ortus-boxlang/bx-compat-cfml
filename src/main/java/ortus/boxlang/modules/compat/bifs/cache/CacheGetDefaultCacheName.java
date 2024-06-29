@@ -37,8 +37,6 @@ public class CacheGetDefaultCacheName extends BIF {
 	/**
 	 * Returns the default cache name for the specified type.
 	 *
-	 * TODO: If we ever support multiple cache types, this will need to be updated to return the correct default cache name for the specified type.
-	 *
 	 * @param context   The context in which the BIF is being invoked.
 	 * @param arguments Argument scope for the BIF.
 	 *

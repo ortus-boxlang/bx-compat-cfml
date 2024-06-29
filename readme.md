@@ -24,24 +24,22 @@ If there are any issues, please report them to the [BoxLang JIRA](https://ortuss
 
 ## Settings
 
-The module has the following available / default settings:
+Here are the available settings for the compat module:
 
-```json
+```js
 settings = {
-    isAdobe = true,
-    isLucee = true
+    engine = "lucee"
 }
 ```
 
-These are simple booleans that allow you to select which engine you want to mimic.  All module settings can be changed via the `boxlang.json` in your configuration.
+The valid engines are `adobe` or `lucee`.  By default the engine is `lucee`.  All module settings can be changed via the `boxlang.json` in your configuration.
 
 ```json
 "modules" : {
     "compat" : {
         "disabled" : false,
         "settings" : {
-            "isAdobe" : false,
-            "isLucee" : true
+            "engine" : "adobe"
         }
     }
 }
