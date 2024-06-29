@@ -32,11 +32,11 @@ dependencies {
 	// Until BoxLang is published to Maven Central
 	// Look for it in the local build directory
 	// You must run `./gradle build -x test` in the BoxLang project
-	compileOnly files( '../../boxlang/build/distributions/boxlang-1.0.0-all.jar' )
-    compileOnly files( 'src/test/resources/libs/boxlang-1.0.0-all.jar' )
+	compileOnly files( '../../boxlang/build/distributions/boxlang-' + boxlangVersion + '-all.jar' )
+    compileOnly files( 'src/test/resources/libs/boxlang-' + boxlangVersion + '-all.jar' )
 
     // Testing Dependencies
-	testImplementation files( 'src/test/resources/libs/boxlang-1.0.0-all.jar' )
+	testImplementation files( 'src/test/resources/libs/boxlang-' + boxlangVersion + '-all.jar' )
     testImplementation "org.junit.jupiter:junit-jupiter:5.+"
 	testImplementation "org.mockito:mockito-core:5.+"
 	testImplementation "com.google.truth:truth:1.+"
@@ -59,6 +59,20 @@ compileTestJava{
 	dependsOn compileJava, serviceLoaderBuild
 }
 compileTestJava.finalizedBy( shadowJar )
+
+/**
+ * Clean up
+ */
+clean {
+	doLast{
+		var userDir = file( "${System.getProperty('user.home')}/.boxlang/classes" )
+		if ( userDir.exists() ) {
+			userDir.deleteDir()
+			println "+ Cleared user home classes " + userDir.toString()
+		}
+		println "+ Clean finalized!"
+	}
+}
 
 javadoc {
     // To avoid our own doclet issues

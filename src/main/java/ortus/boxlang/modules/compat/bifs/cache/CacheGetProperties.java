@@ -14,8 +14,6 @@
  */
 package ortus.boxlang.modules.compat.bifs.cache;
 
-import java.util.Arrays;
-
 import ortus.boxlang.runtime.bifs.BIF;
 import ortus.boxlang.runtime.bifs.BoxBIF;
 import ortus.boxlang.runtime.context.IBoxContext;
@@ -56,7 +54,8 @@ public class CacheGetProperties extends BIF {
 		}
 
 		// Otherwise return an array of configs
-		return Arrays.stream( cacheService.getRegisteredCaches() )
+		return cacheService.getRegisteredCaches()
+		    .stream()
 		    .map( cache -> cacheService.getCache( Key.of( cache ) ) )
 		    .map( cache -> cache.getConfig().toStruct() )
 		    // Collect to my Array implementation

@@ -20,6 +20,12 @@
 	property name="interceptorService";
 	property name="log";
 
+	// Static properties
+	static {
+		ADOBE = "adobe";
+		LUCEE = "lucee";
+	}
+
 	/**
 	 * --------------------------------------------------------------------------
 	 * Module Properties
@@ -74,10 +80,10 @@
 		 * Every module has a settings configuration object
 		 */
 		settings = {
-			// Turn on if this is Adobe
-			isAdobe : true,
-			// Turn on if this is Lucee
-			isLucee : true
+			// Choose your engine: adobe or lucee
+			engine = "lucee",
+			isLucee = false,
+			isAdobe = false
 		};
 
 		/**
@@ -110,6 +116,19 @@
 	 * Called by the ModuleService on module activation
 	 */
 	function onLoad(){
+		// Verify Engine
+		if( isNull( settings.engine ) || settings.engine.isEmpty() ){
+			throw( "You must specify an [engine] in the settings. Valid engines are [adobe,lucee]" );
+		}
+
+		// Use the boolean identifier
+		if( settings.engine == "lucee" ){
+			settings.isLucee = true;
+		} else if( settings.engine == "adobe" ){
+			settings.isAdobe = true;
+		}
+
+		// Load the Lucee or Adobe compatibility interceptor
 		if( settings.isLucee ){
 			// Register Lucee compatibility with the interceptor service
 			interceptorService.newAndRegister(

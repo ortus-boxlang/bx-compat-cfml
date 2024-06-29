@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- change of interface for cache provider returning arrays now since beta3
+- New setting `engine` so you can chose "adobe" or "lucee" instead of the boolean operators
+- Use the latest stable BoxLang beta build
+- Gradle not using the `boxlangVersion` property
+
 ## [1.0.0] - 2024-06-13
 
 - First iteration of this module
