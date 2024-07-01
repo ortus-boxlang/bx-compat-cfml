@@ -105,4 +105,45 @@ class{
 		}
 	}
 
+
+	/**
+	 * Modify the query results before they are returned to the calling code.
+	 * 
+	 * This is where we handle CFML compatibility features at the data level, such as:
+	 * 
+	 * - converting null values to empty strings [BL-164](https://ortussolutions.atlassian.net/browse/BL-164)
+	 * - converting time values to the time specified in the `timezone` query option [BL-116](https://ortussolutions.atlassian.net/browse/BL-116)
+	 * 
+	 * Incoming data:
+	 * - sql			:  The original, unmodified SQL string,
+	 * - bindings		:  Parameter binding values,
+	 * - executionTime	:  The query execution time,
+	 * - data			:  The query results,
+	 * - result			:  The return value from the statement execution.
+	 * - pendingQuery	:  The BoxLang PendingQuery instance - https://s3.amazonaws.com/apidocs.ortussolutions.com/boxlang/1.0.0/ortus/boxlang/runtime/jdbc/PendingQuery.html
+	 * - executedQuery	:  The BoxLang ExecutedQuery instance - https://s3.amazonaws.com/apidocs.ortussolutions.com/boxlang/1.0.0/ortus/boxlang/runtime/jdbc/ExecutedQuery.html
+	*/
+	function postQueryExecute( struct data ){
+		/*
+			@TODO: Work around a ConcurrentModificationException due to modifying the result set while looping over it:
+		
+				java.util.ConcurrentModificationException
+				at java.base/java.util.LinkedHashMap$LinkedHashIterator.nextNode(LinkedHashMap.java:1023)
+				at java.base/java.util.LinkedHashMap$LinkedKeyIterator.next(LinkedHashMap.java:1046)
+				at boxgenerated.boxclass.bxmodules.bxcompat.interceptors.QueryCompat$bx$Func_postQueryExecute._invoke(QueryCompat$bx.java:848)
+				at ortus.boxlang.runtime.types.Function.invoke(Function.java:177)
+				at ortus.boxlang.runtime.runnables.BoxClassSupport.dereferenceAndInvoke(BoxClassSupport.java:308)
+				at boxgenerated.boxclass.bxmodules.bxcompat.interceptors.QueryCompat$bx.dereferenceAndInvoke(QueryCompat$bx.java:293)
+				at ortus.boxlang.runtime.events.InterceptorState.announce(InterceptorState.java:155)
+				at ortus.boxlang.runtime.events.InterceptorPool.announce(InterceptorPool.java:555)
+		*/
+		// for( var row in data.data ){
+		// 	for( var key in row ){
+		// 		// CFML Compatibility: Convert null values to empty strings
+		// 		if( isNull( row[ key ] )  ){
+		// 			row[ key ] = "";
+		// 		}
+		// 	}
+		// }
+	}
 }
