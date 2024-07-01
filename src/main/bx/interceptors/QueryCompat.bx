@@ -18,6 +18,7 @@
 
 import java:ortus.boxlang.runtime.types.immutable.ImmutableStruct;
 import java:ortus.boxlang.runtime.scopes.Key;
+import java:ortus.boxlang.runtime.jdbc.QueryOptions;
 
 /**
  * Improves queryExecute() and Query component compatibility with CFML syntax and options.
@@ -40,7 +41,7 @@ class{
 	 * - sql : The SQL string
 	 * - parameters : The parameters to be used in the query
 	 * - pendingQuery : The BoxLang query class used to build and execute queries
-	 * - options : A struct of query options, if any, set at query time via `queryExecute()` or `<bx:query>`
+	 * - options : The QueryOptions class populated with query options from `queryExecute()` or `<bx:query>`
 	 */
 	function onQueryBuild( struct data ){
 		if ( IsStruct( data.bindings ) ){
@@ -57,9 +58,50 @@ class{
 			});
 		}
 
+		// the unmodifiable, original query options from the query
+		var structOptions = data.options.toStruct();
+		// Modifiable QueryOptions class
+		var modifiedOptions = {};
+
 		// add blockfactor -> fetchsize alias
-		if( data.options.keyExists( "blockfactor" ) && !data.options.keyExists( "fetchSize" ) ){
-			data.options.fetchSize = data.options.blockfactor;
+		if( structOptions.keyExists( "blockfactor" ) && !structOptions.keyExists( "fetchSize" ) ){
+			modifiedOptions.fetchSize = structOptions.blockfactor;
+		}
+
+		/**
+		 * add cache attribute aliases:
+		 * 
+		 * - `cacheId` -> `cacheKey`
+		 * - `cacheRegion` -> `cacheProvider`
+		 * - `cachedWithin` -> `cacheTimeout` OR `cachedWithin="request"` should also be implemented
+		 * - `cachedAfter` -> custom datetime check, followed by `cache=true, cacheTimeout=0`
+		*/
+		 
+		if( structOptions.keyExists( "cacheId" ) && !structOptions.keyExists( "cacheKey" ) ){
+			modifiedOptions.cacheKey = structOptions.cacheId;
+		}
+		if( structOptions.keyExists( "cacheRegion" ) && !structOptions.keyExists( "cacheProvider" ) ){
+			modifiedOptions.cacheProvider = structOptions.cacheRegion;
+		}
+		if( structOptions.keyExists( "cachedWithin" ) && !structOptions.keyExists( "cacheTimeout" )){
+			if( structOptions.cachedWithin == "request" ){
+				// TODO: Implement cachedWithin="request"
+			} else {
+				// Else it's a simple timespan/duration, just like the new cacheTimeout attribute
+				modifiedOptions.cacheTimeout = structOptions.cachedWithin;
+				modifiedOptions.cache = structOptions.cache ?: true;
+			}
+		}
+		if( structOptions.keyExists( "cachedAfter" ) ){
+			if( dateCompare( structOptions.cachedAfter, now() ) <= 0 ){
+				// If a cachedAfter date value is set and it's older than the current time, cache the query regardless of all other cache options.
+				modifiedOptions.cache = structOptions.cache ?: true;
+			}
+		}
+
+		// Construct a new QueryOptions instance from the modified options struct
+		if( !modifiedOptions.isEmpty() ){
+			data.options = new QueryOptions( structOptions.append( modifiedOptions, true ) );
 		}
 	}
 
