@@ -83,7 +83,10 @@
 			// Choose your engine: adobe or lucee
 			engine = "lucee",
 			isLucee = false,
-			isAdobe = false
+			isAdobe = false,
+			// This simulates the query to empty value that Adobe/Lucee do when NOT in full null support
+			// We default it to true to simulate Adobe/Lucee behavior
+			queryNullToEmpty = true
 		};
 
 		/**
