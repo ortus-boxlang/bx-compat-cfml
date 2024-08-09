@@ -9,8 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
 - Module should coerce null values to empty string if the `queryNullToEmpty` is set to true, which is the default
 - `objectLoad(), and objectSave()` aliases for `objectSerialize()` and `objectDeserialize()` respectively.
+
+### Fixed
+
+- Updated to use Attempts instead of Optionals for caching.
 
 ## [1.1.0] - 2024-06-29
 

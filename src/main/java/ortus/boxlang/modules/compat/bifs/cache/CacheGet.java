@@ -14,7 +14,6 @@
  */
 package ortus.boxlang.modules.compat.bifs.cache;
 
-import java.util.Optional;
 import java.util.Set;
 
 import ortus.boxlang.runtime.bifs.BIF;
@@ -22,6 +21,7 @@ import ortus.boxlang.runtime.bifs.BoxBIF;
 import ortus.boxlang.runtime.cache.providers.ICacheProvider;
 import ortus.boxlang.runtime.cache.util.CacheExistsValidator;
 import ortus.boxlang.runtime.context.IBoxContext;
+import ortus.boxlang.runtime.dynamic.Attempt;
 import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Argument;
@@ -68,7 +68,7 @@ public class CacheGet extends BIF {
 		}
 
 		// Get the value
-		Optional<Object> results = cache.get( arguments.getAsString( Key.id ) );
+		Attempt<Object> results = cache.get( arguments.getAsString( Key.id ) );
 		// If we have a value return it, else do we have a defaultValue, else return null
 		return results.orElse( null );
 
