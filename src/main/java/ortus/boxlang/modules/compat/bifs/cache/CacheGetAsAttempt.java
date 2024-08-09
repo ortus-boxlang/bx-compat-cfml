@@ -22,20 +22,21 @@ import ortus.boxlang.runtime.bifs.BoxBIF;
 import ortus.boxlang.runtime.cache.providers.ICacheProvider;
 import ortus.boxlang.runtime.cache.util.CacheExistsValidator;
 import ortus.boxlang.runtime.context.IBoxContext;
+import ortus.boxlang.runtime.dynamic.Attempt;
 import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Argument;
 import ortus.boxlang.runtime.validation.Validator;
 
 @BoxBIF
-public class CacheGetAsOptional extends BIF {
+public class CacheGetAsAttempt extends BIF {
 
 	private static final Validator cacheExistsValidator = new CacheExistsValidator();
 
 	/**
 	 * Constructor
 	 */
-	public CacheGetAsOptional() {
+	public CacheGetAsAttempt() {
 		super();
 		declaredArguments = new Argument[] {
 		    new Argument( true, Argument.STRING, Key.id ),
@@ -56,7 +57,7 @@ public class CacheGetAsOptional extends BIF {
 	 *
 	 * @return The object from the cache, or an empty {@link Optional} if the object does not exist.
 	 */
-	public Optional<Object> _invoke( IBoxContext context, ArgumentsScope arguments ) {
+	public Attempt<Object> _invoke( IBoxContext context, ArgumentsScope arguments ) {
 		// Get the requested cache
 		ICacheProvider cache = cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
 		// Get it

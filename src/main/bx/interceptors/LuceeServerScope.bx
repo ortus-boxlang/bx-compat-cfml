@@ -24,6 +24,17 @@ import java:ortus.boxlang.runtime.scopes.Key;
  */
 class{
 
+	/**
+	 * Injections by BoxLang
+	 */
+
+	property name;
+	property properties;
+	property log;
+	property interceptorService;
+	property boxRuntime;
+	property moduleRecord;
+
 	function configure(){
 		// Nothing to do here
 	}

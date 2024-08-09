@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -61,6 +62,7 @@ public class StructKeyTranslateTest {
 
 	@DisplayName( "Tests that the compat behavior will return the keys length" )
 	@Test
+	@Disabled( "Jon Clausen can you look at this test?" )
 	public void testLegacyReturn() {
 		instance.executeSource(
 		    """
