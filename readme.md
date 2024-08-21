@@ -49,9 +49,9 @@ The valid engines are `adobe` or `lucee`.  By default the engine is `lucee`.  Al
 
 Depending on which engine you select an interceptor will be loaded that will seed the `server` scope with the appropriate engine details.
 
-## Contributed Functions
+## Contributed BIFs
 
-The compat module will contribute the following functions globally:
+The compat module will contribute the following built-in functions globally:
 
 * `cacheClear` - Learn more here: https://cfdocs.org/cacheClear
 * `cacheCount` - Learn more here: https://cfdocs.org/cacheCount
@@ -73,8 +73,12 @@ The compat module will contribute the following functions globally:
 * `cacheRemove` - Learn more here: https://cfdocs.org/cacheRemove
 * `cacheRemoveAll` - Learn more here: https://cfdocs.org/cacheRemoveAll
 * `cacheSetProperties` - Learn more here: https://cfdocs.org/cacheSetProperties
+* `deleteClientVariable` - Learn more here: https://cfdocs.org/deleteClientVariable
+* `getClientVariablesList` - Learn more here: https://cfdocs.org/getClientVariablesList
 * `getComponentMetadata` - Learn more here: https://cfdocs.org/getComponentMetadata
 * `getMetaData` - Learn more here: https://cfdocs.org/getMetaData
+* `getVariable` - Learn more here: https://cfdocs.org/getVariable
+* `setVariable` - Learn more here: https://cfdocs.org/setVariable
 * `systemOutput` - Learn more here: https://cfdocs.org/systemOutput
 
 

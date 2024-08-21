@@ -11,7 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `preservesinglequotes` added as a BIF. Please note that this has been deprecated and really does nothing. It is only there for compatibility with Lucee/Adobe CFML.
+- Added more docs
+- Added new BIFS: `getVariable()`, `setVariable()`, `getComponentMetadata()`, `getMetaData()`, `deleteClientVariable()`, `getClientVariablesList()`
 
 ## [1.2.0] - 2024-08-09
 
