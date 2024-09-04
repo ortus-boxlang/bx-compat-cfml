@@ -11,6 +11,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- BL-491 New module settings:
+
+```js
+// The CF -> BL AST transpiler settings
+// The transpiler is in the core, but will eventually live in this module, so the settings are here.
+transpiler = {
+	// Turn foo.bar into foo.BAR
+	upperCaseKeys = true,
+	// Add output=true to functions and classes
+	forceOutputTrue = true,
+	// Merged doc comments into actual function, class, and property annotations
+	mergeDocsIntoAnnotations = true
+}
+```
+
+- BL-449 preserve single quotes
 - Added more docs
 - Added new BIFS: `getVariable()`, `setVariable()`, `getComponentMetadata()`, `getMetaData()`, `deleteClientVariable()`, `getClientVariablesList()`
 
