@@ -95,8 +95,6 @@ public class DateTimeFormat extends ortus.boxlang.runtime.bifs.global.temporal.D
 					} );
 				}
 
-				System.out.println( "Mask value: " + arguments.getAsString( Key.mask ) );
-
 			}
 
 		}
