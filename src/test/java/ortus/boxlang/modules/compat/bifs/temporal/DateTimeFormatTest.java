@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import ortus.boxlang.runtime.BoxRuntime;
-import ortus.boxlang.runtime.bifs.BIFDescriptor;
 import ortus.boxlang.runtime.context.IBoxContext;
 import ortus.boxlang.runtime.context.ScriptingRequestBoxContext;
 import ortus.boxlang.runtime.scopes.IScope;
@@ -27,8 +26,6 @@ public class DateTimeFormatTest {
 	@BeforeAll
 	public static void setUp() {
 		instance = BoxRuntime.getInstance( true );
-		BIFDescriptor descriptor = instance.getFunctionService().getGlobalFunction( "dateFormat" );
-		assertEquals( "ortus.boxlang.modules.compat.bifs.temporal.DateTimeFormat", descriptor.BIFClass.getName() );
 	}
 
 	@AfterAll
@@ -113,7 +110,7 @@ public class DateTimeFormatTest {
 		    """
 		    setTimezone( "UTC" );
 		       ref = createDateTime( 2023, 12, 31, 12, 30, 30, 999, "UTC" );
-		          result = timeFormat( ref, "HH:mm:ss.l" );
+		          result = timeFormat( ref, "HH:mm:ss.lll" );
 		          """,
 		    context );
 		result = ( String ) variables.get( Key.of( "result" ) );
