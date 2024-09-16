@@ -41,6 +41,7 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 																						put( "ddd", "EEE" );
 																						put( "TT", "a" );
 																						put( "tt", "a" );
+																						put( "t", "a" );
 																						put( ":MM", ":mm" );
 																						// Lucee/ACF seconds mask handling
 																						put( ":SS", ":ss" );
