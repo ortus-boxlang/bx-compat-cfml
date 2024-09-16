@@ -1,4 +1,4 @@
-name: BoxLang Compat Module Test Suites
+name: Test Suites
 
 # We are a reusable Workflow only
 on:
