@@ -11,5 +11,6 @@ build/**
 ### BOXLANG ###
 grapher/**
 /libs/
+/bin/
 src/test/resources/libs/
 grapher/*
