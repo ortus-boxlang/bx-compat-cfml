@@ -1,16 +1,16 @@
 {
 	"name": "BoxLang Compat Module",
 	"version": "@build.version@+@build.number@",
-	"location": "https://downloads.ortussolutions.com/ortussolutions/boxlang-modules/bx-compat/@build.version@/bx-compat-@build.version@.zip",
+	"location": "https://downloads.ortussolutions.com/ortussolutions/boxlang-modules/bx-compat-cfml/@build.version@/bx-compat-cfml-@build.version@.zip",
 	"author": "Ortus Solutions",
-	"homepage": "https://github.com/ortus-boxlang/bx-compat",
-	"documentation": "https://github.com/ortus-boxlang/bx-compat",
+	"homepage": "https://github.com/ortus-boxlang/bx-compat-cfml",
+	"documentation": "https://github.com/ortus-boxlang/bx-compat-cfml",
 	"repository": {
 		"type": "git",
-		"URL": "https://github.com/ortus-boxlang/bx-compat"
+		"URL": "https://github.com/ortus-boxlang/bx-compat-cfml"
 	},
-	"bugs": "https://github.com/ortus-boxlang/bx-compat/issues",
-	"slug": "bx-compat",
+	"bugs": "https://github.com/ortus-boxlang/bx-compat-cfml/issues",
+	"slug": "bx-compat-cfml",
 	"shortDescription": "Compatibility module for BoxLang so it behaves like a CFML engine",
 	"type": "boxlang-modules",
 	"private": false,

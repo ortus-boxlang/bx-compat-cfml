@@ -20,7 +20,7 @@
 
 This module will allow your ColdFusion (CFML) applications under Adobe or Lucee to run under BoxLang.  This module will provide the necessary compatibility layer to run your applications under BoxLang.
 
-If there are any issues, please report them to the [BoxLang JIRA](https://ortussolutions.atlassian.net/browse/BL/issues) or the [Module Issues](https://github.com/ortus-boxlang/bx-compat/issues) repository.
+If there are any issues, please report them to the [BoxLang JIRA](https://ortussolutions.atlassian.net/browse/BL/issues) or the [Module Issues](https://github.com/ortus-boxlang/bx-compat-cfml/issues) repository.
 
 ## Settings
 

@@ -62,16 +62,16 @@ transpiler = {
 
 - First iteration of this module
 
-[Unreleased]: https://github.com/ortus-boxlang/bx-compat/compare/v1.4.1...HEAD
+[Unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.4.1...HEAD
 
-[1.4.1]: https://github.com/ortus-boxlang/bx-compat/compare/v1.4.0...v1.4.1
+[1.4.1]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.4.0...v1.4.1
 
-[1.4.0]: https://github.com/ortus-boxlang/bx-compat/compare/v1.3.0...v1.4.0
+[1.4.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.3.0...v1.4.0
 
-[1.3.0]: https://github.com/ortus-boxlang/bx-compat/compare/v1.2.0...v1.3.0
+[1.3.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.2.0...v1.3.0
 
-[1.2.0]: https://github.com/ortus-boxlang/bx-compat/compare/v1.1.0...v1.2.0
+[1.2.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.1.0...v1.2.0
 
-[1.1.0]: https://github.com/ortus-boxlang/bx-compat/compare/v1.1.0...v1.1.0
+[1.1.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.1.0...v1.1.0
 
-[1.0.0]: https://github.com/ortus-boxlang/bx-compat/compare/06e6a42cf95887e081e639073f36b481eb334097...v1.0.0
+[1.0.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/06e6a42cf95887e081e639073f36b481eb334097...v1.0.0
