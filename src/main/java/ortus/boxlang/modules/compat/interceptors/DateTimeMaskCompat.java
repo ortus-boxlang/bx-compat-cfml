@@ -30,11 +30,11 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 
 																					{
 																						put( "h", "H" );
+																						put( "mmmm", "MMMM" );
+																						put( "mmm", "MMM" );
 																						put( "mm/", "MM/" );
 																						put( "/mm", "/MM" );
 																						put( "-mm", "-MM" );
-																						put( "mmm", "MMM" );
-																						put( "mmmm", "MMMM" );
 																						put( "n", "m" );
 																						put( "N", "n" );
 																						put( "dddd", "EEEE" );

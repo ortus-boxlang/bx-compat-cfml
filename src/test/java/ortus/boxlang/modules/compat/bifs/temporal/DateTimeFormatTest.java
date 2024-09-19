@@ -78,6 +78,8 @@ public class DateTimeFormatTest {
 		       assert( dateFormat(todayDate, "dd"), "07" );
 		       assert( dateFormat(todayDate, "ddd"), "Sun" );
 		       assert( dateFormat(todayDate, "dddd"), "Sunday" );
+		    assert( dateFormat( todayDate, "yyyy-mmm-dd" ), "2024-Apr-07" );
+		    assert( dateFormat( todayDate, "yyyy-mmmm-dd" ), "2024-April-07" );
 		             """,
 		    context );
 	}
