@@ -1,5 +1,5 @@
 {
-	"name": "BoxLang Compat Module",
+	"name": "BoxLang Compat Module For CFML",
 	"version": "@build.version@+@build.number@",
 	"location": "https://downloads.ortussolutions.com/ortussolutions/boxlang-modules/bx-compat-cfml/@build.version@/bx-compat-cfml-@build.version@.zip",
 	"author": "Ortus Solutions",
@@ -41,7 +41,7 @@
 		"onRelease": "publish"
 	},
 	"boxlang": {
-		"moduleName": "compat",
+		"moduleName": "compat-cfml",
 		"minimumVersion": "1.0.0"
 	}
 }

@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Name change to `bx-compat-cfml` to better describe the module
+
 ## [1.4.1] - 2024-09-19
 
 ## [1.4.0] - 2024-09-16

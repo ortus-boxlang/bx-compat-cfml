@@ -1,4 +1,4 @@
-# ⚡︎ BoxLang Module: BoxLang Compat Module
+# ⚡︎ BoxLang Module: BoxLang Compat Module For CFML
 
 ```
 |:------------------------------------------------------:|
@@ -16,7 +16,7 @@
 
 <p>&nbsp;</p>
 
-## Welcome to the BoxLang Compat Module
+## Welcome to the BoxLang Compat Module For CFML
 
 This module will allow your ColdFusion (CFML) applications under Adobe or Lucee to run under BoxLang.  This module will provide the necessary compatibility layer to run your applications under BoxLang.
 
@@ -36,7 +36,7 @@ The valid engines are `adobe` or `lucee`.  By default the engine is `lucee`.  Al
 
 ```json
 "modules" : {
-    "compat" : {
+    "compat-cfml" : {
         "disabled" : false,
         "settings" : {
             "engine" : "adobe"
