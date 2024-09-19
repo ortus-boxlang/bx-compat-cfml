@@ -1,4 +1,4 @@
-name: BoxLang Compat Module Snapshots
+name: Snapshots
 
 on:
   push:
