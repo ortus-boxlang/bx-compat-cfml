@@ -11,8 +11,7 @@ IMPORTANT: Please review the [CONTRIBUTING.md](../CONTRIBUTING.md) file for deta
 All PRs must have an accompanied Jira issue. Please make sure you created it and linked it here.
 
 BoxLang Jira: https://ortussolutions.atlassian.net/browse/BL/issues
-Module Issues: https://github.com/ortus-boxlang/bx-compat/issues
-
+Module Issues: https://github.com/ortus-boxlang/bx-compat-cfml/issues
 
 ## Type of change
 
