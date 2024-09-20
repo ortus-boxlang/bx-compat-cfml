@@ -25,6 +25,7 @@ import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Argument;
 import ortus.boxlang.runtime.types.Function;
 import ortus.boxlang.runtime.types.Query;
+import ortus.boxlang.runtime.types.QueryColumn;
 import ortus.boxlang.runtime.types.Array;
 import ortus.boxlang.runtime.types.Struct;
 
@@ -69,7 +70,7 @@ public class GetMetaData extends BIF {
 				columnMetadata.add( Struct.of(
 				    Key._name, entry.getKey(),
 				    Key.typename, entry.getValue().getType().toString(),
-				    Key.isCaseSensitive, false
+				    Key.of("isCaseSensitive"), false
 				) );
 			}
 			return columnMetadata;
