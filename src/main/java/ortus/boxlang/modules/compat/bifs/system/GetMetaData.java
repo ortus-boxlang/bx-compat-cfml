@@ -70,7 +70,7 @@ public class GetMetaData extends BIF {
 				columnMetadata.add( Struct.of(
 				    Key._name, entry.getKey(),
 				    Key.typename, entry.getValue().getType().toString(),
-				    Key.of("isCaseSensitive"), false
+				    Key.of( "isCaseSensitive" ), false
 				) );
 			}
 			return columnMetadata;
