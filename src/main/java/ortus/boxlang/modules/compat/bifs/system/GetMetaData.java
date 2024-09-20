@@ -14,6 +14,8 @@
  */
 package ortus.boxlang.modules.compat.bifs.system;
 
+import java.util.Map;
+
 import ortus.boxlang.runtime.bifs.BIF;
 import ortus.boxlang.runtime.bifs.BoxBIF;
 import ortus.boxlang.runtime.context.IBoxContext;
@@ -22,6 +24,9 @@ import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Argument;
 import ortus.boxlang.runtime.types.Function;
+import ortus.boxlang.runtime.types.Query;
+import ortus.boxlang.runtime.types.Array;
+import ortus.boxlang.runtime.types.Struct;
 
 @BoxBIF
 public class GetMetaData extends BIF {
@@ -56,6 +61,18 @@ public class GetMetaData extends BIF {
 		// Classes have a legacy metadata view that matches CF engines
 		if ( value instanceof IClassRunnable boxClass ) {
 			return boxClass.getMetaData();
+		}
+
+		if ( value instanceof Query query ) {
+			Array columnMetadata = new Array();
+			for ( Map.Entry<Key, QueryColumn> entry : columns.entrySet() ) {
+				columnMetadata.add( Struct.of(
+				    Key._name, entry.getKey(),
+				    Key.typename, entry.getValue().getType().toString(),
+				    Key.isCaseSensitive, false
+				) );
+			}
+			return columnMetadata;
 		}
 
 		// All other types return the class of the value to match CF engines
