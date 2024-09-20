@@ -65,7 +65,7 @@ public class GetMetaData extends BIF {
 
 		if ( value instanceof Query query ) {
 			Array columnMetadata = new Array();
-			for ( Map.Entry<Key, QueryColumn> entry : columns.entrySet() ) {
+			for ( Map.Entry<Key, QueryColumn> entry : query.getColumns().entrySet() ) {
 				columnMetadata.add( Struct.of(
 				    Key._name, entry.getKey(),
 				    Key.typename, entry.getValue().getType().toString(),
