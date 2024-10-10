@@ -67,7 +67,6 @@ public class StructGet extends ortus.boxlang.runtime.bifs.global.struct.StructGe
 			for ( int i = 1; i < segments.size(); i++ ) {
 				String segment = segments.get( i );
 				fullPath += "." + segment;
-				System.out.println( "Checking: " + fullPath );
 				if ( !currentStruct.containsKey( segment ) ) {
 					ExpressionInterpreter.setVariable( context, fullPath, new Struct() );
 				}
