@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Bug with `structGet()` and invalid paths not working with `null` values
+- `structGet()` not adhering to the actual Adobe CFML behavior
+
 ## [1.7.0] - 2024-09-30
 
 ## [1.6.0] - 2024-09-19
