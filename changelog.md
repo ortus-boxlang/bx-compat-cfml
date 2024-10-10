@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0] - 2024-10-10
+
 ### Fixed
 
 - Bug with `structGet()` and invalid paths not working with `null` values
@@ -75,7 +77,9 @@ transpiler = {
 
 - First iteration of this module
 
-[Unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.7.0...HEAD
+[Unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.8.0...HEAD
+
+[1.8.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.7.0...v1.8.0
 
 [1.7.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.6.0...v1.7.0
 
