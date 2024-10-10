@@ -18,6 +18,7 @@
 
 package ortus.boxlang.modules.compat.bifs.struct;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -66,9 +67,9 @@ public class StructGetTest {
 	public void testMutation() {
 		instance.executeSource(
 		    """
-		    ref = {};
-		       result = structGet( "a.b.c", ref );
-		          """,
+		    	ref = {};
+		      	result = structGet( "ref.a.b.c" );
+		    """,
 		    context );
 
 		assertTrue( variables.get( result ) instanceof IStruct );
@@ -78,7 +79,47 @@ public class StructGetTest {
 		assertTrue( ref.getAsStruct( Key.of( "a" ) ).containsKey( Key.of( "b" ) ) );
 		assertTrue( ref.getAsStruct( Key.of( "a" ) ).getAsStruct( Key.of( "b" ) ).containsKey( Key.of( "c" ) ) );
 		assertEquals( variables.get( result ), ref.getAsStruct( Key.of( "a" ) ).getAsStruct( Key.of( "b" ) ).get( Key.of( "c" ) ) );
+	}
 
+	@DisplayName( "It tests the BIF StructGet Will return a empty struct if a value is not present" )
+	@Test
+	public void testBifNullReturn() {
+		instance.executeSource(
+		    """
+		    myStruct={
+		    	"foo" : {
+		    		"bar" : "baz"
+		    	}
+		    };
+		    result = StructGet( "myStruct.foo.blah.blerge" );
+		    """,
+		    context );
+		IStruct rStruct = variables.getAsStruct( result );
+		assertThat( rStruct.size() ).isEqualTo( 0 );
+		// Test dumb adobe mutations
+		IStruct myStruct = variables.getAsStruct( Key.of( "myStruct" ) );
+		System.out.println( myStruct );
+		assertTrue( myStruct.containsKey( Key.of( "foo" ) ) );
+		assertTrue( myStruct.getAsStruct( Key.of( "foo" ) ).containsKey( Key.of( "blah" ) ) );
+		assertTrue(
+		    myStruct
+		        .getAsStruct( Key.of( "foo" ) )
+		        .getAsStruct( Key.of( "blah" ) )
+		        .containsKey( Key.of( "blerge" ) )
+		);
+
+	}
+
+	@DisplayName( "Returns an empty struct if the root value used is NOT a struct or not found" )
+	@Test
+	public void testRootValueNotStruct() {
+		instance.executeSource(
+		    """
+		    result = StructGet( "myStruct.foo.bar.baz" );
+		    """,
+		    context );
+		IStruct rStruct = variables.getAsStruct( result );
+		assertThat( rStruct.size() ).isEqualTo( 0 );
 	}
 
 }

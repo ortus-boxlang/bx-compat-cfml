@@ -17,13 +17,16 @@
  */
 package ortus.boxlang.modules.compat.bifs.struct;
 
+import java.util.Arrays;
+import java.util.List;
+
 import ortus.boxlang.runtime.bifs.BoxBIF;
 import ortus.boxlang.runtime.context.IBoxContext;
+import ortus.boxlang.runtime.dynamic.ExpressionInterpreter;
 import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.IStruct;
 import ortus.boxlang.runtime.types.Struct;
-import ortus.boxlang.runtime.types.util.ListUtil;
 
 @BoxBIF( alias = "StructGet" )
 public class StructGet extends ortus.boxlang.runtime.bifs.global.struct.StructGet {
@@ -39,20 +42,38 @@ public class StructGet extends ortus.boxlang.runtime.bifs.global.struct.StructGe
 	 * @argument.path The string path to the object requested in the struct
 	 *
 	 */
+	@Override
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
 		Object result = super._invoke( context, arguments );
 		if ( result == null ) {
 			// Lucee and ACF will both mutate the original struct all of the way down to last segment
-			IStruct	ref		= arguments.getAsStruct( Key.object );
-			String	path	= arguments.getAsString( Key.path );
-			for ( Object segment : ListUtil.asList( path, "." ) ) {
-				Key segmentKey = Key.of( segment );
-				if ( !ref.containsKey( segmentKey ) ) {
-					ref.put( segmentKey, new Struct() );
-					ref = ref.getAsStruct( segmentKey );
-				}
+			String			path		= arguments.getAsString( Key.path );
+			List<String>	segments	= Arrays.asList( path.split( "\\." ) );
+			Object			root		= ExpressionInterpreter.getVariable( context, segments.get( 0 ), true );
+
+			// If not a struct, or null then return a new struct
+			if ( ! ( root instanceof IStruct ) ) {
+				return new Struct();
 			}
-			return ref;
+
+			// If only one segment, then return the root
+			if ( segments.size() == 1 ) {
+				return root;
+			}
+
+			// Now traverse from position 1 to the end
+			IStruct	currentStruct	= ( IStruct ) root;
+			String	fullPath		= segments.get( 0 );
+			for ( int i = 1; i < segments.size(); i++ ) {
+				String segment = segments.get( i );
+				fullPath += "." + segment;
+				System.out.println( "Checking: " + fullPath );
+				if ( !currentStruct.containsKey( segment ) ) {
+					ExpressionInterpreter.setVariable( context, fullPath, new Struct() );
+				}
+				currentStruct = ( IStruct ) currentStruct.get( segment );
+			}
+			return currentStruct;
 		} else {
 			return result;
 		}
