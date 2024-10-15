@@ -28,7 +28,24 @@ Here are the available settings for the compat module:
 
 ```js
 settings = {
-    engine = "lucee"
+	// The engine to mimick: adobe or lucee
+    engine = "lucee",
+	// JSON control character auto-escaping flag
+	// IF you turn to true, be aware that the entire JSON serialization will be escaped and be slower.
+	jsonEscapeControlCharacters = true,
+	// This simulates the query to empty value that Adobe/Lucee do when NOT in full null support
+	// We default it to true to simulate Adobe/Lucee behavior
+	queryNullToEmpty = true,
+	// The CF -> BL AST transpiler settings
+	// The transpiler is in the core, but will eventually live in this module, so the settings are here.
+	transpiler = {
+		// Turn foo.bar into foo.BAR
+		upperCaseKeys = true,
+		// Add output=true to functions and classes
+		forceOutputTrue = true,
+		// Merged doc comments into actual function, class, and property annotations
+		mergeDocsIntoAnnotations = true
+	}
 }
 ```
 
@@ -39,7 +56,23 @@ The valid engines are `adobe` or `lucee`.  By default the engine is `lucee`.  Al
     "compat-cfml" : {
         "disabled" : false,
         "settings" : {
-            "engine" : "adobe"
+            "engine" : "adobe",
+			// JSON control character auto-escaping flag
+			// IF you turn to true, be aware that the entire JSON serialization will be escaped and be slower.
+			jsonEscapeControlCharacters = true,
+			// This simulates the query to empty value that Adobe/Lucee do when NOT in full null support
+			// We default it to true to simulate Adobe/Lucee behavior
+			queryNullToEmpty = true,
+			// The CF -> BL AST transpiler settings
+			// The transpiler is in the core, but will eventually live in this module, so the settings are here.
+            transpiler = {
+				// Turn foo.bar into foo.BAR
+				upperCaseKeys = true,
+				// Add output=true to functions and classes
+				forceOutputTrue = true,
+				// Merged doc comments into actual function, class, and property annotations
+				mergeDocsIntoAnnotations = true
+            }
         }
     }
 }

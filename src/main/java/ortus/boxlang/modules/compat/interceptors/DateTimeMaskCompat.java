@@ -1,7 +1,22 @@
+/**
+ * [BoxLang]
+ *
+ * Copyright [2023] [Ortus Solutions, Corp]
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
 package ortus.boxlang.modules.compat.interceptors;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import ortus.boxlang.runtime.bifs.BIF;
 import ortus.boxlang.runtime.events.BaseInterceptor;
@@ -12,63 +27,55 @@ import ortus.boxlang.runtime.types.IStruct;
 
 public class DateTimeMaskCompat extends BaseInterceptor {
 
-	private static final ArrayList<Key>					formatMethods			= new ArrayList<Key>() {
+	private static final Key			FORMAT_EPOCH	= Key.of( "epoch" );
+	private static final Key			FORMAT_EPOCHMS	= Key.of( "epochms" );
+	private static final ArrayList<Key>	FORMAT_METHODS	= new ArrayList<>();
+	static {
+		FORMAT_METHODS.add( Key.of( "ParseDateTime" ) );
+		FORMAT_METHODS.add( Key.of( "LSParseDateTime" ) );
+		FORMAT_METHODS.add( Key.of( "DateTimeFormat" ) );
+		FORMAT_METHODS.add( Key.of( "DateFormat" ) );
+		FORMAT_METHODS.add( Key.of( "TimeFormat" ) );
+	}
 
-																					{
-																						add( Key.of( "ParseDateTime" ) );
-																						add( Key.of( "LSParseDateTime" ) );
-																						add( Key.of( "DateTimeFormat" ) );
-																						add( Key.of( "DateFormat" ) );
-																						add( Key.of( "TimeFormat" ) );
-																					}
-																				};
+	private static final Map<String, String> DATE_MASK_REPLACEMENTS = new LinkedHashMap<>();
+	static {
+		DATE_MASK_REPLACEMENTS.put( "h", "H" );
+		DATE_MASK_REPLACEMENTS.put( "mmmm", "MMMM" );
+		DATE_MASK_REPLACEMENTS.put( "mmm", "MMM" );
+		DATE_MASK_REPLACEMENTS.put( "mm/", "MM/" );
+		DATE_MASK_REPLACEMENTS.put( "/mm", "/MM" );
+		DATE_MASK_REPLACEMENTS.put( "-mm", "-MM" );
+		DATE_MASK_REPLACEMENTS.put( "n", "m" );
+		DATE_MASK_REPLACEMENTS.put( "N", "n" );
+		DATE_MASK_REPLACEMENTS.put( "dddd", "EEEE" );
+		DATE_MASK_REPLACEMENTS.put( "ddd", "EEE" );
+		DATE_MASK_REPLACEMENTS.put( "TT", "a" );
+		DATE_MASK_REPLACEMENTS.put( "tt", "a" );
+		DATE_MASK_REPLACEMENTS.put( "t", "a" );
+		DATE_MASK_REPLACEMENTS.put( ":MM", ":mm" );
+		// Lucee/ACF seconds mask handling
+		DATE_MASK_REPLACEMENTS.put( ":SS", ":ss" );
+		// Lucee/ACF awful milliseconds handling
+		DATE_MASK_REPLACEMENTS.put( ".lll", ".SSS" );
+		DATE_MASK_REPLACEMENTS.put( ".ll", ".SS" );
+		DATE_MASK_REPLACEMENTS.put( ".l", ".S" );
+		DATE_MASK_REPLACEMENTS.put( ".LLL", ".SSS" );
+		DATE_MASK_REPLACEMENTS.put( ".LL", ".SS" );
+		DATE_MASK_REPLACEMENTS.put( ".L", ".S" );
+		// A few common literal formats not caught by the above
+		DATE_MASK_REPLACEMENTS.put( "yyyymmdd", "yyyyMMdd" );
+	}
 
-	private static final Key							FORMAT_EPOCH			= Key.of( "epoch" );
-	private static final Key							FORMAT_EPOCHMS			= Key.of( "epochms" );
-
-	public static final LinkedHashMap<String, String>	dateMaskReplacements	= new LinkedHashMap<String, String>() {
-
-																					{
-																						put( "h", "H" );
-																						put( "mmmm", "MMMM" );
-																						put( "mmm", "MMM" );
-																						put( "mm/", "MM/" );
-																						put( "/mm", "/MM" );
-																						put( "-mm", "-MM" );
-																						put( "n", "m" );
-																						put( "N", "n" );
-																						put( "dddd", "EEEE" );
-																						put( "ddd", "EEE" );
-																						put( "TT", "a" );
-																						put( "tt", "a" );
-																						put( "t", "a" );
-																						put( ":MM", ":mm" );
-																						// Lucee/ACF seconds mask handling
-																						put( ":SS", ":ss" );
-																						// Lucee/ACF awful miliseconds handling
-																						put( ".lll", ".SSS" );
-																						put( ".ll", ".SS" );
-																						put( ".l", ".S" );
-																						put( ".LLL", ".SSS" );
-																						put( ".LL", ".SS" );
-																						put( ".L", ".S" );
-																						// A few common literal formats not caught by the above
-																						put( "yyyymmdd", "yyyyMMdd" );
-
-																					}
-																				};
-
-	public static final LinkedHashMap<String, String>	literalMaskReplacements	= new LinkedHashMap<String, String>() {
-
-																					{
-																						put( "m", "M" );
-																						put( "mm", "MM" );
-																						put( "mmm", "MMM" );
-																						put( "mmmm", "MMMM" );
-																						put( "n", "m" );
-																						put( "nn", "mm" );
-																					}
-																				};
+	private static final Map<String, String> LITERAL_MASK_REPLACEMENTS = new LinkedHashMap<>();
+	static {
+		LITERAL_MASK_REPLACEMENTS.put( "m", "M" );
+		LITERAL_MASK_REPLACEMENTS.put( "mm", "MM" );
+		LITERAL_MASK_REPLACEMENTS.put( "mmm", "MMM" );
+		LITERAL_MASK_REPLACEMENTS.put( "mmmm", "MMMM" );
+		LITERAL_MASK_REPLACEMENTS.put( "n", "m" );
+		LITERAL_MASK_REPLACEMENTS.put( "nn", "mm" );
+	}
 
 	/**
 	 * Intercept BIF Invocation
@@ -79,7 +86,7 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 	public void onBIFInvocation( IStruct interceptData ) {
 		IStruct	arguments		= interceptData.getAsStruct( Key.arguments );
 		Key		bifMethodKey	= arguments.getAsKey( BIF.__functionName );
-		if ( !formatMethods.contains( bifMethodKey ) )
+		if ( !FORMAT_METHODS.contains( bifMethodKey ) )
 			return;
 
 		Key		formatArgument	= Key.mask;
@@ -105,10 +112,10 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 
 		if ( !formatKey.equals( FORMAT_EPOCH ) && !formatKey.equals( FORMAT_EPOCHMS ) && !DateTime.COMMON_FORMATTERS.containsKey( commonFormatKey ) ) {
 
-			if ( literalMaskReplacements.containsKey( format ) ) {
-				arguments.put( finalArg, literalMaskReplacements.get( format ) );
+			if ( LITERAL_MASK_REPLACEMENTS.containsKey( format ) ) {
+				arguments.put( finalArg, LITERAL_MASK_REPLACEMENTS.get( format ) );
 			} else {
-				dateMaskReplacements.entrySet().stream().forEach( entry -> {
+				DATE_MASK_REPLACEMENTS.entrySet().stream().forEach( entry -> {
 					arguments.put( finalArg, arguments.getAsString( finalArg ).replaceAll( entry.getKey(), entry.getValue() ) );
 				} );
 			}

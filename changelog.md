@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Bug with json escape characters in `serializeJSON()`
+
+## [1.8.0] - 2024-10-10
+
+### Fixed
+
 - Bug with `structGet()` and invalid paths not working with `null` values
 - `structGet()` not adhering to the actual Adobe CFML behavior
 
