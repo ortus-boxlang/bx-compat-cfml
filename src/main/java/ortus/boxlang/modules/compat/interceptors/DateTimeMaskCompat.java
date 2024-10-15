@@ -1,7 +1,22 @@
+/**
+ * [BoxLang]
+ *
+ * Copyright [2023] [Ortus Solutions, Corp]
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
 package ortus.boxlang.modules.compat.interceptors;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import ortus.boxlang.runtime.bifs.BIF;
 import ortus.boxlang.runtime.events.BaseInterceptor;
@@ -12,63 +27,55 @@ import ortus.boxlang.runtime.types.IStruct;
 
 public class DateTimeMaskCompat extends BaseInterceptor {
 
-	private static final ArrayList<Key>					formatMethods			= new ArrayList<Key>() {
+	private static final Key			FORMAT_EPOCH	= Key.of( "epoch" );
+	private static final Key			FORMAT_EPOCHMS	= Key.of( "epochms" );
+	private static final ArrayList<Key>	formatMethods	= new ArrayList<>();
+	static {
+		formatMethods.add( Key.of( "ParseDateTime" ) );
+		formatMethods.add( Key.of( "LSParseDateTime" ) );
+		formatMethods.add( Key.of( "DateTimeFormat" ) );
+		formatMethods.add( Key.of( "DateFormat" ) );
+		formatMethods.add( Key.of( "TimeFormat" ) );
+	}
 
-																					{
-																						add( Key.of( "ParseDateTime" ) );
-																						add( Key.of( "LSParseDateTime" ) );
-																						add( Key.of( "DateTimeFormat" ) );
-																						add( Key.of( "DateFormat" ) );
-																						add( Key.of( "TimeFormat" ) );
-																					}
-																				};
+	private static final Map<String, String> dateMaskReplacements = new LinkedHashMap<>();
+	static {
+		dateMaskReplacements.put( "h", "H" );
+		dateMaskReplacements.put( "mmmm", "MMMM" );
+		dateMaskReplacements.put( "mmm", "MMM" );
+		dateMaskReplacements.put( "mm/", "MM/" );
+		dateMaskReplacements.put( "/mm", "/MM" );
+		dateMaskReplacements.put( "-mm", "-MM" );
+		dateMaskReplacements.put( "n", "m" );
+		dateMaskReplacements.put( "N", "n" );
+		dateMaskReplacements.put( "dddd", "EEEE" );
+		dateMaskReplacements.put( "ddd", "EEE" );
+		dateMaskReplacements.put( "TT", "a" );
+		dateMaskReplacements.put( "tt", "a" );
+		dateMaskReplacements.put( "t", "a" );
+		dateMaskReplacements.put( ":MM", ":mm" );
+		// Lucee/ACF seconds mask handling
+		dateMaskReplacements.put( ":SS", ":ss" );
+		// Lucee/ACF awful milliseconds handling
+		dateMaskReplacements.put( ".lll", ".SSS" );
+		dateMaskReplacements.put( ".ll", ".SS" );
+		dateMaskReplacements.put( ".l", ".S" );
+		dateMaskReplacements.put( ".LLL", ".SSS" );
+		dateMaskReplacements.put( ".LL", ".SS" );
+		dateMaskReplacements.put( ".L", ".S" );
+		// A few common literal formats not caught by the above
+		dateMaskReplacements.put( "yyyymmdd", "yyyyMMdd" );
+	}
 
-	private static final Key							FORMAT_EPOCH			= Key.of( "epoch" );
-	private static final Key							FORMAT_EPOCHMS			= Key.of( "epochms" );
-
-	public static final LinkedHashMap<String, String>	dateMaskReplacements	= new LinkedHashMap<String, String>() {
-
-																					{
-																						put( "h", "H" );
-																						put( "mmmm", "MMMM" );
-																						put( "mmm", "MMM" );
-																						put( "mm/", "MM/" );
-																						put( "/mm", "/MM" );
-																						put( "-mm", "-MM" );
-																						put( "n", "m" );
-																						put( "N", "n" );
-																						put( "dddd", "EEEE" );
-																						put( "ddd", "EEE" );
-																						put( "TT", "a" );
-																						put( "tt", "a" );
-																						put( "t", "a" );
-																						put( ":MM", ":mm" );
-																						// Lucee/ACF seconds mask handling
-																						put( ":SS", ":ss" );
-																						// Lucee/ACF awful miliseconds handling
-																						put( ".lll", ".SSS" );
-																						put( ".ll", ".SS" );
-																						put( ".l", ".S" );
-																						put( ".LLL", ".SSS" );
-																						put( ".LL", ".SS" );
-																						put( ".L", ".S" );
-																						// A few common literal formats not caught by the above
-																						put( "yyyymmdd", "yyyyMMdd" );
-
-																					}
-																				};
-
-	public static final LinkedHashMap<String, String>	literalMaskReplacements	= new LinkedHashMap<String, String>() {
-
-																					{
-																						put( "m", "M" );
-																						put( "mm", "MM" );
-																						put( "mmm", "MMM" );
-																						put( "mmmm", "MMMM" );
-																						put( "n", "m" );
-																						put( "nn", "mm" );
-																					}
-																				};
+	private static final Map<String, String> literalMaskReplacements = new LinkedHashMap<>();
+	static {
+		literalMaskReplacements.put( "m", "M" );
+		literalMaskReplacements.put( "mm", "MM" );
+		literalMaskReplacements.put( "mmm", "MMM" );
+		literalMaskReplacements.put( "mmmm", "MMMM" );
+		literalMaskReplacements.put( "n", "m" );
+		literalMaskReplacements.put( "nn", "mm" );
+	}
 
 	/**
 	 * Intercept BIF Invocation
