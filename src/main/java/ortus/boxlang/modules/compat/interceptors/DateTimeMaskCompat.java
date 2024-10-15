@@ -29,52 +29,52 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 
 	private static final Key			FORMAT_EPOCH	= Key.of( "epoch" );
 	private static final Key			FORMAT_EPOCHMS	= Key.of( "epochms" );
-	private static final ArrayList<Key>	formatMethods	= new ArrayList<>();
+	private static final ArrayList<Key>	FORMAT_METHODS	= new ArrayList<>();
 	static {
-		formatMethods.add( Key.of( "ParseDateTime" ) );
-		formatMethods.add( Key.of( "LSParseDateTime" ) );
-		formatMethods.add( Key.of( "DateTimeFormat" ) );
-		formatMethods.add( Key.of( "DateFormat" ) );
-		formatMethods.add( Key.of( "TimeFormat" ) );
+		FORMAT_METHODS.add( Key.of( "ParseDateTime" ) );
+		FORMAT_METHODS.add( Key.of( "LSParseDateTime" ) );
+		FORMAT_METHODS.add( Key.of( "DateTimeFormat" ) );
+		FORMAT_METHODS.add( Key.of( "DateFormat" ) );
+		FORMAT_METHODS.add( Key.of( "TimeFormat" ) );
 	}
 
-	private static final Map<String, String> dateMaskReplacements = new LinkedHashMap<>();
+	private static final Map<String, String> DATE_MASK_REPLACEMENTS = new LinkedHashMap<>();
 	static {
-		dateMaskReplacements.put( "h", "H" );
-		dateMaskReplacements.put( "mmmm", "MMMM" );
-		dateMaskReplacements.put( "mmm", "MMM" );
-		dateMaskReplacements.put( "mm/", "MM/" );
-		dateMaskReplacements.put( "/mm", "/MM" );
-		dateMaskReplacements.put( "-mm", "-MM" );
-		dateMaskReplacements.put( "n", "m" );
-		dateMaskReplacements.put( "N", "n" );
-		dateMaskReplacements.put( "dddd", "EEEE" );
-		dateMaskReplacements.put( "ddd", "EEE" );
-		dateMaskReplacements.put( "TT", "a" );
-		dateMaskReplacements.put( "tt", "a" );
-		dateMaskReplacements.put( "t", "a" );
-		dateMaskReplacements.put( ":MM", ":mm" );
+		DATE_MASK_REPLACEMENTS.put( "h", "H" );
+		DATE_MASK_REPLACEMENTS.put( "mmmm", "MMMM" );
+		DATE_MASK_REPLACEMENTS.put( "mmm", "MMM" );
+		DATE_MASK_REPLACEMENTS.put( "mm/", "MM/" );
+		DATE_MASK_REPLACEMENTS.put( "/mm", "/MM" );
+		DATE_MASK_REPLACEMENTS.put( "-mm", "-MM" );
+		DATE_MASK_REPLACEMENTS.put( "n", "m" );
+		DATE_MASK_REPLACEMENTS.put( "N", "n" );
+		DATE_MASK_REPLACEMENTS.put( "dddd", "EEEE" );
+		DATE_MASK_REPLACEMENTS.put( "ddd", "EEE" );
+		DATE_MASK_REPLACEMENTS.put( "TT", "a" );
+		DATE_MASK_REPLACEMENTS.put( "tt", "a" );
+		DATE_MASK_REPLACEMENTS.put( "t", "a" );
+		DATE_MASK_REPLACEMENTS.put( ":MM", ":mm" );
 		// Lucee/ACF seconds mask handling
-		dateMaskReplacements.put( ":SS", ":ss" );
+		DATE_MASK_REPLACEMENTS.put( ":SS", ":ss" );
 		// Lucee/ACF awful milliseconds handling
-		dateMaskReplacements.put( ".lll", ".SSS" );
-		dateMaskReplacements.put( ".ll", ".SS" );
-		dateMaskReplacements.put( ".l", ".S" );
-		dateMaskReplacements.put( ".LLL", ".SSS" );
-		dateMaskReplacements.put( ".LL", ".SS" );
-		dateMaskReplacements.put( ".L", ".S" );
+		DATE_MASK_REPLACEMENTS.put( ".lll", ".SSS" );
+		DATE_MASK_REPLACEMENTS.put( ".ll", ".SS" );
+		DATE_MASK_REPLACEMENTS.put( ".l", ".S" );
+		DATE_MASK_REPLACEMENTS.put( ".LLL", ".SSS" );
+		DATE_MASK_REPLACEMENTS.put( ".LL", ".SS" );
+		DATE_MASK_REPLACEMENTS.put( ".L", ".S" );
 		// A few common literal formats not caught by the above
-		dateMaskReplacements.put( "yyyymmdd", "yyyyMMdd" );
+		DATE_MASK_REPLACEMENTS.put( "yyyymmdd", "yyyyMMdd" );
 	}
 
-	private static final Map<String, String> literalMaskReplacements = new LinkedHashMap<>();
+	private static final Map<String, String> LITERAL_MASK_REPLACEMENTS = new LinkedHashMap<>();
 	static {
-		literalMaskReplacements.put( "m", "M" );
-		literalMaskReplacements.put( "mm", "MM" );
-		literalMaskReplacements.put( "mmm", "MMM" );
-		literalMaskReplacements.put( "mmmm", "MMMM" );
-		literalMaskReplacements.put( "n", "m" );
-		literalMaskReplacements.put( "nn", "mm" );
+		LITERAL_MASK_REPLACEMENTS.put( "m", "M" );
+		LITERAL_MASK_REPLACEMENTS.put( "mm", "MM" );
+		LITERAL_MASK_REPLACEMENTS.put( "mmm", "MMM" );
+		LITERAL_MASK_REPLACEMENTS.put( "mmmm", "MMMM" );
+		LITERAL_MASK_REPLACEMENTS.put( "n", "m" );
+		LITERAL_MASK_REPLACEMENTS.put( "nn", "mm" );
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 	public void onBIFInvocation( IStruct interceptData ) {
 		IStruct	arguments		= interceptData.getAsStruct( Key.arguments );
 		Key		bifMethodKey	= arguments.getAsKey( BIF.__functionName );
-		if ( !formatMethods.contains( bifMethodKey ) )
+		if ( !FORMAT_METHODS.contains( bifMethodKey ) )
 			return;
 
 		Key		formatArgument	= Key.mask;
@@ -112,10 +112,10 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 
 		if ( !formatKey.equals( FORMAT_EPOCH ) && !formatKey.equals( FORMAT_EPOCHMS ) && !DateTime.COMMON_FORMATTERS.containsKey( commonFormatKey ) ) {
 
-			if ( literalMaskReplacements.containsKey( format ) ) {
-				arguments.put( finalArg, literalMaskReplacements.get( format ) );
+			if ( LITERAL_MASK_REPLACEMENTS.containsKey( format ) ) {
+				arguments.put( finalArg, LITERAL_MASK_REPLACEMENTS.get( format ) );
 			} else {
-				dateMaskReplacements.entrySet().stream().forEach( entry -> {
+				DATE_MASK_REPLACEMENTS.entrySet().stream().forEach( entry -> {
 					arguments.put( finalArg, arguments.getAsString( finalArg ).replaceAll( entry.getKey(), entry.getValue() ) );
 				} );
 			}
