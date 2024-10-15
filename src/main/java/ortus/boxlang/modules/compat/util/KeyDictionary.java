@@ -18,8 +18,10 @@ import ortus.boxlang.runtime.scopes.Key;
 
 public class KeyDictionary {
 
-	public static final Key	filterOrTags	= Key.of( "filterOrTags" );
-	public static final Key	isKey			= Key.of( "isKey" );
-	public static final Key	objectType		= Key.of( "objectType" );
+	public static final Key	filterOrTags				= Key.of( "filterOrTags" );
+	public static final Key	isKey						= Key.of( "isKey" );
+	public static final Key	objectType					= Key.of( "objectType" );
+	public static final Key	moduleName					= Key.of( "compat-cfml" );
+	public static final Key	jsonEscapeControlCharacters	= Key.of( "jsonEscapeControlCharacters" );
 
 }

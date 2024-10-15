@@ -84,6 +84,9 @@
 			engine = "lucee",
 			isLucee = false,
 			isAdobe = false,
+			// JSON control character auto-escaping flag
+			// IF you turn to true, be aware that the entire JSON serialization will be escaped and be slower.
+			jsonEscapeControlCharacters = true,
 			// This simulates the query to empty value that Adobe/Lucee do when NOT in full null support
 			// We default it to true to simulate Adobe/Lucee behavior
 			queryNullToEmpty = true,
