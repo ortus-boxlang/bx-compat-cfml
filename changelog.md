@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `cftoken` migration to comply with CFML engines.
+
 ## [1.9.0] - 2024-10-15
 
 ## [1.8.0] - 2024-10-10
