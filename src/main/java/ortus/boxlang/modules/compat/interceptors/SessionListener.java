@@ -18,12 +18,19 @@ import ortus.boxlang.runtime.application.Session;
 import ortus.boxlang.runtime.events.BaseInterceptor;
 import ortus.boxlang.runtime.events.InterceptionPoint;
 import ortus.boxlang.runtime.scopes.Key;
+import ortus.boxlang.runtime.scopes.SessionScope;
 import ortus.boxlang.runtime.types.IStruct;
 
 /**
  * Listens to when sessions get created to manipulate them for CFML compatibility
  */
 public class SessionListener extends BaseInterceptor {
+
+	/**
+	 * The URL token format
+	 * MOVE TO COMPAT MODULE
+	 */
+	public static final String URL_TOKEN_FORMAT = "CFID=%s";
 
 	/**
 	 * Intercept BIF Invocation
@@ -33,11 +40,18 @@ public class SessionListener extends BaseInterceptor {
 	@InterceptionPoint
 	public void onSessionCreated( IStruct interceptData ) {
 		// Get the session from the interceptData
-		Session userSession = ( Session ) interceptData.get( Key.session );
+		Session			userSession		= ( Session ) interceptData.get( Key.session );
+		SessionScope	sessionScope	= userSession.getSessionScope();
+		Key				sessionID		= userSession.getID();
 
 		// This is 0 for compatibility with CFML and for security.
-		userSession.getSessionScope().put( Key.cftoken, 0 );
+		sessionScope.put( Key.cftoken, 0 );
+		// This is the session ID for compatibility with CFML
+		sessionScope.put( Key.cfid, sessionID.getName() );
 
+		// URL Token Compat
+		String bxid = userSession.getApplicationName() + Session.ID_CONCATENATOR + sessionID;
+		sessionScope.put( Key.urlToken, String.format( URL_TOKEN_FORMAT, bxid ) );
 	}
 
 }
