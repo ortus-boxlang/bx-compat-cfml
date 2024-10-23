@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-import java:ortus.boxlang.runtime.types.immutable.ImmutableStruct;
+import java:ortus.boxlang.runtime.types.unmodifiable.UnmodifiableStruct;
 import java:ortus.boxlang.runtime.scopes.Key;
 
 /**
@@ -52,7 +52,7 @@ class{
 			"productlevel" : "os",
 			"productname" : "Lucee",
 			"productversion" : "2016,0,03,300357"
-		}.toImmutable();
+		}.toUnmodifiable();
 
 		// Add lucee struct
 		data.scope.lucee = {
@@ -64,7 +64,7 @@ class{
 			"version" : "6.0.0",
 			"versionName" : "Lucee",
 			"versionNameExplanation" : ""
-		}.toImmutable();
+		}.toUnmodifiable();
 	}
 
 }
