@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Change to `toUnmodifiable` from `toImmutable`
+
 ### Added
 
 - `cftoken` migration to comply with CFML engines.
