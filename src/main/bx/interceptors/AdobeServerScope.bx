@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-import java:ortus.boxlang.runtime.types.immutable.ImmutableStruct;
+import java:ortus.boxlang.runtime.types.unmodifiable.UnmodifiableStruct;
 import java:ortus.boxlang.runtime.scopes.Key;
 
 /**
@@ -57,7 +57,7 @@ class{
 			"productversion" : "2023,0,06,330617",
 			"rootdir" : "'",
 			"updatelevel" : "0"
-		}.toImmutable();
+		}.toUnmodifiable();
 	}
 
 }

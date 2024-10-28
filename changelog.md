@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Change to `toUnmodifiable` from `toImmutable`
+
+### Added
+
+- `cftoken` migration to comply with CFML engines.
+- `cfid` migration to comply with CFML engines.
+
+## [1.9.0] - 2024-10-15
+
 ## [1.8.0] - 2024-10-10
 
 ### Fixed
@@ -83,7 +94,9 @@ transpiler = {
 
 - First iteration of this module
 
-[Unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.8.0...HEAD
+[Unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.9.0...HEAD
+
+[1.9.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.8.0...v1.9.0
 
 [1.8.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.7.0...v1.8.0
 

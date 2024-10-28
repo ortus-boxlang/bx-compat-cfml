@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-import java:ortus.boxlang.runtime.types.immutable.ImmutableStruct;
+import java:ortus.boxlang.runtime.types.unmodifiable.UnmodifiableStruct;
 import java:ortus.boxlang.runtime.scopes.Key;
 import java:ortus.boxlang.runtime.jdbc.QueryOptions;
 
