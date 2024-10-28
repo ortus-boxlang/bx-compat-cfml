@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.0] - 2024-10-28
+
 ### Fixed
 
 - Change to `toUnmodifiable` from `toImmutable`
@@ -94,7 +96,9 @@ transpiler = {
 
 - First iteration of this module
 
-[Unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.9.0...HEAD
+[Unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.10.0...HEAD
+
+[1.10.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.9.0...v1.10.0
 
 [1.9.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.8.0...v1.9.0
 
