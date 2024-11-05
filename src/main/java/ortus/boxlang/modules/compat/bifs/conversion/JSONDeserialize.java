@@ -57,15 +57,28 @@ public class JSONDeserialize extends ortus.boxlang.runtime.bifs.global.conversio
 	 */
 	private String escapeControlCharacters( String json ) {
 		StringBuilder	escapedJson	= new StringBuilder();
-		boolean			inQuotes	= false; // Flag to track if we're inside quotes (single or double)
+		boolean			inQuotes	= false; // Flag to track if we're inside quotes
+		boolean			isEscaped	= false;
 
 		for ( int i = 0; i < json.length(); i++ ) {
 			char c = json.charAt( i );
 
-			// Check for single or double quotes and toggle the inQuotes flag
-			if ( c == '\"' || c == '\'' ) {
+			if ( isEscaped ) {
+				// If we're in an escape sequence, append the character as-is
 				escapedJson.append( c );
-				inQuotes = !inQuotes;
+				isEscaped = false;
+			} else if ( !inQuotes && c == '"' ) {
+				// Check for quote and toggle the inQuotes flag
+				escapedJson.append( c );
+				inQuotes = true;
+			} else if ( inQuotes && c == '\\' ) {
+				// If we hit an escape inside a string
+				escapedJson.append( c );
+				isEscaped = true;
+			} else if ( inQuotes && c == '"' ) {
+				// We've reached the end of the quotes now
+				escapedJson.append( c );
+				inQuotes = false;
 			} else if ( inQuotes && c < 32 ) {
 				// Only escape control characters if inside quotes
 				switch ( c ) {
