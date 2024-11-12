@@ -61,4 +61,27 @@ public class NullIsUndefinedTest extends BaseIntegrationTest {
 		    context );
 		assertThat( variables.getAsBoolean( result ) ).isFalse();
 	}
+
+	@DisplayName( "It resets nulls in the local scope between invocations" )
+	@Test
+	public void testNullResets() {
+		loadModule();
+
+		// @formatter:off
+		runtime.executeSource(
+		    """
+				function foo( callback ) {
+					var bar = callback();
+					if ( isNull( bar ) ) {
+						bar = "baz";
+					}
+					return isNull( bar ) ? javacast( "null", "" ) : bar;
+				}
+
+				foo( function() {} );
+				result = foo( function() {} );
+		    """,
+		    context );
+		assertThat( variables.get( result ) ).isNull();
+	}
 }
