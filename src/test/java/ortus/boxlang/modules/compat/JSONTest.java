@@ -3,6 +3,8 @@ package ortus.boxlang.modules.compat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import ortus.boxlang.compiler.parser.BoxSourceType;
+
 /**
  * This loads the module and runs an integration test on the module.
  */
@@ -28,7 +30,50 @@ public class JSONTest extends BaseIntegrationTest {
 			result = jsonDeserialize( seed, false );
 			"""
 			, context );
+
+		runtime.executeSource( """
+			seed = '{
+						"test": "foo	bar
+						baz			bum
+						
+						" }';
+			result = jsonDeserialize( seed, false );
+			"""
+			, context );
 		// @formatter:on
 
+	}
+
+	@DisplayName( "Test control characters in JSON singular quote" )
+	@Test
+	public void testJSONControlCharactersSingularQuote() {
+		// Given
+		loadModule();
+
+		// @formatter:off
+		runtime.executeSource( """
+			test = "{
+				""text"": ""'""
+				}";		
+			"""
+			, context, BoxSourceType.CFSCRIPT );
+		// @formatter:on
+	}
+
+	@DisplayName( "Test control characters in JSON escaped stuff" )
+	@Test
+	// @Disabled
+	public void testJSONControlCharactersEscaped() {
+		// Given
+		loadModule();
+
+		// @formatter:off
+		runtime.executeSource( """
+			test = '{
+				"text": "foo\\"bar\\\\baz\\nbum"
+				}';
+			"""
+			, context, BoxSourceType.CFSCRIPT );
+		// @formatter:on
 	}
 }

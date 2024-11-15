@@ -11,6 +11,7 @@
  *
  * Every Module will have it's own ClassLoader that will be used to load the module libs and dependencies.
  */
+import ortus.boxlang.runtime.context.BaseBoxContext;
 
  class {
 
@@ -84,6 +85,8 @@
 			engine = "lucee",
 			isLucee = false,
 			isAdobe = false,
+			// Mimic the CF behavior of nulls being undefined.  Set this to false to have full null support
+			nullIsUndefined = true,
 			// JSON control character auto-escaping flag
 			// IF you turn to true, be aware that the entire JSON serialization will be escaped and be slower.
 			jsonEscapeControlCharacters = true,
@@ -132,6 +135,9 @@
 	 * Called by the ModuleService on module activation
 	 */
 	function onLoad(){
+		// Set the nullIsUndefined flag.  This is stored statically on the base context for best performance
+		BaseBoxContext.nullIsUndefined = settings.nullIsUndefined;
+
 		// Verify Engine
 		if( isNull( settings.engine ) || settings.engine.isEmpty() ){
 			throw( "You must specify an [engine] in the settings. Valid engines are [adobe,lucee]" );
