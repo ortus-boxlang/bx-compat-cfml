@@ -3,9 +3,12 @@ package ortus.boxlang.modules.compat;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import ortus.boxlang.compiler.parser.BoxSourceType;
+import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.exceptions.KeyNotFoundException;
 
 /**
@@ -60,5 +63,56 @@ public class NullIsUndefinedTest extends BaseIntegrationTest {
 		    """,
 		    context );
 		assertThat( variables.getAsBoolean( result ) ).isFalse();
+	}
+
+
+	@DisplayName( "CF transpile structKeyExists" )
+	@Test
+	public void testCFTranspileStructKeyExists() {
+		loadModule();
+
+		runtime.executeSource(
+		    """
+		       str = {
+		    	foo : 'bar',
+		    	baz : null
+		    };
+		    result = structKeyExists( str, "foo" )
+		    result2 = structKeyExists( str, "baz" )
+		    	 """,
+		    context, BoxSourceType.CFSCRIPT );
+
+		assertThat( variables.getAsBoolean( result ) ).isTrue();
+		assertThat( variables.getAsBoolean( Key.of( "result2" ) ) ).isFalse();
+
+	}
+	
+	@DisplayName( "It resets nulls in the local scope between invocations" )
+	@Test
+	@Disabled
+	public void testNullResets() {
+		loadModule();
+
+		// @formatter:off
+		runtime.executeSource(
+		    """
+				function foo( callback ) {
+					println( "local keys1: ")
+					println( local )
+					var bar = callback();
+					if ( isNull( bar ) ) {
+						bar = "baz";
+					}
+					println( "local keys2: ")
+					println( local )
+					println( "variables keys: " )
+					println(  variables )
+					return isNull( bar ) ? javacast( "null", "" ) : bar;
+				}
+				println( "first time: " & foo( function() {} ) );
+				result = foo( function() {} );
+		    """,
+		    context, BoxSourceType.CFSCRIPT );
+		assertThat( variables.get( result ) ).isNull();
 	}
 }
