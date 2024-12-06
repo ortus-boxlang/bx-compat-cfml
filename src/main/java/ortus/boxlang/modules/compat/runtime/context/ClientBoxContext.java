@@ -17,7 +17,6 @@
  */
 package ortus.boxlang.modules.compat.runtime.context;
 
-import ortus.boxlang.runtime.application.Session;
 import ortus.boxlang.runtime.context.BaseBoxContext;
 import ortus.boxlang.runtime.scopes.IScope;
 import ortus.boxlang.runtime.scopes.Key;
@@ -41,16 +40,15 @@ public class ClientBoxContext extends BaseBoxContext {
 	/**
 	 * The variables scope
 	 */
-	protected Session	session;
+	protected Client	client;
 
 	/**
-	 * The session scope for this application
+	 * The client scope for this application
 	 */
-	protected IScope	sessionScope;
+	protected IScope	clientScope;
 
 	/**
 	 * --------------------------------------------------------------------------
-	 * Constructors
 	 * --------------------------------------------------------------------------
 	 */
 
@@ -59,10 +57,10 @@ public class ClientBoxContext extends BaseBoxContext {
 	 *
 	 * @param session The session for this context
 	 */
-	public ClientBoxContext( Session session ) {
+	public ClientBoxContext( Client client ) {
 		super( null );
-		this.session		= session;
-		this.sessionScope	= session.getSessionScope();
+		this.client			= client;
+		this.clientScope	= client.getClientScope();
 	}
 
 	/**
@@ -72,24 +70,24 @@ public class ClientBoxContext extends BaseBoxContext {
 	 */
 
 	/**
-	 * Get the session for this context
+	 * Get the client for this context
 	 *
-	 * @return The session for this context
+	 * @return The client for this context
 	 */
-	public Session getSession() {
-		return this.session;
+	public Client getClient() {
+		return this.client;
 	}
 
 	/**
-	 * Update the session for this context with a new session
+	 * Update the client for this context with a new session
 	 *
-	 * @param session The new session to use
+	 * @param session The new client to use
 	 *
 	 * @return This context
 	 */
-	public ClientBoxContext updateSession( Session session ) {
-		this.session		= session;
-		this.sessionScope	= session.getSessionScope();
+	public ClientBoxContext updateClient( Client client ) {
+		this.client			= client;
+		this.clientScope	= client.getClientScope();
 		return this;
 	}
 
@@ -107,7 +105,7 @@ public class ClientBoxContext extends BaseBoxContext {
 		if ( hasParent() && !shallow ) {
 			getParent().getVisibleScopes( scopes, false, false );
 		}
-		scopes.getAsStruct( Key.contextual ).put( SessionScope.name, sessionScope );
+		scopes.getAsStruct( Key.contextual ).put( SessionScope.name, clientScope );
 		return scopes;
 	}
 
@@ -131,8 +129,8 @@ public class ClientBoxContext extends BaseBoxContext {
 	 */
 	@Override
 	public ScopeSearchResult scopeFind( Key key, IScope defaultScope ) {
-		if ( key.equals( sessionScope.getName() ) ) {
-			return new ScopeSearchResult( sessionScope, sessionScope, key, true );
+		if ( key.equals( clientScope.getName() ) ) {
+			return new ScopeSearchResult( clientScope, clientScope, key, true );
 		}
 
 		return parent.scopeFind( key, defaultScope );
@@ -145,8 +143,8 @@ public class ClientBoxContext extends BaseBoxContext {
 	public IScope getScope( Key name ) throws ScopeNotFoundException {
 
 		// Check the scopes I know about
-		if ( name.equals( sessionScope.getName() ) ) {
-			return sessionScope;
+		if ( name.equals( clientScope.getName() ) ) {
+			return clientScope;
 		}
 
 		return parent.getScope( name );

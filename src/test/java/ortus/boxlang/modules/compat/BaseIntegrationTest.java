@@ -25,12 +25,14 @@ import ortus.boxlang.runtime.modules.ModuleRecord;
 import ortus.boxlang.runtime.scopes.IScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.scopes.VariablesScope;
+import ortus.boxlang.runtime.services.CacheService;
 import ortus.boxlang.runtime.services.ModuleService;
 
 public class BaseIntegrationTest {
 
 	protected static BoxRuntime				runtime;
 	protected static ModuleService			moduleService;
+	protected static CacheService			cacheService;
 	protected static Key					result		= new Key( "result" );
 	protected static Key					moduleName	= new Key( "compat-cfml" );
 	protected ScriptingRequestBoxContext	context;
@@ -40,6 +42,7 @@ public class BaseIntegrationTest {
 	public static void setup() {
 		runtime			= BoxRuntime.getInstance( true );
 		moduleService	= runtime.getModuleService();
+		cacheService	= runtime.getCacheService();
 	}
 
 	@BeforeEach

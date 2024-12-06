@@ -28,7 +28,6 @@ public class SessionListener extends BaseInterceptor {
 
 	/**
 	 * The URL token format
-	 * MOVE TO COMPAT MODULE
 	 */
 	public static final String URL_TOKEN_FORMAT = "CFID=%s";
 
