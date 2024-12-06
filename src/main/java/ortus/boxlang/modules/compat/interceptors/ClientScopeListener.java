@@ -59,8 +59,7 @@ public class ClientScopeListener extends BaseInterceptor {
 	 *                      BIF Invocation
 	 */
 	@InterceptionPoint
-	public void onApplicationStart( IStruct interceptData ) {
-
+	public void onApplicationDefined( IStruct interceptData ) {
 		// Check for existing client context
 		BaseApplicationListener	listener				= ( BaseApplicationListener ) interceptData.get( Key.listener );
 		RequestBoxContext		context					= listener.getRequestContext();
@@ -152,7 +151,6 @@ public class ClientScopeListener extends BaseInterceptor {
 		    .map( ( String setting ) -> setting.trim().isEmpty() ? CLIENT_STORAGE_MEMORY : setting.trim() )
 		    // Return the right value or the default name
 		    .getOrDefault( CLIENT_STORAGE_MEMORY );
-		// @formatter:on
 
 		// Now we can get the right cache name to use
 		Key		clientCacheName		= clientStorageName.equals( CLIENT_STORAGE_MEMORY )

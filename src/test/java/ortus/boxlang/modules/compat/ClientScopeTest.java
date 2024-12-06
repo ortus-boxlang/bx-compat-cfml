@@ -58,7 +58,7 @@ public class ClientScopeTest extends BaseIntegrationTest {
 		// @formatter:off
 		runtime.executeSource(
 		    """
-				application name="myApp-with-client-scope-on" clientManagement="true";
+				application name="myApp-with-client-scope-variables" clientManagement="true";
 
 				client.foo = "bar";
 				result = getClientVariablesList();
