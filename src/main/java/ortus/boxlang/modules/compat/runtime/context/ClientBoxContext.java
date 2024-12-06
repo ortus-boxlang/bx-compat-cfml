@@ -20,13 +20,12 @@ package ortus.boxlang.modules.compat.runtime.context;
 import ortus.boxlang.runtime.context.BaseBoxContext;
 import ortus.boxlang.runtime.scopes.IScope;
 import ortus.boxlang.runtime.scopes.Key;
-import ortus.boxlang.runtime.scopes.SessionScope;
 import ortus.boxlang.runtime.types.IStruct;
 import ortus.boxlang.runtime.types.exceptions.ScopeNotFoundException;
 
 /**
- * This class represents the context of a session in the BoxLang runtime
- * It is a child of the RuntimeBoxContext and has access to the session scope
+ * This class represents the context of a client in the BoxLang runtime
+ * It is a child of the RuntimeBoxContext and has access to the client scope
  * and the parent context and its scopes
  */
 public class ClientBoxContext extends BaseBoxContext {
@@ -55,7 +54,7 @@ public class ClientBoxContext extends BaseBoxContext {
 	/**
 	 * Creates a new execution context with a bounded execution template and parent context
 	 *
-	 * @param session The session for this context
+	 * @param client The client for this context
 	 */
 	public ClientBoxContext( Client client ) {
 		super( null );
@@ -79,9 +78,9 @@ public class ClientBoxContext extends BaseBoxContext {
 	}
 
 	/**
-	 * Update the client for this context with a new session
+	 * Update the client for this context with a new client
 	 *
-	 * @param session The new client to use
+	 * @param client The new client to use
 	 *
 	 * @return This context
 	 */
@@ -105,7 +104,7 @@ public class ClientBoxContext extends BaseBoxContext {
 		if ( hasParent() && !shallow ) {
 			getParent().getVisibleScopes( scopes, false, false );
 		}
-		scopes.getAsStruct( Key.contextual ).put( SessionScope.name, clientScope );
+		scopes.getAsStruct( Key.contextual ).put( ClientScope.name, clientScope );
 		return scopes;
 	}
 
@@ -113,27 +112,27 @@ public class ClientBoxContext extends BaseBoxContext {
 	 * @inheritDoc
 	 */
 	@Override
-	public ScopeSearchResult scopeFindNearby( Key key, IScope defaultScope, boolean shallow ) {
+	public ScopeSearchResult scopeFindNearby( Key key, IScope defaultScope, boolean shallow, boolean forAssign ) {
 
-		// There are no near-by scopes in the session context. Everything is global here.
+		// There are no near-by scopes in the client context. Everything is global here.
 
 		if ( shallow ) {
 			return null;
 		}
 
-		return scopeFind( key, defaultScope );
+		return scopeFind( key, defaultScope, forAssign );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	@Override
-	public ScopeSearchResult scopeFind( Key key, IScope defaultScope ) {
+	public ScopeSearchResult scopeFind( Key key, IScope defaultScope, boolean forAssign ) {
 		if ( key.equals( clientScope.getName() ) ) {
 			return new ScopeSearchResult( clientScope, clientScope, key, true );
 		}
 
-		return parent.scopeFind( key, defaultScope );
+		return parent.scopeFind( key, defaultScope, forAssign );
 	}
 
 	/**

@@ -3,7 +3,6 @@ package ortus.boxlang.modules.compat;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -87,37 +86,7 @@ public class NullIsUndefinedTest extends BaseIntegrationTest {
 
 	}
 
-	@DisplayName( "It resets nulls in the local scope between invocations" )
-	@Test
-	@Disabled
-	public void testNullResets() {
-		loadModule();
-
-		// @formatter:off
-		runtime.executeSource(
-		    """
-				function foo( callback ) {
-					println( "local keys1: ")
-					println( local )
-					var bar = callback();
-					if ( isNull( bar ) ) {
-						bar = "baz";
-					}
-					println( "local keys2: ")
-					println( local )
-					println( "variables keys: " )
-					println(  variables )
-					return isNull( bar ) ? javacast( "null", "" ) : bar;
-				}
-				println( "first time: " & foo( function() {} ) );
-				result = foo( function() {} );
-		    """,
-		    context, BoxSourceType.CFSCRIPT );
-		assertThat( variables.get( result ) ).isNull();
-	}
-
 	@DisplayName( "It still sets variables in the local scope even if they are set to null" )
-	@Disabled
 	@Test
 	public void testNullStillInLocalScope() {
 		// @formatter:off
