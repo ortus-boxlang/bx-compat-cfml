@@ -24,7 +24,7 @@ import ortus.boxlang.runtime.context.IBoxContext;
 import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Argument;
-import ortus.boxlang.runtime.types.Array;
+import ortus.boxlang.runtime.types.util.BLCollector;
 import ortus.boxlang.runtime.types.util.ListUtil;
 
 @BoxBIF
@@ -55,24 +55,15 @@ public class GetClientVariablesList extends BIF {
 			return "";
 		}
 
-		Array vars = new Array();
-		for ( Key key : existingClientContext.getClient().getClientScope().keySet() ) {
-			if ( !systemProvidedVariables.contains( key ) ) {
-				vars.add( key );
-			}
-		}
-		return ListUtil.asString( vars, "," );
-
-		// return ListUtil.asString(
-		// existingClientContext
-		// .getClient()
-		// .getClientScope()
-		// .keySet()
-		// .stream()
-		// .filter( key -> !systemProvidedVariables.contains( key ) )
-		// .collect( BLCollector.toArray() ),
-		// ","
-		// );
-
+		return ListUtil.asString(
+		    existingClientContext
+		        .getClient()
+		        .getClientScope()
+		        .keySet()
+		        .stream()
+		        .filter( key -> !systemProvidedVariables.contains( key ) )
+		        .collect( BLCollector.toArray() ),
+		    ","
+		);
 	}
 }

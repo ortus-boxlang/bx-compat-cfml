@@ -66,6 +66,7 @@ public class ClientScopeTest extends BaseIntegrationTest {
 		String clientVariablesList = ( String ) variables.get( result );
 		assertThat( clientVariablesList ).isInstanceOf( String.class );
 		Array clientVariables = ListUtil.asList( clientVariablesList, "," );
+		System.out.println( clientVariables.asString() );
 		assertThat( clientVariables.size() ).isEqualTo( 1 );
 		assertThat( clientVariables.get( 0 ) ).isEqualTo( "foo" );
 	}
