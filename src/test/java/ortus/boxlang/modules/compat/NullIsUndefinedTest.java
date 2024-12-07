@@ -18,8 +18,6 @@ public class NullIsUndefinedTest extends BaseIntegrationTest {
 	@DisplayName( "Test null is undefined" )
 	@Test
 	public void testNullIsUndefined() {
-		loadModule();
-
 		// @formatter:off
 		Throwable t = assertThrows( KeyNotFoundException.class, () -> runtime.executeSource( """
 			foo = null;
@@ -33,8 +31,6 @@ public class NullIsUndefinedTest extends BaseIntegrationTest {
 	@DisplayName( "Test null scope lookup order" )
 	@Test
 	public void testNullScopeLookupOrder() {
-		loadModule();
-
 		// @formatter:off
 		runtime.executeSource( """
 			function testMe( string foo ) {
@@ -52,8 +48,6 @@ public class NullIsUndefinedTest extends BaseIntegrationTest {
 	@DisplayName( "It tests that null exists" )
 	@Test
 	public void testNull() {
-		loadModule();
-
 		// @formatter:off
 		runtime.executeSource(
 		    """
@@ -68,8 +62,6 @@ public class NullIsUndefinedTest extends BaseIntegrationTest {
 	@DisplayName( "CF transpile structKeyExists" )
 	@Test
 	public void testCFTranspileStructKeyExists() {
-		loadModule();
-
 		runtime.executeSource(
 		    """
 		       str = {

@@ -13,9 +13,6 @@ public class JSONTest extends BaseIntegrationTest {
 	@DisplayName( "Test control characters in JSON" )
 	@Test
 	public void testJSONControlCharacters() {
-		// Given
-		loadModule();
-
 		// @formatter:off
 		runtime.executeSource( """
 			seed = '{
@@ -35,7 +32,7 @@ public class JSONTest extends BaseIntegrationTest {
 			seed = '{
 						"test": "foo	bar
 						baz			bum
-						
+
 						" }';
 			result = jsonDeserialize( seed, false );
 			"""
@@ -47,14 +44,11 @@ public class JSONTest extends BaseIntegrationTest {
 	@DisplayName( "Test control characters in JSON singular quote" )
 	@Test
 	public void testJSONControlCharactersSingularQuote() {
-		// Given
-		loadModule();
-
 		// @formatter:off
 		runtime.executeSource( """
 			test = "{
 				""text"": ""'""
-				}";		
+				}";
 			"""
 			, context, BoxSourceType.CFSCRIPT );
 		// @formatter:on
@@ -64,9 +58,6 @@ public class JSONTest extends BaseIntegrationTest {
 	@Test
 	// @Disabled
 	public void testJSONControlCharactersEscaped() {
-		// Given
-		loadModule();
-
 		// @formatter:off
 		runtime.executeSource( """
 			test = '{

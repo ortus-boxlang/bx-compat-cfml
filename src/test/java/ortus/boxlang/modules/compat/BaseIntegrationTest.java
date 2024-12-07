@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 import ortus.boxlang.runtime.BoxRuntime;
+import ortus.boxlang.runtime.context.IBoxContext;
 import ortus.boxlang.runtime.context.ScriptingRequestBoxContext;
 import ortus.boxlang.runtime.modules.ModuleRecord;
 import ortus.boxlang.runtime.scopes.IScope;
@@ -30,39 +31,43 @@ import ortus.boxlang.runtime.services.ModuleService;
 
 public class BaseIntegrationTest {
 
-	protected static BoxRuntime				runtime;
-	protected static ModuleService			moduleService;
-	protected static CacheService			cacheService;
-	protected static Key					result		= new Key( "result" );
-	protected static Key					moduleName	= new Key( "compat-cfml" );
-	protected ScriptingRequestBoxContext	context;
-	protected IScope						variables;
+	protected static BoxRuntime					runtime;
+	protected static ModuleService				moduleService;
+	protected static CacheService				cacheService;
+	protected static Key						result		= new Key( "result" );
+	protected static Key						moduleName	= new Key( "compat-cfml" );
+	protected static ScriptingRequestBoxContext	context;
+	protected IScope							variables;
 
 	@BeforeAll
 	public static void setup() {
 		runtime			= BoxRuntime.getInstance( true );
 		moduleService	= runtime.getModuleService();
 		cacheService	= runtime.getCacheService();
+		context			= new ScriptingRequestBoxContext( runtime.getRuntimeContext() );
+		loadModule( context );
 	}
 
 	@BeforeEach
 	public void setupEach() {
-		context		= new ScriptingRequestBoxContext();
+		context		= new ScriptingRequestBoxContext( runtime.getRuntimeContext() );
 		variables	= context.getScopeNearby( VariablesScope.name );
 	}
 
 	@SuppressWarnings( "unused" )
-	protected void loadModule() {
-		String			physicalPath	= Paths.get( "./build/module" ).toAbsolutePath().toString();
-		ModuleRecord	moduleRecord	= new ModuleRecord( physicalPath );
+	protected static void loadModule( IBoxContext context ) {
+		if ( !runtime.getModuleService().hasModule( moduleName ) ) {
+			String			physicalPath	= Paths.get( "./build/module" ).toAbsolutePath().toString();
+			ModuleRecord	moduleRecord	= new ModuleRecord( physicalPath );
 
-		// When
-		moduleRecord
-		    .loadDescriptor( context )
-		    .register( context )
-		    .activate( context );
+			// When
+			moduleRecord
+			    .loadDescriptor( context )
+			    .register( context )
+			    .activate( context );
 
-		moduleService.getRegistry().put( moduleName, moduleRecord );
+			moduleService.getRegistry().put( moduleName, moduleRecord );
+		}
 	}
 
 }

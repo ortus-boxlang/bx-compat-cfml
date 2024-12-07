@@ -19,8 +19,6 @@ public class ClientScopeTest extends BaseIntegrationTest {
 
 	@Test
 	public void testClientScope() {
-		loadModule();
-
 		assertThat( moduleService.getRegistry().containsKey( moduleName ) ).isTrue();
 		assertThat( cacheService.hasCache( KeyDictionary.bxClients ) ).isTrue();
 
@@ -50,8 +48,6 @@ public class ClientScopeTest extends BaseIntegrationTest {
 
 	@Test
 	public void testGetClientVariablesList() {
-		loadModule();
-
 		assertThat( moduleService.getRegistry().containsKey( moduleName ) ).isTrue();
 		assertThat( cacheService.hasCache( KeyDictionary.bxClients ) ).isTrue();
 
