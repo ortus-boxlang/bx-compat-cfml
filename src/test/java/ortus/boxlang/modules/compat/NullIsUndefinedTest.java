@@ -86,7 +86,7 @@ public class NullIsUndefinedTest extends BaseIntegrationTest {
 
 	}
 
-	@DisplayName( "It still sets variables in the local scope even if they are set to null" )
+	@DisplayName( "It still sets variables in the local scope even if they are set to null." )
 	@Test
 	public void testNullStillInLocalScope() {
 		// @formatter:off
