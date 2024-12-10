@@ -24,50 +24,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import ortus.boxlang.runtime.BoxRuntime;
-import ortus.boxlang.runtime.context.IBoxContext;
-import ortus.boxlang.runtime.context.ScriptingRequestBoxContext;
-import ortus.boxlang.runtime.scopes.IScope;
+import ortus.boxlang.modules.compat.BaseIntegrationTest;
 import ortus.boxlang.runtime.scopes.Key;
-import ortus.boxlang.runtime.scopes.VariablesScope;
 import ortus.boxlang.runtime.types.DateTime;
 import ortus.boxlang.runtime.util.LocalizationUtil;
 
-public class LSDateTimeFormatTest {
-
-	static BoxRuntime	instance;
-	IBoxContext			context;
-	IScope				variables;
-	static Key			result	= new Key( "result" );
-
-	@BeforeAll
-	public static void setUp() {
-		instance = BoxRuntime.getInstance( true );
-	}
-
-	@AfterAll
-	public static void teardown() {
-
-	}
-
-	@BeforeEach
-	public void setupEach() {
-		context		= new ScriptingRequestBoxContext( instance.getRuntimeContext() );
-		variables	= context.getScopeNearby( VariablesScope.name );
-	}
+public class LSDateTimeFormatTest extends BaseIntegrationTest {
 
 	@DisplayName( "It tests the BIF LSDateTimeFormat using a localized, Spanish long-form format" )
 	@Test
 	public void testLSDateTimeFormatSpain() {
 		DateTime dateRef = new DateTime( ZoneId.of( "UTC" ) );
 		variables.put( Key.date, dateRef );
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = LSDateTimeFormat( date, "long", "es-ES", "UTC" );
 		    """,
@@ -82,7 +54,7 @@ public class LSDateTimeFormatTest {
 	public void testLSDateTimeFormatMember() {
 		DateTime dateRef = new DateTime( ZoneId.of( "UTC" ) );
 		variables.put( Key.date, dateRef );
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = date.LSDateTimeFormat( "long", "es-ES", "UTC" );
 		    """,
@@ -97,7 +69,7 @@ public class LSDateTimeFormatTest {
 	public void testLSDateTimeFormatChina() {
 		DateTime dateRef = new DateTime( ZoneId.of( "UTC" ) );
 		variables.put( Key.date, dateRef );
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = LSDateTimeFormat( date, "long", "zh-CN", "UTC" );
 		    """,
@@ -112,7 +84,7 @@ public class LSDateTimeFormatTest {
 	public void testLSDateFormatSpain() {
 		DateTime dateRef = new DateTime( ZoneId.of( "UTC" ) );
 		variables.put( Key.date, dateRef );
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = LSDateFormat( date, "long", "es-ES", "UTC" );
 		    """,
@@ -127,7 +99,7 @@ public class LSDateTimeFormatTest {
 	public void testLSDateFormatMember() {
 		DateTime dateRef = new DateTime( ZoneId.of( "UTC" ) );
 		variables.put( Key.date, dateRef );
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = date.LSDateFormat( "long", "es-ES", "UTC" );
 		    """,
@@ -142,7 +114,7 @@ public class LSDateTimeFormatTest {
 	public void testLSDateFormatChina() {
 		DateTime dateRef = new DateTime( ZoneId.of( "UTC" ) );
 		variables.put( Key.date, dateRef );
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = LSDateFormat( date, "long", "zh-CN", "UTC" );
 		    """,
@@ -157,7 +129,7 @@ public class LSDateTimeFormatTest {
 	public void testLSTimeFormatSpain() {
 		DateTime timeRef = new DateTime( ZoneId.of( "UTC" ) );
 		variables.put( Key.date, timeRef );
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = LSTimeFormat( date, "long", "es-ES", "UTC" );
 		    """,
@@ -173,7 +145,7 @@ public class LSDateTimeFormatTest {
 	public void testLSTimeFormatMember() {
 		DateTime timeRef = new DateTime( ZoneId.of( "UTC" ) );
 		variables.put( Key.date, timeRef );
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = date.LSTimeFormat( "long", "es-ES", "UTC" );
 		    """,
@@ -189,7 +161,7 @@ public class LSDateTimeFormatTest {
 	public void testLSTimeFormatChina() {
 		DateTime timeRef = new DateTime( ZoneId.of( "UTC" ) );
 		variables.put( Key.date, timeRef );
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = LSTimeFormat( date, "long", "zh-CN", "UTC" );
 		    """,

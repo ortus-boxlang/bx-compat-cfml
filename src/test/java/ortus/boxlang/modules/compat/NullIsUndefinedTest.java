@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import ortus.boxlang.compiler.parser.BoxSourceType;
+import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.exceptions.KeyNotFoundException;
 
 /**
@@ -16,8 +18,6 @@ public class NullIsUndefinedTest extends BaseIntegrationTest {
 	@DisplayName( "Test null is undefined" )
 	@Test
 	public void testNullIsUndefined() {
-		loadModule();
-
 		// @formatter:off
 		Throwable t = assertThrows( KeyNotFoundException.class, () -> runtime.executeSource( """
 			foo = null;
@@ -31,8 +31,6 @@ public class NullIsUndefinedTest extends BaseIntegrationTest {
 	@DisplayName( "Test null scope lookup order" )
 	@Test
 	public void testNullScopeLookupOrder() {
-		loadModule();
-
 		// @formatter:off
 		runtime.executeSource( """
 			function testMe( string foo ) {
@@ -50,8 +48,6 @@ public class NullIsUndefinedTest extends BaseIntegrationTest {
 	@DisplayName( "It tests that null exists" )
 	@Test
 	public void testNull() {
-		loadModule();
-
 		// @formatter:off
 		runtime.executeSource(
 		    """
@@ -61,4 +57,50 @@ public class NullIsUndefinedTest extends BaseIntegrationTest {
 		    context );
 		assertThat( variables.getAsBoolean( result ) ).isFalse();
 	}
+
+
+	@DisplayName( "CF transpile structKeyExists" )
+	@Test
+	public void testCFTranspileStructKeyExists() {
+		runtime.executeSource(
+		    """
+		       str = {
+		    	foo : 'bar',
+		    	baz : null
+		    };
+		    result = structKeyExists( str, "foo" )
+		    result2 = structKeyExists( str, "baz" )
+		    	 """,
+		    context, BoxSourceType.CFSCRIPT );
+
+		assertThat( variables.getAsBoolean( result ) ).isTrue();
+		assertThat( variables.getAsBoolean( Key.of( "result2" ) ) ).isFalse();
+
+	}
+
+	@DisplayName( "It still sets variables in the local scope even if they are set to null." )
+	@Test
+	public void testNullStillInLocalScope() {
+		// @formatter:off
+		runtime.executeSource(
+			"""
+				function returnsNull() {
+					return;
+				}
+
+				function doesStuff() {
+					var inner = returnsNull();
+					if ( !isNull( inner ) ) {
+						return inner;
+					}
+					inner = "local value leaked to variables";
+					return "set this time";
+				}
+				result = doesStuff();
+				result = doesStuff();
+			""",
+			context, BoxSourceType.CFSCRIPT );
+		assertThat( variables.getAsString( result ) ).isEqualTo( "set this time" );
+	}
+
 }

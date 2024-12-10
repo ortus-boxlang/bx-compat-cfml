@@ -21,54 +21,18 @@ package ortus.boxlang.modules.compat.bifs.temporal;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Locale;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import ortus.boxlang.runtime.BoxRuntime;
-import ortus.boxlang.runtime.bifs.BIFDescriptor;
-import ortus.boxlang.runtime.context.IBoxContext;
-import ortus.boxlang.runtime.context.ScriptingRequestBoxContext;
-import ortus.boxlang.runtime.scopes.ArgumentsScope;
-import ortus.boxlang.runtime.scopes.IScope;
+import ortus.boxlang.modules.compat.BaseIntegrationTest;
 import ortus.boxlang.runtime.scopes.Key;
-import ortus.boxlang.runtime.scopes.VariablesScope;
-import ortus.boxlang.runtime.util.LocalizationUtil;
 
-public class TimeUnitsTest {
-
-	static BoxRuntime	instance;
-	IBoxContext			context;
-	IScope				variables;
-	static Key			result	= Key.of( "result" );
-	static Locale		locale;
-
-	@BeforeAll
-	public static void setUp() {
-		instance = BoxRuntime.getInstance( true );
-		BIFDescriptor descriptor = instance.getFunctionService().getGlobalFunction( "DayOfWeekAsString" );
-		assertEquals( "ortus.boxlang.modules.compat.bifs.temporal.TimeUnits", descriptor.BIFClass.getName() );
-	}
-
-	@AfterAll
-	public static void teardown() {
-	}
-
-	@BeforeEach
-	public void setupEach() {
-		context		= new ScriptingRequestBoxContext( instance.getRuntimeContext() );
-		variables	= context.getScopeNearby( VariablesScope.name );
-		locale		= LocalizationUtil.parseLocaleFromContext( context, new ArgumentsScope() );
-	}
+public class TimeUnitsTest extends BaseIntegrationTest {
 
 	@DisplayName( "It tests the BIF DayOfWeekAsString" )
 	@Test
 	public void testBifDayOfWeekAsString() {
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = dayOfWeekAsString( 1 );
 		    """,
@@ -76,7 +40,7 @@ public class TimeUnitsTest {
 		String test = variables.getAsString( result );
 		assertEquals( test, "Sunday" );
 
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = dayOfWeekAsString( now() );
 		    """,
@@ -88,7 +52,7 @@ public class TimeUnitsTest {
 	@DisplayName( "It tests the BIF DayOfWeekAsString will keep the same week start but return a different language" )
 	@Test
 	public void testBifDayOfWeekAsStringLocale() {
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    setLocale( "es_SV" );
 		       result = dayOfWeekAsString( 1 );
@@ -101,19 +65,19 @@ public class TimeUnitsTest {
 	@DisplayName( "It tests the DateTime Member function DayOfWeekShortAsString" )
 	@Test
 	public void testMemberDayOfWeekShortAsString() {
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = dayOfWeekShortAsString( 1 );
 		    """,
 		    context );
 		String test = variables.getAsString( result );
-		assertEquals( test, "Sun" );
+		assertEquals( "Sun", test );
 	}
 
 	@DisplayName( "It tests the BIF MonthAsString" )
 	@Test
 	public void testBifMonthAsString() {
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = monthAsString( 1 );
 		    """,
@@ -125,7 +89,7 @@ public class TimeUnitsTest {
 	@DisplayName( "It tests the DateTime Member function MonthShortAsString" )
 	@Test
 	public void testMemberMonthShortAsString() {
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = monthShortAsString( 1 );
 		    """,

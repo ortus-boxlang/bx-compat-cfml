@@ -2,54 +2,26 @@ package ortus.boxlang.modules.compat.bifs.temporal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import ortus.boxlang.runtime.BoxRuntime;
-import ortus.boxlang.runtime.context.IBoxContext;
-import ortus.boxlang.runtime.context.ScriptingRequestBoxContext;
-import ortus.boxlang.runtime.scopes.IScope;
+import ortus.boxlang.modules.compat.BaseIntegrationTest;
 import ortus.boxlang.runtime.scopes.Key;
-import ortus.boxlang.runtime.scopes.VariablesScope;
 import ortus.boxlang.runtime.types.DateTime;
 
-public class DateTimeFormatTest {
-
-	static BoxRuntime	instance;
-	IBoxContext			context;
-	IScope				variables;
-	static Key			result	= new Key( "result" );
-
-	@BeforeAll
-	public static void setUp() {
-		instance = BoxRuntime.getInstance( true );
-	}
-
-	@AfterAll
-	public static void teardown() {
-
-	}
-
-	@BeforeEach
-	public void setupEach() {
-		context		= new ScriptingRequestBoxContext( instance.getRuntimeContext() );
-		variables	= context.getScopeNearby( VariablesScope.name );
-	}
+public class DateTimeFormatTest extends BaseIntegrationTest {
 
 	@DisplayName( "It can handle legacy month and minute masks" )
 	@Test
 	public void canConvertLegacyMasks() {
 		DateTime refNow = new DateTime();
 		variables.put( Key.date, refNow );
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = dateformat( date, "yyyy-mm-dd hh:nn:ss" );
 		    """,
 		    context );
-		assertEquals( refNow.clone().format( "yyyy-MM-dd HH:mm:ss" ), variables.getAsString( result ) );
+		assertEquals( variables.getAsString( result ), refNow.clone().format( "yyyy-MM-dd HH:mm:ss" ) );
 
 	}
 
@@ -57,7 +29,7 @@ public class DateTimeFormatTest {
 	@Test
 	public void testDateFormatCompat() {
 		// Default Format
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    function assert( actual, expected ) {
 		    	if ( compare( expected, actual ) != 0 ) {
@@ -89,7 +61,7 @@ public class DateTimeFormatTest {
 	public void testsCommonMaskRewrites() {
 		String result = null;
 		// Default Format
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    setTimezone( "UTC" );
 		       ref = createDate( 2023, 12, 31, 12, 30, 30, 0, "UTC" );
@@ -99,7 +71,7 @@ public class DateTimeFormatTest {
 		result = ( String ) variables.get( Key.of( "result" ) );
 		assertEquals( result, "12/31/2023 12:30 PM" );
 		// Default Format
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    ref = createDate( 2023, 12, 31, 12, 30, 30, 0, "UTC" );
 		       result = dateFormat( ref, "mmm dd, yyyy" );
@@ -108,7 +80,7 @@ public class DateTimeFormatTest {
 		result = ( String ) variables.get( Key.of( "result" ) );
 		assertEquals( result, "Dec 31, 2023" );
 
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    setTimezone( "UTC" );
 		       ref = createDateTime( 2023, 12, 31, 12, 30, 30, 999, "UTC" );

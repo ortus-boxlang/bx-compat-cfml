@@ -22,50 +22,19 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import ortus.boxlang.runtime.BoxRuntime;
-import ortus.boxlang.runtime.bifs.BIFDescriptor;
-import ortus.boxlang.runtime.context.IBoxContext;
-import ortus.boxlang.runtime.context.ScriptingRequestBoxContext;
-import ortus.boxlang.runtime.scopes.IScope;
+import ortus.boxlang.modules.compat.BaseIntegrationTest;
 import ortus.boxlang.runtime.scopes.Key;
-import ortus.boxlang.runtime.scopes.VariablesScope;
 import ortus.boxlang.runtime.types.IStruct;
 
-public class StructGetTest {
-
-	static BoxRuntime	instance;
-	IBoxContext			context;
-	IScope				variables;
-	static Key			result	= new Key( "result" );
-
-	@BeforeAll
-	public static void setUp() {
-		instance = BoxRuntime.getInstance( true );
-		BIFDescriptor descriptor = instance.getFunctionService().getGlobalFunction( "StructGet" );
-		assertEquals( "ortus.boxlang.modules.compat.bifs.struct.StructGet", descriptor.BIFClass.getName() );
-	}
-
-	@AfterAll
-	public static void teardown() {
-
-	}
-
-	@BeforeEach
-	public void setupEach() {
-		context		= new ScriptingRequestBoxContext( instance.getRuntimeContext() );
-		variables	= context.getScopeNearby( VariablesScope.name );
-	}
+public class StructGetTest extends BaseIntegrationTest {
 
 	@DisplayName( "Tests that the compat behavior will mutate the struct return an empty struct" )
 	@Test
 	public void testMutation() {
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    	ref = {};
 		      	result = structGet( "ref.a.b.c" );
@@ -84,7 +53,7 @@ public class StructGetTest {
 	@DisplayName( "It tests the BIF StructGet Will return a empty struct if a value is not present" )
 	@Test
 	public void testBifNullReturn() {
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    myStruct={
 		    	"foo" : {
@@ -113,7 +82,7 @@ public class StructGetTest {
 	@DisplayName( "Returns an empty struct if the root value used is NOT a struct or not found" )
 	@Test
 	public void testRootValueNotStruct() {
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = StructGet( "myStruct.foo.bar.baz" );
 		    """,

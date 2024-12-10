@@ -21,48 +21,20 @@ package ortus.boxlang.modules.compat.bifs.temporal;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import ortus.boxlang.runtime.BoxRuntime;
-import ortus.boxlang.runtime.context.IBoxContext;
-import ortus.boxlang.runtime.context.ScriptingRequestBoxContext;
+import ortus.boxlang.modules.compat.BaseIntegrationTest;
 import ortus.boxlang.runtime.dynamic.casters.IntegerCaster;
-import ortus.boxlang.runtime.scopes.IScope;
 import ortus.boxlang.runtime.scopes.Key;
-import ortus.boxlang.runtime.scopes.VariablesScope;
 import ortus.boxlang.runtime.types.DateTime;
 
-public class LSParseDateTimeTest {
-
-	static BoxRuntime	instance;
-	IBoxContext			context;
-	IScope				variables;
-	static Key			result	= new Key( "result" );
-
-	@BeforeAll
-	public static void setUp() {
-		instance = BoxRuntime.getInstance( true );
-	}
-
-	@AfterAll
-	public static void teardown() {
-
-	}
-
-	@BeforeEach
-	public void setupEach() {
-		context		= new ScriptingRequestBoxContext( instance.getRuntimeContext() );
-		variables	= context.getScopeNearby( VariablesScope.name );
-	}
+public class LSParseDateTimeTest extends BaseIntegrationTest {
 
 	@DisplayName( "It tests the BIF LSParseDateTime with a full ISO including offset" )
 	@Test
 	public void testLSParseDateTimeFullISO() {
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = lsParseDateTime( "2024-01-14T00:00:01.0001Z" );
 		    """,
@@ -82,7 +54,7 @@ public class LSParseDateTimeTest {
 	@DisplayName( "It tests the BIF LSParseDateTime with a full ISO without offset" )
 	@Test
 	public void testLSParseDateTimeNoOffset() {
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = lsParseDateTime( "2024-01-14T00:00:01.0001" );
 		    """,
@@ -102,7 +74,7 @@ public class LSParseDateTimeTest {
 	@DisplayName( "It tests the BIF LSParseDateTime with a US ISO format sans T Date/Time separator" )
 	@Test
 	public void testLSParseDateTimeSansT() {
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = lsParseDateTime( "2024-01-14 00:00:01" );
 		    """,
@@ -122,7 +94,7 @@ public class LSParseDateTimeTest {
 	@DisplayName( "It tests the BIF LSParseDateTime with without any time" )
 	@Test
 	public void testLSParseDateTimeNoTime() {
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = lsParseDateTime( "2024-01-14" );
 		    """,
@@ -142,7 +114,7 @@ public class LSParseDateTimeTest {
 	@DisplayName( "It tests the BIF LSParseDateTime with a full ISO including offset and locale argument" )
 	@Test
 	public void testLSParseDateTimeFullISOLocale() {
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = lsParseDateTime( "2024-01-14T00:00:01.0001Z", "en-US" );
 		    """,
@@ -162,7 +134,7 @@ public class LSParseDateTimeTest {
 	@DisplayName( "It tests the BIF LSParseDateTime using a localized russian format" )
 	@Test
 	public void testLSParseDateTimeRussian() {
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = lsParseDateTime( "14.01.2024", "ru_RU" );
 		    """,
@@ -183,7 +155,7 @@ public class LSParseDateTimeTest {
 	@Test
 	public void testLSParseDateTimeSpain() {
 
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = lsParseDateTime( "14 de enero de 2024", "es-ES" );
 		    """,
@@ -203,7 +175,7 @@ public class LSParseDateTimeTest {
 	@DisplayName( "It tests the BIF LSParseDateTime using traditional chinese format" )
 	@Test
 	public void testLSParseDateTimeChinese() {
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = lsParseDateTime( "2024年1月14日", "zh-CN" );
 		    """,

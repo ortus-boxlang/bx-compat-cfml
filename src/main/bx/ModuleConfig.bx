@@ -19,6 +19,12 @@ import ortus.boxlang.runtime.context.BaseBoxContext;
 	property name="moduleRecord";
 	property name="boxRuntime";
 	property name="interceptorService";
+	property name="functionService";
+	property name="componentService";
+	property name="cacheService";
+	property name="asyncService";
+	property name="schedulerService";
+	property name="datasourceService";
 	property name="log";
 
 	// Static properties
@@ -65,7 +71,7 @@ import ortus.boxlang.runtime.context.BaseBoxContext;
 	/**
 	 * This boolean flag tells the module service to skip the module registration/activation process.
 	 */
-	this.disabled = false;
+	this.enabled = true;
 
 	/**
 	 * --------------------------------------------------------------------------
@@ -85,6 +91,9 @@ import ortus.boxlang.runtime.context.BaseBoxContext;
 			engine = "lucee",
 			isLucee = false,
 			isAdobe = false,
+			clientManagement = false,
+			clientStorage = "cookie",
+			clientTimeout = createTimeSpan( 0, 1, 0, 0 ),
 			// Mimic the CF behavior of nulls being undefined.  Set this to false to have full null support
 			nullIsUndefined = true,
 			// JSON control character auto-escaping flag
@@ -128,7 +137,10 @@ import ortus.boxlang.runtime.context.BaseBoxContext;
 		/**
 		 * A list of custom interception points to register into the runtime
 		 */
-		customInterceptionPoints = [];
+		customInterceptionPoints = [
+			"onClientCreated",
+			"onClientDestroyed"
+		];
 	}
 
 	/**
@@ -189,6 +201,30 @@ import ortus.boxlang.runtime.context.BaseBoxContext;
 			// Module Record
 			moduleRecord
 		);
+
+		// Register the Client Scope Cache
+		var cacheService = boxRuntime.getCacheService();
+		if ( !cacheService.hasCache( "bxClients" ) ) {
+			boxRuntime.getCacheService().createCache(
+				"bxClients",
+				"BoxCacheProvider",
+				{
+					"evictCount": 1,
+					"evictionPolicy": "LRU",
+					"freeMemoryPercentageThreshold": 0,
+					"maxObjects": 100000,
+					"defaultLastAccessTimeout": 3600,
+					"defaultTimeout": 3600,
+					"objectStore": "ConcurrentStore",
+					"reapFrequency": 120,
+					"resetTimeoutOnAccess": true,
+					"useLastAccessTimeouts": false
+				}
+			);
+		}
+
+		// Register the CFIDE Mapping for compatibility
+		boxRuntime.getConfiguration().registerMapping( "CFIDE", variables.moduleRecord.path & "/CFIDE" );
 	}
 
 	/**

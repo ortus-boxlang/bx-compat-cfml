@@ -2,49 +2,17 @@ package ortus.boxlang.modules.compat.bifs.temporal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import ortus.boxlang.runtime.BoxRuntime;
-import ortus.boxlang.runtime.bifs.BIFDescriptor;
-import ortus.boxlang.runtime.context.IBoxContext;
-import ortus.boxlang.runtime.context.ScriptingRequestBoxContext;
-import ortus.boxlang.runtime.scopes.IScope;
-import ortus.boxlang.runtime.scopes.Key;
-import ortus.boxlang.runtime.scopes.VariablesScope;
+import ortus.boxlang.modules.compat.BaseIntegrationTest;
 
-public class CreateDateTimeTest {
-
-	static BoxRuntime	instance;
-	IBoxContext			context;
-	IScope				variables;
-	static Key			result	= new Key( "result" );
-
-	@BeforeAll
-	public static void setUp() {
-		instance = BoxRuntime.getInstance( true );
-		BIFDescriptor descriptor = instance.getFunctionService().getGlobalFunction( "createDateTime" );
-		assertEquals( "ortus.boxlang.modules.compat.bifs.temporal.CreateDateTime", descriptor.BIFClass.getName() );
-	}
-
-	@AfterAll
-	public static void teardown() {
-
-	}
-
-	@BeforeEach
-	public void setupEach() {
-		context		= new ScriptingRequestBoxContext( instance.getRuntimeContext() );
-		variables	= context.getScopeNearby( VariablesScope.name );
-	}
+public class CreateDateTimeTest extends BaseIntegrationTest {
 
 	@DisplayName( "It can handle Lucee and ACFs non-century date weirdness" )
 	@Test
 	public void testCanConvertToMillenium() {
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		       dateObj = createDateTime( 5 );
 		    result = year( dateObj );
@@ -52,7 +20,7 @@ public class CreateDateTimeTest {
 		    context );
 		assertEquals( 2005, variables.getAsInteger( result ) );
 
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		       dateObj = createDateTime( 99 );
 		    result = year( dateObj );
