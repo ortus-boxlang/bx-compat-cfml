@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.14.0] - 2024-12-10
+
 ### Fixed
 
-* Pre-seed `clientManagement` setting to `false` to avoid issues with Adobe/Lucee CFML engines
+- Pre-seed `clientManagement` setting to `false` to avoid issues with Adobe/Lucee CFML engines
 
 ## [1.13.0] - 2024-12-10
 
@@ -118,7 +120,9 @@ transpiler = {
 
 - First iteration of this module
 
-[Unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.13.0...HEAD
+[Unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.14.0...HEAD
+
+[1.14.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.13.0...v1.14.0
 
 [1.13.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.12.0...v1.13.0
 
