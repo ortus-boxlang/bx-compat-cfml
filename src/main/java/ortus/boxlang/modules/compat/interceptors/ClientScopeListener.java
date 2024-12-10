@@ -65,7 +65,11 @@ public class ClientScopeListener extends BaseInterceptor {
 		RequestBoxContext		context					= listener.getRequestContext();
 		ClientBoxContext		existingClientContext	= context.getParentOfType( ClientBoxContext.class );
 		IStruct					settings				= listener.getSettings();
-		boolean					clientManagementEnabled	= BooleanCaster.cast( settings.getOrDefault( Key.clientManagement, false ) );
+
+		// Pre-seed clientManagement to false if not present
+		settings.computeIfAbsent( Key.clientManagement, key -> false );
+		// Get it now.
+		boolean clientManagementEnabled = BooleanCaster.cast( settings.getOrDefault( Key.clientManagement, false ) );
 
 		createClientCache( settings );
 

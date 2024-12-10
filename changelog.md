@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+* Pre-seed `clientManagement` setting to `false` to avoid issues with Adobe/Lucee CFML engines
+
 ## [1.13.0] - 2024-12-10
 
 ### Added
