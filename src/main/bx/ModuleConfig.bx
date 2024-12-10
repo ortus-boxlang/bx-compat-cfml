@@ -19,6 +19,12 @@ import ortus.boxlang.runtime.context.BaseBoxContext;
 	property name="moduleRecord";
 	property name="boxRuntime";
 	property name="interceptorService";
+	property name="functionService";
+	property name="componentService";
+	property name="cacheService";
+	property name="asyncService";
+	property name="schedulerService";
+	property name="datasourceService";
 	property name="log";
 
 	// Static properties
@@ -65,7 +71,7 @@ import ortus.boxlang.runtime.context.BaseBoxContext;
 	/**
 	 * This boolean flag tells the module service to skip the module registration/activation process.
 	 */
-	this.disabled = false;
+	this.enabled = true;
 
 	/**
 	 * --------------------------------------------------------------------------
@@ -196,6 +202,7 @@ import ortus.boxlang.runtime.context.BaseBoxContext;
 			moduleRecord
 		);
 
+		// Register the Client Scope Cache
 		var cacheService = boxRuntime.getCacheService();
 		if ( !cacheService.hasCache( "bxClients" ) ) {
 			boxRuntime.getCacheService().createCache(
@@ -215,6 +222,9 @@ import ortus.boxlang.runtime.context.BaseBoxContext;
 				}
 			);
 		}
+
+		// Register the CFIDE Mapping for compatibility
+		boxRuntime.getConfiguration().registerMapping( "CFIDE", variables.moduleRecord.path & "/CFIDE" );
 	}
 
 	/**

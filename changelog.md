@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+* `CFIDE` mapping for compatibility for `orm` and `scheduler` interfaces
+* More integration tests
+* `Client` scope
+* Many more test scenarios
+* `struckKeyExists()` transpilers
+
 ## [1.12.0] - 2024-11-15
 
 ## [1.11.0] - 2024-10-31

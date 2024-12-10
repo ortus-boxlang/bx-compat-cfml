@@ -14,6 +14,7 @@
  */
 package ortus.boxlang.modules.compat;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -29,7 +30,11 @@ import ortus.boxlang.runtime.scopes.VariablesScope;
 import ortus.boxlang.runtime.services.CacheService;
 import ortus.boxlang.runtime.services.ModuleService;
 
-public class BaseIntegrationTest {
+/**
+ * Use this as a base integration test for your non web-support package
+ * modules. If you want web based testing, use the BaseWebIntegrationTest
+ */
+public abstract class BaseIntegrationTest {
 
 	protected static BoxRuntime					runtime;
 	protected static ModuleService				moduleService;
@@ -41,11 +46,11 @@ public class BaseIntegrationTest {
 
 	@BeforeAll
 	public static void setup() {
-		runtime			= BoxRuntime.getInstance( true );
+		runtime			= BoxRuntime.getInstance( true, Path.of( "src/test/resources/boxlang.json" ).toString() );
 		moduleService	= runtime.getModuleService();
 		cacheService	= runtime.getCacheService();
-		context			= new ScriptingRequestBoxContext( runtime.getRuntimeContext() );
-		loadModule( context );
+		// Load the module
+		loadModule( runtime.getRuntimeContext() );
 	}
 
 	@BeforeEach
@@ -54,19 +59,21 @@ public class BaseIntegrationTest {
 		variables	= context.getScopeNearby( VariablesScope.name );
 	}
 
-	@SuppressWarnings( "unused" )
 	protected static void loadModule( IBoxContext context ) {
 		if ( !runtime.getModuleService().hasModule( moduleName ) ) {
+			System.out.println( "===> Loading module: " + moduleName );
 			String			physicalPath	= Paths.get( "./build/module" ).toAbsolutePath().toString();
 			ModuleRecord	moduleRecord	= new ModuleRecord( physicalPath );
+
+			moduleService.getRegistry().put( moduleName, moduleRecord );
 
 			// When
 			moduleRecord
 			    .loadDescriptor( context )
 			    .register( context )
 			    .activate( context );
-
-			moduleService.getRegistry().put( moduleName, moduleRecord );
+		} else {
+			System.out.println( "===> Module already loaded: " + moduleName );
 		}
 	}
 
