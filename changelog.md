@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- When calling `getMetadata()` with a `DynamicObject` make sure the class is unwrapped
+
+## [1.14.0] - 2024-12-10
+
+### Fixed
+
 - Pre-seed `clientManagement` setting to `false` to avoid issues with Adobe/Lucee CFML engines
 
 ## [1.13.0] - 2024-12-10
