@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.14.0] - 2024-12-10
+
 ### Fixed
 
 - When calling `getMetadata()` with a `DynamicObject` make sure the class is unwrapped
