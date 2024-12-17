@@ -19,14 +19,15 @@ import java.util.Map;
 import ortus.boxlang.runtime.bifs.BIF;
 import ortus.boxlang.runtime.bifs.BoxBIF;
 import ortus.boxlang.runtime.context.IBoxContext;
+import ortus.boxlang.runtime.interop.DynamicObject;
 import ortus.boxlang.runtime.runnables.IClassRunnable;
 import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Argument;
+import ortus.boxlang.runtime.types.Array;
 import ortus.boxlang.runtime.types.Function;
 import ortus.boxlang.runtime.types.Query;
 import ortus.boxlang.runtime.types.QueryColumn;
-import ortus.boxlang.runtime.types.Array;
 import ortus.boxlang.runtime.types.Struct;
 
 @BoxBIF
@@ -53,6 +54,15 @@ public class GetMetaData extends BIF {
 	 */
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
 		Object value = arguments.get( Key.value );
+
+		// DynamicObject instances need to be unwrapped to get the metadata
+		if ( value instanceof DynamicObject dynamicObject ) {
+			if ( dynamicObject.hasInstance() ) {
+				value = dynamicObject.unWrap();
+			} else {
+				value = dynamicObject.invokeConstructor( context ).unWrap();
+			}
+		}
 
 		// Functions have a legacy metadata view that matches CF engines
 		if ( value instanceof Function fun ) {
