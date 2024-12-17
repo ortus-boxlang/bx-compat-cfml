@@ -20,47 +20,18 @@ package ortus.boxlang.modules.compat.bifs.system;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import ortus.boxlang.runtime.BoxRuntime;
-import ortus.boxlang.runtime.context.IBoxContext;
-import ortus.boxlang.runtime.context.ScriptingRequestBoxContext;
-import ortus.boxlang.runtime.scopes.IScope;
-import ortus.boxlang.runtime.scopes.Key;
-import ortus.boxlang.runtime.scopes.VariablesScope;
+import ortus.boxlang.modules.compat.BaseIntegrationTest;
 import ortus.boxlang.runtime.types.Struct;
 
-public class GetMetadataTest {
-
-	static BoxRuntime	instance;
-	IBoxContext			context;
-	IScope				variables;
-	static Key			result	= new Key( "result" );
-
-	@BeforeAll
-	public static void setUp() {
-		instance = BoxRuntime.getInstance( true );
-	}
-
-	@AfterAll
-	public static void teardown() {
-
-	}
-
-	@BeforeEach
-	public void setupEach() {
-		context		= new ScriptingRequestBoxContext( instance.getRuntimeContext() );
-		variables	= context.getScopeNearby( VariablesScope.name );
-	}
+public class GetMetadataTest extends BaseIntegrationTest {
 
 	@DisplayName( "It returns meta for a BXClass" )
 	@Test
 	public void testItReturnsMetaFunction() {
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = getMetadata( new src.test.resources.bx.MyClass() );
 		    """,
@@ -71,7 +42,7 @@ public class GetMetadataTest {
 	@DisplayName( "It returns meta for a CFC Class" )
 	@Test
 	public void testItReturnsMetaClass() {
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = getMetadata( new src.test.resources.cf.MyClassCF() );
 		    """,
@@ -79,10 +50,10 @@ public class GetMetadataTest {
 		assertThat( variables.get( result ) ).isInstanceOf( Struct.class );
 	}
 
-	@DisplayName( "It returns meta for class" )
+	@DisplayName( "It returns meta for function" )
 	@Test
-	public void testItReturnsClassMeta() {
-		instance.executeSource(
+	public void testItReturnsFunctionMeta() {
+		runtime.executeSource(
 		    """
 		    result = getMetadata( ()=>{} );
 		    """,
@@ -91,45 +62,58 @@ public class GetMetadataTest {
 
 	}
 
+	@DisplayName( "It returns proper class meta for Java object" )
+	@Test
+	public void testItReturnsJavaMeta() {
+
+		runtime.executeSource(
+		    """
+		    result = getMetadata( createObject("java", "java.lang.StringBuilder") ).name;
+
+		    """,
+		    context );
+		assertThat( variables.getAsString( result ) ).isEqualTo( "java.lang.StringBuilder" );
+
+	}
+
 	@DisplayName( "It returns meta for all other objects" )
 	@Test
 	public void testItReturnsOtherMeta() {
 
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = getMetadata( {} );
 		    """,
 		    context );
 		assertThat( variables.get( result ) ).isInstanceOf( Class.class );
 
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = getMetadata( [] );
 		    """,
 		    context );
 		assertThat( variables.get( result ) ).isInstanceOf( Class.class );
 
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = getMetadata( "" );
 		    """,
 		    context );
 		assertThat( variables.get( result ) ).isInstanceOf( Class.class );
 
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = getMetadata( 42 );
 		    """,
 		    context );
 		assertThat( variables.get( result ) ).isInstanceOf( Class.class );
 
-		instance.executeSource(
+		runtime.executeSource(
 		    """
 		    result = getMetadata( true );
 		    """,
 		    context );
 		assertThat( variables.get( result ) ).isInstanceOf( Class.class );
-
 	}
 
 }
