@@ -14,8 +14,7 @@
  */
 package ortus.boxlang.modules.compat.bifs.cache;
 
-import java.util.Set;
-
+import ortus.boxlang.modules.compat.util.KeyDictionary;
 import ortus.boxlang.runtime.bifs.BIF;
 import ortus.boxlang.runtime.bifs.BoxBIF;
 import ortus.boxlang.runtime.cache.providers.ICacheProvider;
@@ -26,6 +25,7 @@ import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Argument;
 import ortus.boxlang.runtime.types.Array;
+import ortus.boxlang.runtime.types.exceptions.BoxRuntimeException;
 import ortus.boxlang.runtime.validation.Validator;
 
 @BoxBIF
@@ -40,7 +40,8 @@ public class CacheGet extends BIF {
 		super();
 		declaredArguments = new Argument[] {
 		    new Argument( true, Argument.ANY, Key.id ),
-		    new Argument( false, Argument.STRING, Key.cacheName, Key._DEFAULT, Set.of( cacheExistsValidator ) )
+		    new Argument( false, Argument.ANY, Key.cacheName, Key._DEFAULT ),
+		    new Argument( false, Argument.ANY, KeyDictionary.throwWhenNotExist, false )
 		};
 	}
 
@@ -58,6 +59,20 @@ public class CacheGet extends BIF {
 	 * @return The value of the object in the cache or null if not found, or the default value if provided
 	 */
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
+		if ( arguments.get( Key.cacheName ) instanceof Boolean ) {
+			// Handle lucees method signature with a boolean as the second arg
+			Key cacheName = Key._DEFAULT;
+			if ( arguments.get( KeyDictionary.throwWhenNotExist ) != null ) {
+				cacheName = Key.of( arguments.getAsString( KeyDictionary.throwWhenNotExist ) );
+			}
+			arguments.put( KeyDictionary.throwWhenNotExist, arguments.getAsBoolean( Key.cacheName ) );
+			arguments.put( Key.cacheName, cacheName );
+		}
+
+		if ( arguments.get( Key.cacheName ) instanceof String ) {
+			arguments.put( Key.cacheName, Key.of( arguments.getAsString( Key.cacheName ) ) );
+		}
+
 		// Get the requested cache
 		ICacheProvider cache = cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
 
@@ -68,9 +83,16 @@ public class CacheGet extends BIF {
 		}
 
 		// Get the value
-		Attempt<Object> results = cache.get( arguments.getAsString( Key.id ) );
+		Attempt<Object>	results	= cache.get( arguments.getAsString( Key.id ) );
 		// If we have a value return it, else do we have a defaultValue, else return null
-		return results.orElse( null );
+		Object			item	= results.orElse( null );
+		if ( item == null && arguments.getAsBoolean( KeyDictionary.throwWhenNotExist ) ) {
+			throw new BoxRuntimeException(
+			    "Item not found in cache [" + arguments.getAsKey( Key.cacheName ).getName() + "]: " + arguments.getAsString( Key.id )
+			);
+		} else {
+			return item;
+		}
 
 	}
 }
