@@ -18,9 +18,12 @@
 package ortus.boxlang.modules.compat.bifs.cache;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import ortus.boxlang.runtime.types.exceptions.BoxRuntimeException;
 
 public class CacheGetTest extends BaseCacheTest {
 
@@ -58,6 +61,31 @@ public class CacheGetTest extends BaseCacheTest {
 		    context );
 
 		assertThat( variables.get( "result" ) ).isNull();
+	}
+
+	@Test
+	@DisplayName( "Can retrieve a cache object using Lucees method signature" )
+	public void canGetWithLuceeSignature() {
+		runtime.executeSource(
+		    """
+		    result = cacheGet( "tdd", false, "default" );
+		    """,
+		    context );
+
+		assertThat( variables.get( "result" ) ).isEqualTo( "rocks" );
+	}
+
+	@Test
+	@DisplayName( "Can retrieve a cache object using Lucees method signature with throwWhenNotExist" )
+	public void canGetWithLuceeSignatureAndThrowWhenNotExist() {
+		assertThrows(
+		    BoxRuntimeException.class,
+		    () -> runtime.executeSource(
+		        """
+		        result = cacheGet( "invalid", true, "default" );
+		        """,
+		        context )
+		);
 	}
 
 }

@@ -31,6 +31,7 @@ public class KeyDictionary {
 	public static final Key	client						= Key.of( "client" );
 	public static final Key	clientStorage				= Key.of( "clientStorage" );
 	public static final Key	clientTimeout				= Key.of( "clientTimeout" );
+	public static final Key	throwWhenNotExist			= Key.of( "throwWhenNotExist" );
 	public static final Key	ON_CLIENT_CREATED			= Key.of( "onClientCreated" );
 	public static final Key	ON_CLIENT_DESTROYED			= Key.of( "onClientDestroyed" );
 

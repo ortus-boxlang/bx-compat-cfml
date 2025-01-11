@@ -56,13 +56,7 @@ public class GetMetaData extends BIF {
 		Object value = arguments.get( Key.value );
 
 		// DynamicObject instances need to be unwrapped to get the metadata
-		if ( value instanceof DynamicObject dynamicObject ) {
-			if ( dynamicObject.hasInstance() ) {
-				value = dynamicObject.unWrap();
-			} else {
-				value = dynamicObject.invokeConstructor( context ).unWrap();
-			}
-		}
+		value = DynamicObject.unWrap( value );
 
 		// Functions have a legacy metadata view that matches CF engines
 		if ( value instanceof Function fun ) {
@@ -87,6 +81,10 @@ public class GetMetaData extends BIF {
 		}
 
 		// All other types return the class of the value to match CF engines
+		if ( value instanceof Class ) {
+			return value;
+		}
+
 		return value.getClass();
 	}
 
