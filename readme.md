@@ -28,8 +28,16 @@ Here are the available settings for the compat module:
 
 ```js
 settings = {
-	// The engine to mimick: adobe or lucee
-    engine = "lucee",
+	// Choose your engine: adobe or lucee
+	engine = "lucee",
+	clientManagement = false,
+	clientStorage = "cookie",
+	clientTimeout = createTimeSpan( 0, 1, 0, 0 ),
+	// Mimic the CF behavior of nulls being undefined.  Set this to false to have full null support
+	nullIsUndefined = true,
+	// Mimic the CF and Lucee 5 behavior of boolean true/false being 1/0 and usable in math operations.  
+	// Also affects the isNumeric() BIF.  To match Lucee 6, set this to false.
+	booleansAreNumbers = true,
 	// JSON control character auto-escaping flag
 	// IF you turn to true, be aware that the entire JSON serialization will be escaped and be slower.
 	jsonEscapeControlCharacters = true,
@@ -46,7 +54,7 @@ settings = {
 		// Merged doc comments into actual function, class, and property annotations
 		mergeDocsIntoAnnotations = true
 	}
-}
+};
 ```
 
 The valid engines are `adobe` or `lucee`.  By default the engine is `lucee`.  All module settings can be changed via the `boxlang.json` in your configuration.
