@@ -154,7 +154,7 @@ import ortus.boxlang.runtime.dynamic.casters.StringCaster;
 	 * Called by the ModuleService on module activation
 	 */
 	function onLoad(){
-		println( "compat module loading!")
+		
 		// Set the nullIsUndefined flag.  This is stored statically on the base context for best performance
 		BaseBoxContext.nullIsUndefined = settings.nullIsUndefined;
 
@@ -163,8 +163,6 @@ import ortus.boxlang.runtime.dynamic.casters.StringCaster;
 
 		// Set this statically for best performance
 		StringCaster.castClassesToStrings = settings.castClassesToStrings;
-		println( StringCaster)
-		println( StringCaster.castClassesToStrings)
 
 		// Verify Engine
 		if( isNull( settings.engine ) || settings.engine.isEmpty() ){
