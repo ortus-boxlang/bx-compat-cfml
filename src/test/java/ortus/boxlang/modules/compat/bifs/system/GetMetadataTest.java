@@ -43,6 +43,19 @@ public class GetMetadataTest extends BaseIntegrationTest {
 		assertThat( variables.get( result ) ).isInstanceOf( Struct.class );
 	}
 
+	@DisplayName( "It returns modifiable meta" )
+	@Test
+	public void testItReturnsModifiableMeta() {
+		runtime.executeSource(
+		    """
+		       result = getMetadata( new src.test.resources.bx.MyClass() );
+		    result.foo = 'bar'
+		       """,
+		    context );
+		assertThat( variables.getAsStruct( result ) ).containsKey( Key.of( "foo" ) );
+		assertThat( variables.getAsStruct( result ).get( Key.of( "foo" ) ) ).isEqualTo( "bar" );
+	}
+
 	@DisplayName( "It returns meta for a CFC Class" )
 	@Test
 	public void testItReturnsMetaClass() {
