@@ -13,6 +13,7 @@
  */
 import ortus.boxlang.runtime.context.BaseBoxContext;
 import ortus.boxlang.runtime.dynamic.casters.NumberCaster;
+import ortus.boxlang.runtime.dynamic.casters.StringCaster;
 
  class {
 
@@ -100,6 +101,8 @@ import ortus.boxlang.runtime.dynamic.casters.NumberCaster;
 			// Mimic the CF and Lucee 5 behavior of boolean true/false being 1/0 and usable in math operations.  
 			// Also affects the isNumeric() BIF.  To match Lucee 6, set this to false.
 			booleansAreNumbers = true,
+			// Mimic the CF behavior of Class instances being auto-cast to strings. 
+			castClassesToStrings = true,
 			// JSON control character auto-escaping flag
 			// IF you turn to true, be aware that the entire JSON serialization will be escaped and be slower.
 			jsonEscapeControlCharacters = true,
@@ -151,11 +154,17 @@ import ortus.boxlang.runtime.dynamic.casters.NumberCaster;
 	 * Called by the ModuleService on module activation
 	 */
 	function onLoad(){
+		println( "compat module loading!")
 		// Set the nullIsUndefined flag.  This is stored statically on the base context for best performance
 		BaseBoxContext.nullIsUndefined = settings.nullIsUndefined;
 
 		// Set this statically for best performance
 		NumberCaster.booleansAreNumbers = settings.booleansAreNumbers;
+
+		// Set this statically for best performance
+		StringCaster.castClassesToStrings = settings.castClassesToStrings;
+		println( StringCaster)
+		println( StringCaster.castClassesToStrings)
 
 		// Verify Engine
 		if( isNull( settings.engine ) || settings.engine.isEmpty() ){
