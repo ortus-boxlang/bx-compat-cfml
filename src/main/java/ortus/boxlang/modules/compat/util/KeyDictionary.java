@@ -25,6 +25,7 @@ public class KeyDictionary {
 	public static final Key	moduleName					= Key.of( "compat-cfml" );
 	public static final Key	jsonEscapeControlCharacters	= Key.of( "jsonEscapeControlCharacters" );
 	public static final Key	nameSpaceWithSeperator		= Key.of( "nameSpaceWithSeperator" );
+	public static final Key	queryNullToEmpty			= Key.of( "queryNullToEmpty" );
 	public static final Key	tagName						= Key.of( "tagName" );
 	public static final Key	hitCount					= Key.of( "hitCount" );
 	public static final Key	functionName				= Key.of( "functionName" );
