@@ -196,6 +196,7 @@ test {
     testLogging {
 		showStandardStreams = true
 	}
+	classpath = classpath.filter { !it.path.contains( '/build/resources' ) }
 }
 
 /**

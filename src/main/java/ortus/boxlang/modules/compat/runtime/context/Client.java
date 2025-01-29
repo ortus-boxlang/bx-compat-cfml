@@ -18,6 +18,7 @@
 package ortus.boxlang.modules.compat.runtime.context;
 
 import java.io.Serializable;
+import java.time.Duration;
 
 import ortus.boxlang.modules.compat.util.KeyDictionary;
 import ortus.boxlang.runtime.BoxRuntime;
@@ -28,6 +29,7 @@ import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.DateTime;
 import ortus.boxlang.runtime.types.IStruct;
 import ortus.boxlang.runtime.types.Struct;
+import ortus.boxlang.runtime.types.exceptions.BoxRuntimeException;
 
 /**
  * I represent a Client. This will be stored in a BoxLang cache
@@ -69,9 +71,19 @@ public class Client implements Serializable {
 	private boolean				isNew				= true;
 
 	/**
+	 * Flag for when session has been shutdown
+	 */
+	private boolean				isShutdown			= false;
+
+	/**
 	 * The application name linked to
 	 */
 	private Key					applicationName		= null;
+
+	/**
+	 * The timeout for this session
+	 */
+	private Duration			timeout;
 
 	/**
 	 * --------------------------------------------------------------------------
@@ -84,9 +96,11 @@ public class Client implements Serializable {
 	 *
 	 * @param ID          The ID of this client
 	 * @param application The application that this client belongs to
+	 * @param timeout     The timeout for this client when created
 	 */
-	public Client( Key ID, Application application ) {
+	public Client( Key ID, Application application, Duration timeout ) {
 		this.ID					= ID;
+		this.timeout			= timeout;
 		this.applicationName	= application.getName();
 		this.clientScope		= new ClientScope();
 		DateTime timeNow = new DateTime();
@@ -207,23 +221,43 @@ public class Client implements Serializable {
 	}
 
 	/**
+	 * Get the registered timeout for this session
+	 */
+	public Duration getTimeout() {
+		return this.timeout;
+	}
+
+	/**
 	 * Shutdown the client
 	 *
 	 * @param listener The listener that is shutting down the session
 	 */
 	public void shutdown( BaseApplicationListener listener ) {
-		// Announce it's destruction
-		BoxRuntime.getInstance()
-		    .getInterceptorService()
-		    .announce( KeyDictionary.ON_CLIENT_DESTROYED, Struct.of(
-		        KeyDictionary.client, this
-		    ) );
-
-		// Clear the session scope
-		if ( this.clientScope != null ) {
-			this.clientScope.clear();
+		try {
+			// Announce it's destruction
+			BoxRuntime.getInstance()
+			    .getInterceptorService()
+			    .announce( KeyDictionary.ON_CLIENT_DESTROYED, Struct.of(
+			        KeyDictionary.client, this
+			    ) );
+		} catch ( Exception e ) {
+			throw new BoxRuntimeException( "Error calling ON_CLIENT_DESTROYED", e );
+		} finally {
+			// Clear the session scope
+			if ( this.clientScope != null ) {
+				this.clientScope.clear();
+			}
+			this.clientScope	= null;
+			this.isNew			= true;
+			this.isShutdown		= true;
 		}
-		this.clientScope = null;
+	}
+
+	/**
+	 * Tests if the session is still active or shutdown
+	 */
+	public boolean isShutdown() {
+		return this.isShutdown;
 	}
 
 	/**
@@ -246,9 +280,29 @@ public class Client implements Serializable {
 		return Struct.of(
 		    Key.id, this.ID,
 		    Key.scope, this.clientScope,
-		    "isNew", isNew,
+		    Key.isNew, isNew,
+		    "isShutdown", isShutdown,
+		    Key.timeout, this.timeout,
 		    Key.applicationName, this.applicationName
 		);
+	}
+
+	/**
+	 * Verifies if the session has expired or not
+	 *
+	 * @return True if the application has expired, false otherwise
+	 */
+	public boolean isExpired() {
+		// If the client scope doesn't have a last visit, then it's expired
+		if ( this.clientScope == null || !this.clientScope.containsKey( Key.lastVisit ) ) {
+			return true;
+		}
+
+		// If the start time + the duration is before now, then it's expired
+		DateTime lastVisit = ( DateTime ) this.clientScope.get( Key.lastVisit );
+		// Example: 10:00 + 1 hour = 11:00, now is 11:01, so it's expired : true
+		// Example: 10:00 + 1 hour = 11:00, now is 10:59, so it's not expired : false
+		return lastVisit.plus( this.timeout ).isBefore( new DateTime() );
 	}
 
 }

@@ -93,15 +93,20 @@ import ortus.boxlang.runtime.dynamic.casters.StringCaster;
 			engine = "lucee",
 			isLucee = false,
 			isAdobe = false,
+			// Should we mimic the client management functions
 			clientManagement = false,
-			clientStorage = "cookie",
+			// Client storage in BoxLang works off our cache engine for now.
+			// Available options are: cache (bxSessions cache), or your own cache name that must exist.
+			// If you specify cookie or registry, we will use the cache engine anyways.
+			clientStorage = "cache",
+			// The default client timeout
 			clientTimeout = createTimeSpan( 0, 1, 0, 0 ),
 			// Mimic the CF behavior of nulls being undefined.  Set this to false to have full null support
 			nullIsUndefined = true,
-			// Mimic the CF and Lucee 5 behavior of boolean true/false being 1/0 and usable in math operations.  
+			// Mimic the CF and Lucee 5 behavior of boolean true/false being 1/0 and usable in math operations.
 			// Also affects the isNumeric() BIF.  To match Lucee 6, set this to false.
 			booleansAreNumbers = true,
-			// Mimic the CF behavior of Class instances being auto-cast to strings. 
+			// Mimic the CF behavior of Class instances being auto-cast to strings.
 			castClassesToStrings = true,
 			// JSON control character auto-escaping flag
 			// IF you turn to true, be aware that the entire JSON serialization will be escaped and be slower.
@@ -154,7 +159,7 @@ import ortus.boxlang.runtime.dynamic.casters.StringCaster;
 	 * Called by the ModuleService on module activation
 	 */
 	function onLoad(){
-		
+
 		// Set the nullIsUndefined flag.  This is stored statically on the base context for best performance
 		BaseBoxContext.nullIsUndefined = settings.nullIsUndefined;
 
