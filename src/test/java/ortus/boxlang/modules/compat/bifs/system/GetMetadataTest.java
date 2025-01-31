@@ -23,7 +23,11 @@ import static com.google.common.truth.Truth.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import ortus.boxlang.compiler.parser.BoxSourceType;
 import ortus.boxlang.modules.compat.BaseIntegrationTest;
+import ortus.boxlang.runtime.scopes.Key;
+import ortus.boxlang.runtime.types.Array;
+import ortus.boxlang.runtime.types.IStruct;
 import ortus.boxlang.runtime.types.Struct;
 
 public class GetMetadataTest extends BaseIntegrationTest {
@@ -37,6 +41,19 @@ public class GetMetadataTest extends BaseIntegrationTest {
 		    """,
 		    context );
 		assertThat( variables.get( result ) ).isInstanceOf( Struct.class );
+	}
+
+	@DisplayName( "It returns modifiable meta" )
+	@Test
+	public void testItReturnsModifiableMeta() {
+		runtime.executeSource(
+		    """
+		       result = getMetadata( new src.test.resources.bx.MyClass() );
+		    result.foo = 'bar'
+		       """,
+		    context );
+		assertThat( variables.getAsStruct( result ) ).containsKey( Key.of( "foo" ) );
+		assertThat( variables.getAsStruct( result ).get( Key.of( "foo" ) ) ).isEqualTo( "bar" );
 	}
 
 	@DisplayName( "It returns meta for a CFC Class" )
@@ -116,4 +133,26 @@ public class GetMetadataTest extends BaseIntegrationTest {
 		assertThat( variables.get( result ) ).isInstanceOf( Class.class );
 	}
 
+	@Test
+	public void testFunctionMetadataCF() {
+		runtime.executeSource(
+		    """
+		    /**
+		     * @event.brad wood
+		     * @eventgavin pickin
+		     */
+		    void function preEvent( event ) eventesme="acevado" {}
+
+		    result = getMetadata( preEvent );
+		                 """,
+		    context, BoxSourceType.CFSCRIPT );
+
+		IStruct meta = variables.getAsStruct( result );
+		assertThat( meta ).isNotNull();
+		assertThat( meta.get( "eventgavin" ) ).isEqualTo( "pickin" );
+		assertThat( meta.get( "eventesme" ) ).isEqualTo( "acevado" );
+		assertThat( meta.get( "parameters" ) ).isInstanceOf( Array.class );
+		IStruct paramMeta = ( Struct ) meta.getAsArray( Key.of( "parameters" ) ).get( 0 );
+		assertThat( paramMeta.get( "brad" ) ).isEqualTo( "wood" );
+	}
 }

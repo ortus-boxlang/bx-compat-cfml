@@ -25,7 +25,7 @@ public class ClientScopeTest extends BaseIntegrationTest {
 		// @formatter:off
 		runtime.executeSource(
 		    """
-				application name="myApp-with-client-scope-on" clientManagement="true";
+				bx:application name="myApp-with-client-scope-on" clientManagement="true";
 
 				result = application;
 				result2 = client;
@@ -54,7 +54,7 @@ public class ClientScopeTest extends BaseIntegrationTest {
 		// @formatter:off
 		runtime.executeSource(
 		    """
-				application name="myApp-with-client-scope-variables" clientManagement="true";
+				bx:application name="myApp-with-client-scope-variables" clientManagement="true";
 
 				client.foo = "bar";
 				result = getClientVariablesList();

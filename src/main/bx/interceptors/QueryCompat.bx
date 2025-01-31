@@ -116,37 +116,4 @@ class{
 		}
 	}
 
-
-	/**
-	 * Modify the query results before they are returned to the calling code.
-	 *
-	 * This is where we handle CFML compatibility features at the data level, such as:
-	 *
-	 * - converting null values to empty strings [BL-164](https://ortussolutions.atlassian.net/browse/BL-164)
-	 * - converting time values to the time specified in the `timezone` query option [BL-116](https://ortussolutions.atlassian.net/browse/BL-116)
-	 *
-	 * Incoming data:
-	 * - sql			:  The original, unmodified SQL string,
-	 * - bindings		:  Parameter binding values,
-	 * - executionTime	:  The query execution time,
-	 * - data			:  The query results,
-	 * - result			:  The return value from the statement execution.
-	 * - pendingQuery	:  The BoxLang PendingQuery instance - https://s3.amazonaws.com/apidocs.ortussolutions.com/boxlang/1.0.0/ortus/boxlang/runtime/jdbc/PendingQuery.html
-	 * - executedQuery	:  The BoxLang ExecutedQuery instance - https://s3.amazonaws.com/apidocs.ortussolutions.com/boxlang/1.0.0/ortus/boxlang/runtime/jdbc/ExecutedQuery.html
-	*/
-	function postQueryExecute( struct data ){
-
-		// Only active if the setting: queryNullToEmpty is true
-		if( properties.containsKey( "queryNullToEmpty" ) && properties.queryNullToEmpty ){
-			data.data.map( ( row ) -> {
-				row.each( ( key, value, row ) -> {
-					// CFML Compatibility: Convert null values to empty strings
-					if( isNull( row[ key ] ) ){
-						row[ key ] = "";
-					}
-				} );
-				return row;
-			} );
-		}
-	}
 }

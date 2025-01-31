@@ -42,6 +42,9 @@ import ortus.boxlang.runtime.types.exceptions.BoxRuntimeException;
  */
 public class ClientScopeListener extends BaseInterceptor {
 
+	/**
+	 * The cache service
+	 */
 	protected CacheService		cacheService			= BoxRuntime.getInstance().getCacheService();
 
 	/**
@@ -49,11 +52,30 @@ public class ClientScopeListener extends BaseInterceptor {
 	 */
 	private ICacheProvider		clientCache;
 
-	private static final Key	DEFAULT_CLIENT_CACHEKEY	= KeyDictionary.bxClients;
-	private static final String	CLIENT_STORAGE_MEMORY	= "cookie";
+	/**
+	 * Module Settings
+	 */
+	IStruct						moduleSettings;
 
 	/**
-	 * Intercept BIF Invocation
+	 * ----------------------------------------------------------------------------------------------------------------
+	 * Constants
+	 * ----------------------------------------------------------------------------------------------------------------
+	 */
+	private static final Key	DEFAULT_CLIENT_CACHEKEY	= KeyDictionary.bxClients;
+	private static final String	CLIENT_STORAGE_MEMORY	= "cache";
+
+	/**
+	 * Configure the module
+	 *
+	 * @param settings The settings struct
+	 */
+	public void configure( IStruct settings ) {
+		this.moduleSettings = settings;
+	}
+
+	/**
+	 * This fires every time the Application.bx is created and ready for action.
 	 *
 	 * @param interceptData The struct containing the context and arguments of the
 	 *                      BIF Invocation
@@ -66,12 +88,16 @@ public class ClientScopeListener extends BaseInterceptor {
 		ClientBoxContext		existingClientContext	= context.getParentOfType( ClientBoxContext.class );
 		IStruct					settings				= listener.getSettings();
 
-		// Pre-seed clientManagement to false if not present
-		settings.computeIfAbsent( Key.clientManagement, key -> false );
-		// Get it now.
-		boolean clientManagementEnabled = BooleanCaster.cast( settings.getOrDefault( Key.clientManagement, false ) );
+		// Pre-seed Client Settings from defaults in the ModuleConfig
+		settings.computeIfAbsent( Key.clientManagement, key -> BooleanCaster.cast( this.moduleSettings.get( KeyDictionary.clientManagement ) ) );
+		settings.computeIfAbsent( KeyDictionary.clientStorage, key -> this.moduleSettings.getAsString( KeyDictionary.clientStorage ) );
+		settings.computeIfAbsent( KeyDictionary.clientTimeout, key -> ( Duration ) this.moduleSettings.get( KeyDictionary.clientTimeout ) );
 
-		createClientCache( settings );
+		// Get it now.
+		boolean clientManagementEnabled = BooleanCaster.cast( settings.get( Key.clientManagement ) );
+
+		// Create it if enabled
+		ensureClientCache( settings );
 
 		// Create client management if enabled
 		if ( existingClientContext == null ) {
@@ -125,9 +151,19 @@ public class ClientScopeListener extends BaseInterceptor {
 		targetClient.start( context );
 	}
 
+	/**
+	 * Get or create a client for the given ID and application
+	 *
+	 * @param ID          The ID of the client
+	 * @param application The application the client belongs to
+	 * @param settings    The settings struct
+	 *
+	 * @return The client
+	 */
 	public Client getOrCreateClient( Key ID, Application application, IStruct settings ) {
 		Duration	timeoutDuration	= null;
 		Object		clientTimeout	= settings.get( KeyDictionary.clientTimeout );
+		String		cacheKey		= Client.buildCacheKey( ID, application.getName() );
 
 		// Duration is the default, but if not, we will use the number as seconds
 		// Which is what the cache providers expect
@@ -138,26 +174,48 @@ public class ClientScopeListener extends BaseInterceptor {
 		} else {
 			timeoutDuration = Duration.ofSeconds( LongCaster.cast( clientTimeout ) );
 		}
+		// Dumb Java! It needs a final variable to use in the lambda
+		final Duration	finalTimeoutDuration	= timeoutDuration;
 
-		// Get or create the session
-		return ( Client ) this.clientCache.getOrSet(
-		    Client.buildCacheKey( ID, application.getName() ),
-		    () -> new Client( ID, application ),
+		// Get or create the client
+		Client			targetClient			= ( Client ) this.clientCache.getOrSet(
+		    cacheKey,
+		    () -> new Client( ID, application, finalTimeoutDuration ),
 		    timeoutDuration,
-		    timeoutDuration
-		);
+		    timeoutDuration );
+
+		// Is the session still valid?
+		if ( targetClient.isShutdown() || targetClient.isExpired() ) {
+			// If not, remove it
+			this.clientCache.clear( cacheKey );
+			// And create a new one
+			targetClient = new Client( ID, application, finalTimeoutDuration );
+			this.clientCache.set( cacheKey, targetClient, timeoutDuration, timeoutDuration );
+		}
+
+		return targetClient;
 	}
 
-	private void createClientCache( IStruct settings ) {
-		String	clientStorageName	= StringCaster
+	/**
+	 * Creates the client cache
+	 *
+	 * @param settings The settings struct from the application
+	 */
+	private void ensureClientCache( IStruct settings ) {
+		String clientStorageName = StringCaster
 		    .attempt( settings.get( KeyDictionary.clientStorage ) )
 		    // If present, make sure it has a value or default it
 		    .map( ( String setting ) -> setting.trim().isEmpty() ? CLIENT_STORAGE_MEMORY : setting.trim() )
 		    // Return the right value or the default name
 		    .getOrDefault( CLIENT_STORAGE_MEMORY );
 
+		// If the clientStorageName is cookie or registry, then override it to cache for now.
+		if ( clientStorageName.equals( "cookie" ) || clientStorageName.equals( "registry" ) ) {
+			clientStorageName = CLIENT_STORAGE_MEMORY;
+		}
+
 		// Now we can get the right cache name to use
-		Key		clientCacheName		= clientStorageName.equals( CLIENT_STORAGE_MEMORY )
+		Key clientCacheName = clientStorageName.equals( CLIENT_STORAGE_MEMORY )
 		    ? DEFAULT_CLIENT_CACHEKEY
 		    : Key.of( clientStorageName );
 
@@ -165,8 +223,7 @@ public class ClientScopeListener extends BaseInterceptor {
 		if ( !cacheService.hasCache( clientCacheName ) ) {
 			throw new BoxRuntimeException(
 			    "Client storage cache not defined in the cache services or config [" + clientCacheName + "]" +
-			        "Defined cache names are : " + this.cacheService.getRegisteredCaches()
-			);
+			        "Defined cache names are : " + this.cacheService.getRegisteredCaches() );
 		}
 
 		// Now store it

@@ -28,8 +28,16 @@ Here are the available settings for the compat module:
 
 ```js
 settings = {
-	// The engine to mimick: adobe or lucee
-    engine = "lucee",
+	// Choose your engine: adobe or lucee
+	engine = "lucee",
+	clientManagement = false,
+	clientStorage = "cookie",
+	clientTimeout = createTimeSpan( 0, 1, 0, 0 ),
+	// Mimic the CF behavior of nulls being undefined.  Set this to false to have full null support
+	nullIsUndefined = true,
+	// Mimic the CF and Lucee 5 behavior of boolean true/false being 1/0 and usable in math operations.  
+	// Also affects the isNumeric() BIF.  To match Lucee 6, set this to false.
+	booleansAreNumbers = true,
 	// JSON control character auto-escaping flag
 	// IF you turn to true, be aware that the entire JSON serialization will be escaped and be slower.
 	jsonEscapeControlCharacters = true,
@@ -46,36 +54,36 @@ settings = {
 		// Merged doc comments into actual function, class, and property annotations
 		mergeDocsIntoAnnotations = true
 	}
-}
+};
 ```
 
 The valid engines are `adobe` or `lucee`.  By default the engine is `lucee`.  All module settings can be changed via the `boxlang.json` in your configuration.
 
 ```json
-"modules" : {
-    "compat-cfml" : {
-        "disabled" : false,
-        "settings" : {
-            "engine" : "adobe",
-			// JSON control character auto-escaping flag
-			// IF you turn to true, be aware that the entire JSON serialization will be escaped and be slower.
-			jsonEscapeControlCharacters = true,
-			// This simulates the query to empty value that Adobe/Lucee do when NOT in full null support
-			// We default it to true to simulate Adobe/Lucee behavior
-			queryNullToEmpty = true,
-			// The CF -> BL AST transpiler settings
-			// The transpiler is in the core, but will eventually live in this module, so the settings are here.
-            transpiler = {
-				// Turn foo.bar into foo.BAR
-				upperCaseKeys = true,
-				// Add output=true to functions and classes
-				forceOutputTrue = true,
-				// Merged doc comments into actual function, class, and property annotations
-				mergeDocsIntoAnnotations = true
-            }
-        }
-    }
-}
+"modules": {
+		"compat-cfml" : {
+			"disabled" : false,
+			"settings" : {
+				"engine" : "adobe",
+				// JSON control character auto-escaping flag
+				// IF you turn to true, be aware that the entire JSON serialization will be escaped and be slower.
+				"jsonEscapeControlCharacters" : true,
+				// This simulates the query to empty value that Adobe/Lucee do when NOT in full null support
+				// We default it to true to simulate Adobe/Lucee behavior
+				"queryNullToEmpty" : true,
+				// The CF -> BL AST transpiler settings
+				// The transpiler is in the core, but will eventually live in this module, so the settings are here.
+				"transpiler" : {
+					// Turn foo.bar into foo.BAR
+					"upperCaseKeys" : true,
+					// Add output=true to functions and classes
+					"forceOutputTrue" : true,
+					// Merged doc comments into actual function, class, and property annotations
+					"mergeDocsIntoAnnotations" : true
+				}
+			}
+		}
+	}
 ```
 
 ## Server Scope Mimic
