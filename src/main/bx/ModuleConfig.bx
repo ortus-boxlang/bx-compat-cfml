@@ -108,6 +108,8 @@ import ortus.boxlang.runtime.dynamic.casters.StringCaster;
 			booleansAreNumbers = true,
 			// Mimic the CF behavior of Class instances being auto-cast to strings.
 			castClassesToStrings = true,
+			// Mimic the CF behavior of Throwable instances being auto-cast to strings.
+			castThrowablesToStrings = true,
 			// JSON control character auto-escaping flag
 			// IF you turn to true, be aware that the entire JSON serialization will be escaped and be slower.
 			jsonEscapeControlCharacters = true,
@@ -168,6 +170,9 @@ import ortus.boxlang.runtime.dynamic.casters.StringCaster;
 
 		// Set this statically for best performance
 		StringCaster.castClassesToStrings = settings.castClassesToStrings;
+
+		// Set this statically for best performance
+		StringCaster.castThrowablesToStrings = settings.castThrowablesToStrings;
 
 		// Verify Engine
 		if( isNull( settings.engine ) || settings.engine.isEmpty() ){
