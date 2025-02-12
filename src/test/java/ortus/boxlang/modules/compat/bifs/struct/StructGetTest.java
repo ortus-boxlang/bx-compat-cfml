@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import ortus.boxlang.compiler.parser.BoxSourceType;
 import ortus.boxlang.modules.compat.BaseIntegrationTest;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.IStruct;
@@ -36,10 +37,10 @@ public class StructGetTest extends BaseIntegrationTest {
 	public void testMutation() {
 		runtime.executeSource(
 		    """
-		    	ref = {};
-		      	result = structGet( "ref.a.b.c" );
-		    """,
-		    context );
+		    ref = {};
+		    result = structGet( "ref.a.b.c" );
+		        """,
+		    context, BoxSourceType.CFSCRIPT );
 
 		assertTrue( variables.get( result ) instanceof IStruct );
 		IStruct ref = variables.getAsStruct( Key.of( "ref" ) );
@@ -62,7 +63,7 @@ public class StructGetTest extends BaseIntegrationTest {
 		    };
 		    result = StructGet( "myStruct.foo.blah.blerge" );
 		    """,
-		    context );
+		    context, BoxSourceType.CFSCRIPT );
 		IStruct rStruct = variables.getAsStruct( result );
 		assertThat( rStruct.size() ).isEqualTo( 0 );
 		// Test dumb adobe mutations
@@ -86,7 +87,7 @@ public class StructGetTest extends BaseIntegrationTest {
 		    """
 		    result = StructGet( "myStruct.foo.bar.baz" );
 		    """,
-		    context );
+		    context, BoxSourceType.CFSCRIPT );
 		IStruct rStruct = variables.getAsStruct( result );
 		assertThat( rStruct.size() ).isEqualTo( 0 );
 	}
