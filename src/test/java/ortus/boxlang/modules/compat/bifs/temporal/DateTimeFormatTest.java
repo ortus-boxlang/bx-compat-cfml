@@ -84,7 +84,7 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 		runtime.executeSource(
 		    """
 		    ref = createDate( 2023, 12, 31, 12, 30, 30, 0, "UTC" );
-		       result = dateFormat( ref, "dd-mmm-yy" );
+		       result = lsDateFormat( ref, "dd-mmm-yy" );
 		       """,
 		    context );
 		result = ( String ) variables.get( Key.of( "result" ) );

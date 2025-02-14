@@ -34,8 +34,11 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 		FORMAT_METHODS.add( Key.of( "ParseDateTime" ) );
 		FORMAT_METHODS.add( Key.of( "LSParseDateTime" ) );
 		FORMAT_METHODS.add( Key.of( "DateTimeFormat" ) );
+		FORMAT_METHODS.add( Key.of( "LSDateTimeFormat" ) );
 		FORMAT_METHODS.add( Key.of( "DateFormat" ) );
+		FORMAT_METHODS.add( Key.of( "LSDateFormat" ) );
 		FORMAT_METHODS.add( Key.of( "TimeFormat" ) );
+		FORMAT_METHODS.add( Key.of( "LSTimeFormat" ) );
 	}
 
 	private static final Map<String, String> DATE_MASK_REPLACEMENTS = new LinkedHashMap<>();
