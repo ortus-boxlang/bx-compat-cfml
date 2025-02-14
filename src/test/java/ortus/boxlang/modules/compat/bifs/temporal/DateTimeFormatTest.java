@@ -80,6 +80,16 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 		result = ( String ) variables.get( Key.of( "result" ) );
 		assertEquals( result, "Dec 31, 2023" );
 
+		// ISO-ish Short-Med-Long Format
+		runtime.executeSource(
+		    """
+		    ref = createDate( 2023, 12, 31, 12, 30, 30, 0, "UTC" );
+		       result = dateFormat( ref, "dd-mmm-yy" );
+		       """,
+		    context );
+		result = ( String ) variables.get( Key.of( "result" ) );
+		assertEquals( result, "31-Dec-23" );
+
 		runtime.executeSource(
 		    """
 		    setTimezone( "UTC" );
