@@ -152,7 +152,8 @@ spotless {
  */
 task createModuleStructure(type: Copy) {
     from( 'build/libs' ) {
-		include "${project.name}-${version}.jar"
+		// Note: I have no idea why gradle still adds the -all to the .jar in this directory
+		include "${project.name}-${version}-all.jar"
         into 'libs'
     }
     from( 'src/main/bx' ) {
