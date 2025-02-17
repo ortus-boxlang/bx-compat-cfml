@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed gradle issues and build process
 - Tests for BL-1031
 - Ensure LS methods are handled
+- `cacheKeyExists` alias was typed wrong.
 
 ### Added
 
