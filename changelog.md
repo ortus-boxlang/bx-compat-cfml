@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed gradle issues and build process
+- Tests for BL-1031
+- Ensure LS methods are handled
+
+### Added
+
+- Upgrade shadow plugin and non -all.jar usage
+- `<cfobjectcache>` component
+
 ## [1.18.0] - 2025-02-12
 
 ## [1.17.0] - 2025-01-31
