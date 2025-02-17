@@ -1,0 +1,31 @@
+/**
+ * COMPAT: Flushes the query cache.
+ */
+@BoxComponent( "ObjectCache" )
+@AllowsBody( false )
+@RequiresBody( false )
+class{
+
+	/**
+	 * Flushes the query cache.
+	 *
+	 * <pre>
+	 * <cfobjectcache action="clear">
+	 * </pre>
+	 *
+	 * @param context The context of the execution (IBoxContext)
+	 * @param attributes The attributes of the component that were passed in
+	 * @param body The body of the component that you can pass to `processBody(context, body, [buffer])` for execution and buffer retreival
+	 * @param executionState The execution state of the component. Each component get's one as an isolated state.
+	 *
+	 * @return A BodyResult instance or null for a default result return.
+	 */
+	function invoke( required context, Struct attributes, any body, Struct executionState ){
+
+		// Flush the query cache
+		SystemCacheClear( "query" )
+
+		return null
+	}
+
+}
