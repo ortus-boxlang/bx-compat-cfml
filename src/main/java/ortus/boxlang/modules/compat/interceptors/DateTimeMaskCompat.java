@@ -76,6 +76,8 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 		LITERAL_MASK_REPLACEMENTS.put( "mm", "MM" );
 		LITERAL_MASK_REPLACEMENTS.put( "mmm", "MMM" );
 		LITERAL_MASK_REPLACEMENTS.put( "mmmm", "MMMM" );
+		LITERAL_MASK_REPLACEMENTS.put( "HH:nn a", "hh:mm a" );
+		LITERAL_MASK_REPLACEMENTS.put( "HH:mm a", "hh:mm a" );
 		LITERAL_MASK_REPLACEMENTS.put( "n", "m" );
 		LITERAL_MASK_REPLACEMENTS.put( "nn", "mm" );
 	}
