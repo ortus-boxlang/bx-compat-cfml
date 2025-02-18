@@ -34,8 +34,11 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 		FORMAT_METHODS.add( Key.of( "ParseDateTime" ) );
 		FORMAT_METHODS.add( Key.of( "LSParseDateTime" ) );
 		FORMAT_METHODS.add( Key.of( "DateTimeFormat" ) );
+		FORMAT_METHODS.add( Key.of( "LSDateTimeFormat" ) );
 		FORMAT_METHODS.add( Key.of( "DateFormat" ) );
+		FORMAT_METHODS.add( Key.of( "LSDateFormat" ) );
 		FORMAT_METHODS.add( Key.of( "TimeFormat" ) );
+		FORMAT_METHODS.add( Key.of( "LSTimeFormat" ) );
 	}
 
 	private static final Map<String, String> DATE_MASK_REPLACEMENTS = new LinkedHashMap<>();
@@ -53,6 +56,8 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 		DATE_MASK_REPLACEMENTS.put( "TT", "a" );
 		DATE_MASK_REPLACEMENTS.put( "tt", "a" );
 		DATE_MASK_REPLACEMENTS.put( "t", "a" );
+		// this handles a potential incorrect replacement on AM/PM indicators
+		DATE_MASK_REPLACEMENTS.put( "HH:mm a", "hh:mm a" );
 		DATE_MASK_REPLACEMENTS.put( ":MM", ":mm" );
 		// Lucee/ACF seconds mask handling
 		DATE_MASK_REPLACEMENTS.put( ":SS", ":ss" );

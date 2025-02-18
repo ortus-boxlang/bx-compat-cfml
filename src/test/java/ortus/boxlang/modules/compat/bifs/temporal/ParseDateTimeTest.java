@@ -46,4 +46,16 @@ public class ParseDateTimeTest extends BaseIntegrationTest {
 		assertThat( IntegerCaster.cast( result.format( "s" ) ) ).isEqualTo( 1 );
 		assertThat( IntegerCaster.cast( result.format( "n" ) ) ).isEqualTo( 1000000 );
 	}
+
+	@DisplayName( "It can parse zoned time" )
+	@Test
+	public void testCanParseAMPMTime() {
+		runtime.executeSource(
+		    """
+		    result = parseDateTime( "03:00 PM", "HH:nn a" );
+		     """,
+		    context );
+		assertEquals( variables.getAsDateTime( result ).format( "hh:mm a" ), "03:00 PM" );
+
+	}
 }

@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed gradle issues and build process
+- Tests for BL-1031
+- Ensure LS methods are handled
+- `cacheKeyExists` alias was typed wrong.
+
+### Added
+
+- Upgrade shadow plugin and non -all.jar usage
+- `<cfobjectcache>` component
+
 ## [1.18.0] - 2025-02-12
 
 ## [1.17.0] - 2025-01-31
@@ -137,6 +149,7 @@ transpiler = {
 [Unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.18.0...HEAD
 
 [1.18.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.17.0...v1.18.0
+
 
 [1.17.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.16.0...v1.17.0
 
