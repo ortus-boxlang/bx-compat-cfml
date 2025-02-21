@@ -97,7 +97,9 @@ public class ClientScopeListener extends BaseInterceptor {
 		boolean clientManagementEnabled = BooleanCaster.cast( settings.get( Key.clientManagement ) );
 
 		// Create it if enabled
-		ensureClientCache( settings );
+		if ( clientManagementEnabled ) {
+			ensureClientCache( settings );
+		}
 
 		// Create client management if enabled
 		if ( existingClientContext == null ) {
