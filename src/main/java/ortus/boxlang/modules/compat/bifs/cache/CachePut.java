@@ -22,15 +22,20 @@ import ortus.boxlang.runtime.bifs.BoxBIF;
 import ortus.boxlang.runtime.cache.providers.ICacheProvider;
 import ortus.boxlang.runtime.cache.util.CacheExistsValidator;
 import ortus.boxlang.runtime.context.IBoxContext;
+import ortus.boxlang.runtime.dynamic.casters.DoubleCaster;
+import ortus.boxlang.runtime.dynamic.casters.LongCaster;
 import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Argument;
+import ortus.boxlang.runtime.types.exceptions.BoxRuntimeException;
 import ortus.boxlang.runtime.validation.Validator;
 
 @BoxBIF
 public class CachePut extends BIF {
 
-	private static final Validator cacheExistsValidator = new CacheExistsValidator();
+	private static final Validator	cacheExistsValidator	= new CacheExistsValidator();
+
+	private static final int		SECONDS_IN_A_DAY		= 86400;
 
 	/**
 	 * Constructor
@@ -70,20 +75,39 @@ public class CachePut extends BIF {
 		ICacheProvider	cache				= cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
 		String			id					= arguments.getAsString( Key.id );
 		Object			value				= arguments.get( Key.value );
-		Object			timeout				= arguments.get( Key.timespan );
-		Object			lastAccessTimeout	= arguments.get( Key.idleTime );
+		Duration		timeout				= null;
+		Duration		lastAccessTimeout	= null;
+
+		if ( arguments.get( Key.timespan ) != null && arguments.get( Key.timespan ) instanceof Number ) {
+			Double timeoutDays = DoubleCaster.cast( arguments.get( Key.timespan ) );
+			timeout = Duration.ofSeconds( LongCaster.cast( timeoutDays * SECONDS_IN_A_DAY ) );
+		} else if ( arguments.get( Key.timespan ) != null && arguments.get( Key.timespan ) instanceof Duration tsDuration ) {
+			timeout = tsDuration;
+		} else if ( arguments.get( Key.timespan ) != null ) {
+			throw new BoxRuntimeException(
+			    "Invalid timespan argument.  The timespan must be a valid decimal number of days or a duration created by the createTimeSpan method" );
+		}
+
+		if ( arguments.get( Key.idleTime ) != null && arguments.get( Key.idleTime ) instanceof Number ) {
+			Double idleDays = DoubleCaster.cast( arguments.get( Key.timespan ) );
+			lastAccessTimeout = Duration.ofSeconds( LongCaster.cast( idleDays * SECONDS_IN_A_DAY ) );
+		} else if ( arguments.get( Key.idleTime ) != null && arguments.get( Key.idleTime ) instanceof Duration idleDuration ) {
+			lastAccessTimeout = idleDuration;
+		} else if ( arguments.get( Key.idleTime ) != null ) {
+			throw new BoxRuntimeException(
+			    "Invalid idleTime argument.  The idleTime must be a valid decimal number of days or a duration created by the createTimeSpan method" );
+		}
 
 		if ( timeout != null && lastAccessTimeout != null ) {
-			cache.set( id, value, ( Duration ) timeout, ( Duration ) lastAccessTimeout );
+			cache.set( id, value, timeout, lastAccessTimeout );
 			return true;
+		} else if ( timeout != null ) {
+			cache.set( id, value, timeout );
+			return true;
+		} else {
+			cache.set( id, value );
 		}
 
-		if ( timeout != null ) {
-			cache.set( id, value, ( Duration ) timeout );
-			return true;
-		}
-
-		cache.set( id, value );
 		return true;
 	}
 }
