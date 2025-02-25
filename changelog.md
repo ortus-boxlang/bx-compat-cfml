@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.22.0] - 2025-02-25
 
+## [1.22.0] - 2025-02-25
+
 ### Added
 
 - BL-1100 resolve - Ensure the code and text are returned in compat mode for cfhttp.statusCode
@@ -162,7 +164,8 @@ transpiler = {
 
 [Unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.22.0...HEAD
 
-[1.22.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.20.0...v1.22.0
+[1.22.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.22.0...v1.22.0
+
 
 [1.20.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.19.0...v1.20.0
 
