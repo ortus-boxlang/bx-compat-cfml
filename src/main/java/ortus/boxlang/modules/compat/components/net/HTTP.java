@@ -24,10 +24,12 @@ public class HTTP extends ortus.boxlang.runtime.components.net.HTTP {
 		String		variableName	= attributes.getAsString( Key.result );
 		BodyResult	returnedBody	= super._invoke( context, attributes, body, executionState );
 
-		IStruct		result			= StructCaster.cast( ExpressionInterpreter.getVariable( context, variableName, true ) );
-		if ( result != null ) {
+		Object		httpObject		= ExpressionInterpreter.getVariable( context, variableName, true );
+
+		if ( httpObject != null ) {
+			IStruct	result				= StructCaster.cast( httpObject );
 			// Add our status text to the statusCode
-			Object statusCodeReturned = result.get( Key.statusCode );
+			Object	statusCodeReturned	= result.get( Key.statusCode );
 			if ( statusCodeReturned != null ) {
 				String	statusCode	= StringCaster.cast( statusCodeReturned );
 				String	statusText	= result.getAsString( Key.statusText );
