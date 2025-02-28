@@ -11,9 +11,10 @@
  *
  * Every Module will have it's own ClassLoader that will be used to load the module libs and dependencies.
  */
-import ortus.boxlang.runtime.context.BaseBoxContext;
-import ortus.boxlang.runtime.dynamic.casters.NumberCaster;
-import ortus.boxlang.runtime.dynamic.casters.StringCaster;
+import java:ortus.boxlang.runtime.context.BaseBoxContext;
+import java:ortus.boxlang.runtime.dynamic.casters.NumberCaster;
+import java:ortus.boxlang.runtime.dynamic.casters.StringCaster;
+import java:ortus.boxlang.runtime.operators.Compare;
 
  class {
 
@@ -110,6 +111,8 @@ import ortus.boxlang.runtime.dynamic.casters.StringCaster;
 			castClassesToStrings = true,
 			// Mimic the CF behavior of Throwable instances being auto-cast to strings.
 			castThrowablesToStrings = true,
+			// Mimic the CFML behavior of loose date comparison only to the instant level ( and not the TZ)
+			lenientDateComparison = true,
 			// JSON control character auto-escaping flag
 			// IF you turn to true, be aware that the entire JSON serialization will be escaped and be slower.
 			jsonEscapeControlCharacters = true,
@@ -165,14 +168,11 @@ import ortus.boxlang.runtime.dynamic.casters.StringCaster;
 		// Set the nullIsUndefined flag.  This is stored statically on the base context for best performance
 		BaseBoxContext.nullIsUndefined = settings.nullIsUndefined;
 
-		// Set this statically for best performance
+		// Set these statically for best performance
 		NumberCaster.booleansAreNumbers = settings.booleansAreNumbers;
-
-		// Set this statically for best performance
 		StringCaster.castClassesToStrings = settings.castClassesToStrings;
-
-		// Set this statically for best performance
 		StringCaster.castThrowablesToStrings = settings.castThrowablesToStrings;
+		Compare.lenientDateComparison = settings.lenientDateComparison;
 
 		// Verify Engine
 		if( isNull( settings.engine ) || settings.engine.isEmpty() ){
