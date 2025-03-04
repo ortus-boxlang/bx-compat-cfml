@@ -76,8 +76,6 @@ public class DateEquality extends BIF {
 		    )
 		);
 
-		System.out.println( "DateEquality: " + dateOne + " == " + dateTwo + " : " + comparison );
-
 		return comparison.equals( 0 );
 	}
 }
