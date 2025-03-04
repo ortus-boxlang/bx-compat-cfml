@@ -20,4 +20,16 @@ public class DateEqualityTest extends BaseIntegrationTest {
 		          """,
 		    context );
 	}
+
+	@DisplayName( "It will only compare dates only to the second" )
+	@Test
+	public void testComparisonOnlySecondsDefault() {
+		runtime.executeSource(
+		    """
+		    dateOne = parseDateTime( '2025-01-01T14:05:00.123Z' );
+		    dateTwo = parseDateTime( '2025-01-01T14:05:00.000Z' );
+		       assert dateCompare(dateOne, dateTwo) == 0;
+		             """,
+		    context );
+	}
 }

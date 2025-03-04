@@ -21,14 +21,18 @@ import ortus.boxlang.runtime.bifs.BIF;
 import ortus.boxlang.runtime.bifs.BoxMember;
 import ortus.boxlang.runtime.context.IBoxContext;
 import ortus.boxlang.runtime.dynamic.casters.DateTimeCaster;
+import ortus.boxlang.runtime.dynamic.casters.IntegerCaster;
 import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Argument;
 import ortus.boxlang.runtime.types.BoxLangType;
 import ortus.boxlang.runtime.types.DateTime;
+import ortus.boxlang.runtime.types.Struct;
 
 @BoxMember( type = BoxLangType.DATETIME, name = "equals" )
 public class DateEquality extends BIF {
+
+	private static final Key dateCompareKey = Key.of( "DateCompare" );
 
 	/**
 	 * Constructor
@@ -50,13 +54,30 @@ public class DateEquality extends BIF {
 	 * @param arguments Argument scope for the BIF.
 	 *
 	 * @argument.date1 The initial date
-	 * 
+	 *
 	 * @argument.date2 The date for comparison
 	 *
 	 */
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
-		DateTime	dateOne	= DateTimeCaster.cast( arguments.get( Key.date1 ) );
-		DateTime	dateTwo	= DateTimeCaster.cast( arguments.get( Key.date2 ) );
-		return dateOne.isEqual( dateTwo );
+
+		DateTime	dateOne		= DateTimeCaster.cast( arguments.get( Key.date1 ) );
+		DateTime	dateTwo		= DateTimeCaster.cast( arguments.get( Key.date2 ) );
+
+		Integer		comparison	= IntegerCaster.cast(
+		    runtime.getFunctionService().getGlobalFunction( dateCompareKey ).invoke(
+		        context,
+		        Struct.of(
+		            Key.date1, dateOne,
+		            Key.date2, dateTwo,
+		            Key.datepart, "s"
+		        ),
+		        false,
+		        dateCompareKey
+		    )
+		);
+
+		System.out.println( "DateEquality: " + dateOne + " == " + dateTwo + " : " + comparison );
+
+		return comparison.equals( 0 );
 	}
 }
