@@ -37,4 +37,13 @@ public class KeyDictionary {
 	public static final Key	tagName						= Key.of( "tagName" );
 	public static final Key	throwWhenNotExist			= Key.of( "throwWhenNotExist" );
 
+	// ORM keys
+	public static final Key	skipCFCWithError			= Key.of( "skipCFCWithError" );
+	public static final Key	cfclocation					= Key.of( "cfclocation" );
+	public static final Key	entityPaths					= Key.of( "entityPaths" );
+	public static final Key	ignoreParseErrors			= Key.of( "ignoreParseErrors" );
+	public static final Key	autoManageSession			= Key.of( "autoManageSession" );
+	public static final Key	flushAtRequestEnd			= Key.of( "flushAtRequestEnd" );
+	public static final Key	EVENT_ORM_PRE_CONFIG_LOAD	= Key.of( "ORMPreConfigLoad" );
+	public static final Key	EVENT_ORM_POST_CONFIG_LOAD	= Key.of( "ORMPostConfigLoad" );
 }
