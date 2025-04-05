@@ -100,4 +100,24 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 		result = ( String ) variables.get( Key.of( "result" ) );
 		assertEquals( result, "12:30:30.999" );
 	}
+
+	@DisplayName( "It tests the BIF DateFormat will return empty strings when passed an empty string" )
+	@Test
+	public void testsEmptyStringRidiculousness() {
+		runtime.executeSource(
+		    """
+		    result = dateFormat( "", "yyyy-mm-dd" );
+		          """,
+		    context );
+		String result = variables.getAsString( Key.of( "result" ) );
+		assertEquals( result, "" );
+
+		runtime.executeSource(
+		    """
+		    result = dateTimeFormat( "", "yyyy-mm-dd hh:nn:ss" );
+		          """,
+		    context );
+		result = variables.getAsString( Key.of( "result" ) );
+		assertEquals( result, "" );
+	}
 }
