@@ -222,6 +222,44 @@ task downloadBoxLang( type: Download ) {
 }
 
 /**
+ * Task to download the BoxLang Doc Generator
+ * This is a temporary task until we publish it to maven
+ */
+task downloadDocGenerator( type: Download ) {
+	// Create the destination directory
+	doFirst {
+		file( "src/test/resources/libs" ).mkdirs()
+	}
+    // Configure the URL of the file to download
+    src "https://downloads.ortussolutions.com/ortussolutions/boxlang-runtimes/boxlang-doc-generator/1.0.0-snapshot/boxlang-doc-generator-1.0.0-snapshot.jar"
+    // Specify the destination directory for the downloaded file
+    dest "src/test/resources/libs/boxlang-doc-generator-1.0.0-snapshot.jar"
+    overwrite true
+    onlyIfModified false
+}
+
+/**
+ * Generate/Scaffold technical documentation
+ */
+task generateTechnicalDocumentation( type: Javadoc ) {
+	source = sourceSets.main.java
+	dependsOn downloadDocGenerator, compileJava, serviceLoaderBuild
+	// Uncomment and comment the above for local build testing of the doc generator
+	// dependsOn compileJava, serviceLoaderBuild
+	def classPaths = new ArrayList<File>( sourceSets.main.runtimeClasspath.getFiles() )
+	classPaths.addAll( sourceSets.main.java.getFiles() )
+	classPaths.addAll( files( 'src/test/resources/libs/boxlang-' + boxlangVersion + '.jar' ) )
+	classPaths.addAll( files( 'src/test/resources/libs/boxlang-doc-generator-1.0.0-snapshot.jar' ) )
+	options.classpath( classPaths )
+	options.addBooleanOption( "Xdoclint:none", true )
+	exclude '**/boxlang/parser/**'
+	// exclude '**/boxlang/runtime/**'
+	options.addBooleanOption( 'html5', true )
+	options.doclet = "ortus.boxlang.tools.doclets.BoxLangDoclet"
+    options.docletpath = classPaths
+}
+
+/**
  * Project Wide Helper function
  * This is not a task, but a reusable UDF
  */
