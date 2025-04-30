@@ -20,6 +20,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import ortus.boxlang.modules.compat.BaseIntegrationTest;
+import ortus.boxlang.runtime.scopes.Key;
+import ortus.boxlang.runtime.types.IStruct;
+import ortus.boxlang.runtime.types.Query;
 
 public class QueryExecuteTest extends BaseIntegrationTest {
 
@@ -49,6 +52,30 @@ public class QueryExecuteTest extends BaseIntegrationTest {
 		    context );
 		//@formatter:on
 		assertThat( variables.get( result ) ).isEqualTo( "" );
+	}
+
+	@DisplayName( "It tests that null query values are empty strings" )
+	@Test
+	void testsQueryNewAddRowColumnDefault() {
+		//@formatter:off
+		runtime.executeSource(
+		    """
+			result = queryNew( "alpha,bravo" );
+			result.addRow( 1 );
+
+			isColumnNull = isNull( result.alpha );
+		                      """,
+		    context );
+		//@formatter:on
+
+		Query data = variables.getAsQuery( result );
+		assertThat( data.size() ).isEqualTo( 1 );
+
+		IStruct row = data.getRowAsStruct( 0 );
+		assertThat( row.get( Key.of( "alpha" ) ) ).isEqualTo( "" );
+		assertThat( row.get( Key.of( "bravo" ) ) ).isEqualTo( "" );
+
+		assertThat( variables.getAsBoolean( Key.of( "isColumnNull" ) ) ).isFalse();
 	}
 
 }

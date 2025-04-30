@@ -43,7 +43,6 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 
 	private static final Map<String, String> DATE_MASK_REPLACEMENTS = new LinkedHashMap<>();
 	static {
-		DATE_MASK_REPLACEMENTS.put( "h", "H" );
 		DATE_MASK_REPLACEMENTS.put( "mmmm", "MMMM" );
 		DATE_MASK_REPLACEMENTS.put( "mmm", "MMM" );
 		DATE_MASK_REPLACEMENTS.put( "mm/", "MM/" );

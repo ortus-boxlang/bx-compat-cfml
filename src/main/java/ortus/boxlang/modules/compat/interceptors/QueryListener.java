@@ -59,4 +59,31 @@ public class QueryListener extends BaseInterceptor {
 
 	}
 
+	/**
+	 * Listen for queryAddRow and manipulate the row data for CFML compatibility.
+	 * 
+	 * Incoming data:
+	 * - query : The query object to which the row is being added.
+	 * - row : Row of data to be added, whether it be a struct or array.
+	 * 
+	 * @param interceptData
+	 */
+	@InterceptionPoint
+	public void queryAddRow( IStruct interceptData ) {
+
+		IStruct	moduleSettings	= BoxRuntime.getInstance().getModuleService().getModuleSettings( KeyDictionary.moduleName );
+		Boolean	nullToEmpty		= BooleanCaster.cast( moduleSettings.getOrDefault( KeyDictionary.queryNullToEmpty, false ) );
+
+		if ( !nullToEmpty ) {
+			return;
+		}
+
+		// Query query = interceptData.getAsQuery( Key.query );
+		Object[] rowData = ( Object[] ) interceptData.get( Key.row );
+		for ( int i = 0; i < rowData.length; i++ ) {
+			if ( rowData[ i ] == null ) {
+				rowData[ i ] = "";
+			}
+		}
+	}
 }
