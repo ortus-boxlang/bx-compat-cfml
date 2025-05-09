@@ -15,6 +15,7 @@
 
 package ortus.boxlang.modules.compat.bifs.temporal;
 
+import ortus.boxlang.modules.compat.interceptors.DateTimeMaskCompat;
 import ortus.boxlang.runtime.bifs.BoxBIF;
 import ortus.boxlang.runtime.bifs.BoxMember;
 import ortus.boxlang.runtime.context.IBoxContext;
@@ -22,6 +23,7 @@ import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Argument;
 import ortus.boxlang.runtime.types.BoxLangType;
+import ortus.boxlang.runtime.types.Struct;
 
 @BoxBIF
 @BoxMember( type = BoxLangType.STRING, name = "LSParseDateTime" )
@@ -55,6 +57,13 @@ public class LSParseDateTime extends ortus.boxlang.runtime.bifs.global.temporal.
 	 * @argument.timezone the timezone to apply to the parsed datetime
 	 */
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
+		interceptorService.announce(
+		    DateTimeMaskCompat.ON_LEGACY_DATE_FORMAT_REQUEST,
+		    Struct.of(
+		        Key.context, context,
+		        Key.arguments, arguments
+		    )
+		);
 		return super._invoke( context, arguments );
 	}
 
