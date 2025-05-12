@@ -32,7 +32,7 @@ import ortus.boxlang.runtime.types.BoxLangType;
 @BoxMember( type = BoxLangType.DATETIME, name = "LSDateTimeFormat" )
 @BoxMember( type = BoxLangType.DATETIME, name = "LSDateFormat" )
 @BoxMember( type = BoxLangType.DATETIME, name = "LSTimeFormat" )
-public class LSDateTimeFormat extends ortus.boxlang.runtime.bifs.global.temporal.DateTimeFormat {
+public class LSDateTimeFormat extends ortus.boxlang.modules.compat.bifs.temporal.DateTimeFormat {
 
 	/**
 	 * Constructor

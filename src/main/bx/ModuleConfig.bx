@@ -156,7 +156,8 @@ import java:ortus.boxlang.runtime.operators.Compare;
 		 */
 		customInterceptionPoints = [
 			"onClientCreated",
-			"onClientDestroyed"
+			"onClientDestroyed",
+			"onLegacyDateFormatRequest"
 		];
 	}
 

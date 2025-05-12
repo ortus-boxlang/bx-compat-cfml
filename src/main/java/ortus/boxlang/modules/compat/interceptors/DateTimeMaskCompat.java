@@ -27,9 +27,11 @@ import ortus.boxlang.runtime.types.IStruct;
 
 public class DateTimeMaskCompat extends BaseInterceptor {
 
-	private static final Key			FORMAT_EPOCH	= Key.of( "epoch" );
-	private static final Key			FORMAT_EPOCHMS	= Key.of( "epochms" );
-	private static final ArrayList<Key>	FORMAT_METHODS	= new ArrayList<>();
+	public static final String			ON_LEGACY_DATE_FORMAT_REQUEST	= "onLegacyDateFormatRequest";
+
+	private static final Key			FORMAT_EPOCH					= Key.of( "epoch" );
+	private static final Key			FORMAT_EPOCHMS					= Key.of( "epochms" );
+	private static final ArrayList<Key>	FORMAT_METHODS					= new ArrayList<>();
 	static {
 		FORMAT_METHODS.add( Key.of( "ParseDateTime" ) );
 		FORMAT_METHODS.add( Key.of( "LSParseDateTime" ) );
@@ -87,7 +89,7 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 	 * @param interceptData The struct containing the context and arguments of the BIF Invocation
 	 */
 	@InterceptionPoint
-	public void onBIFInvocation( IStruct interceptData ) {
+	public void onLegacyDateFormatRequest( IStruct interceptData ) {
 		IStruct	arguments		= interceptData.getAsStruct( Key.arguments );
 		Key		bifMethodKey	= arguments.getAsKey( BIF.__functionName );
 		if ( !FORMAT_METHODS.contains( bifMethodKey ) )

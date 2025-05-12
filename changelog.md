@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+* [BL-1375](https://ortussolutions.atlassian.net/browse/BL-1375) Compat - Move Legacy Date Format Interception to Module-Specific Interception Point for performance
+
 ## [1.25.0] - 2025-04-30
 
 ## [1.24.0] - 2025-04-05
