@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.26.0] - 2025-05-12
+
 ### Changed
 
-* [BL-1375](https://ortussolutions.atlassian.net/browse/BL-1375) Compat - Move Legacy Date Format Interception to Module-Specific Interception Point for performance
+- [BL-1375](https://ortussolutions.atlassian.net/browse/BL-1375) Compat - Move Legacy Date Format Interception to Module-Specific Interception Point for performance
 
 ## [1.25.0] - 2025-04-30
 
@@ -170,7 +172,9 @@ transpiler = {
 
 - First iteration of this module
 
-[Unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.25.0...HEAD
+[Unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.26.0...HEAD
+
+[1.26.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.25.0...v1.26.0
 
 [1.25.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.24.0...v1.25.0
 
