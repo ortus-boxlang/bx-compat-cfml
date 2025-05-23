@@ -22,6 +22,10 @@ import ortus.boxlang.runtime.scopes.Key;
 
 /**
  * Represents a BoxLang client scope container
+ *
+ * @author Ortus Solutions, Corp.
+ *
+ * @since 1.0.0
  */
 public class ClientScope extends BaseScope {
 
