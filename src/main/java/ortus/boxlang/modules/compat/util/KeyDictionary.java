@@ -16,18 +16,27 @@ package ortus.boxlang.modules.compat.util;
 
 import ortus.boxlang.runtime.scopes.Key;
 
+/**
+ * A dictionary of keys used in the Ortus BoxLang Compat module.
+ *
+ * @author Ortus Solutions, Corp.
+ *
+ * @since 1.0.0
+ */
 public class KeyDictionary {
 
 	public static final Key	bxClients					= Key.of( "bxClients" );
+	public static final Key	blockedExtForFileUpload		= Key.of( "blockedExtForFileUpload" );
 	public static final Key	client						= Key.of( "client" );
+	public static final Key	clientManagement			= Key.of( "clientManagement" );
 	public static final Key	clientStorage				= Key.of( "clientStorage" );
 	public static final Key	clientTimeout				= Key.of( "clientTimeout" );
-	public static final Key	clientManagement			= Key.of( "clientManagement" );
 	public static final Key	filterOrTags				= Key.of( "filterOrTags" );
 	public static final Key	functionName				= Key.of( "functionName" );
 	public static final Key	hitCount					= Key.of( "hitCount" );
 	public static final Key	isKey						= Key.of( "isKey" );
 	public static final Key	jsonEscapeControlCharacters	= Key.of( "jsonEscapeControlCharacters" );
+	public static final Key	LUCEE_UPLOAD_BLOCKLIST		= Key.of( "LUCEE_UPLOAD_BLOCKLIST" );
 	public static final Key	moduleName					= Key.of( "compat-cfml" );
 	public static final Key	nameSpaceWithSeperator		= Key.of( "nameSpaceWithSeperator" );
 	public static final Key	objectType					= Key.of( "objectType" );
@@ -38,12 +47,12 @@ public class KeyDictionary {
 	public static final Key	throwWhenNotExist			= Key.of( "throwWhenNotExist" );
 
 	// ORM keys
-	public static final Key	skipCFCWithError			= Key.of( "skipCFCWithError" );
+	public static final Key	autoManageSession			= Key.of( "autoManageSession" );
 	public static final Key	cfclocation					= Key.of( "cfclocation" );
 	public static final Key	entityPaths					= Key.of( "entityPaths" );
-	public static final Key	ignoreParseErrors			= Key.of( "ignoreParseErrors" );
-	public static final Key	autoManageSession			= Key.of( "autoManageSession" );
-	public static final Key	flushAtRequestEnd			= Key.of( "flushAtRequestEnd" );
-	public static final Key	EVENT_ORM_PRE_CONFIG_LOAD	= Key.of( "ORMPreConfigLoad" );
 	public static final Key	EVENT_ORM_POST_CONFIG_LOAD	= Key.of( "ORMPostConfigLoad" );
+	public static final Key	EVENT_ORM_PRE_CONFIG_LOAD	= Key.of( "ORMPreConfigLoad" );
+	public static final Key	flushAtRequestEnd			= Key.of( "flushAtRequestEnd" );
+	public static final Key	ignoreParseErrors			= Key.of( "ignoreParseErrors" );
+	public static final Key	skipCFCWithError			= Key.of( "skipCFCWithError" );
 }

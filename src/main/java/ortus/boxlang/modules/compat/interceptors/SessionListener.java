@@ -23,6 +23,10 @@ import ortus.boxlang.runtime.types.IStruct;
 
 /**
  * Listens to when sessions get created to manipulate them for CFML compatibility
+ *
+ * @author Ortus Solutions, Corp.
+ *
+ * @since 1.0.0
  */
 public class SessionListener extends BaseInterceptor {
 

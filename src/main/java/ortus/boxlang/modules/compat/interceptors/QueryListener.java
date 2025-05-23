@@ -1,3 +1,17 @@
+/**
+ * [BoxLang]
+ *
+ * Copyright [2023] [Ortus Solutions, Corp]
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
 package ortus.boxlang.modules.compat.interceptors;
 
 import ortus.boxlang.modules.compat.util.KeyDictionary;
@@ -9,14 +23,20 @@ import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.IStruct;
 import ortus.boxlang.runtime.types.Query;
 
+/**
+ * This interceptor is used to convert null values to empty strings in query results
+ * for CFML compatibility.
+ *
+ * @author Ortus Solutions, Corp.
+ *
+ * @since 1.0.0
+ */
 public class QueryListener extends BaseInterceptor {
 
-	BoxRuntime runtime = BoxRuntime.getInstance();
-
-	@InterceptionPoint
-	public void onQueryBuild( IStruct interceptData ) {
-
-	}
+	/**
+	 * Seed the module settings
+	 */
+	private static final IStruct MODULE_SETTINGS = BoxRuntime.getInstance().getModuleService().getModuleSettings( KeyDictionary.moduleName );
 
 	/**
 	 * Modify the query results before they are returned to the calling code.
@@ -39,8 +59,7 @@ public class QueryListener extends BaseInterceptor {
 	 */
 	@InterceptionPoint
 	public void postQueryExecute( IStruct interceptData ) {
-		IStruct	moduleSettings	= BoxRuntime.getInstance().getModuleService().getModuleSettings( KeyDictionary.moduleName );
-		Boolean	nullToEmpty		= BooleanCaster.cast( moduleSettings.getOrDefault( KeyDictionary.queryNullToEmpty, false ) );
+		Boolean nullToEmpty = BooleanCaster.cast( MODULE_SETTINGS.getOrDefault( KeyDictionary.queryNullToEmpty, false ) );
 
 		if ( !nullToEmpty ) {
 			return;
@@ -61,18 +80,16 @@ public class QueryListener extends BaseInterceptor {
 
 	/**
 	 * Listen for queryAddRow and manipulate the row data for CFML compatibility.
-	 * 
+	 *
 	 * Incoming data:
 	 * - query : The query object to which the row is being added.
 	 * - row : Row of data to be added, whether it be a struct or array.
-	 * 
+	 *
 	 * @param interceptData
 	 */
 	@InterceptionPoint
 	public void queryAddRow( IStruct interceptData ) {
-
-		IStruct	moduleSettings	= BoxRuntime.getInstance().getModuleService().getModuleSettings( KeyDictionary.moduleName );
-		Boolean	nullToEmpty		= BooleanCaster.cast( moduleSettings.getOrDefault( KeyDictionary.queryNullToEmpty, false ) );
+		Boolean nullToEmpty = BooleanCaster.cast( MODULE_SETTINGS.getOrDefault( KeyDictionary.queryNullToEmpty, false ) );
 
 		if ( !nullToEmpty ) {
 			return;

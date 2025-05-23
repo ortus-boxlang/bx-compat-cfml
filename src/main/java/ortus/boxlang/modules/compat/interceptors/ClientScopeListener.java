@@ -39,6 +39,11 @@ import ortus.boxlang.runtime.types.exceptions.BoxRuntimeException;
 /**
  * Listens to when clients get created to manipulate them for CFML
  * compatibility
+ *
+ * @author Ortus Solutions, Corp.
+ *
+ * @since 1.0.0
+ *
  */
 public class ClientScopeListener extends BaseInterceptor {
 

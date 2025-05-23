@@ -15,7 +15,6 @@
 package ortus.boxlang.modules.compat.interceptors;
 
 import ortus.boxlang.modules.compat.util.KeyDictionary;
-import ortus.boxlang.runtime.context.RequestBoxContext;
 import ortus.boxlang.runtime.dynamic.casters.BooleanCaster;
 import ortus.boxlang.runtime.events.BaseInterceptor;
 import ortus.boxlang.runtime.events.InterceptionPoint;
@@ -23,6 +22,10 @@ import ortus.boxlang.runtime.types.IStruct;
 
 /**
  * Listens to when an ORM app starts up and tweaks the ORM configuration for CFML compatibility
+ *
+ * @author Ortus Solutions, Corp.
+ *
+ * @since 1.26.0
  */
 public class ORMApplicationListener extends BaseInterceptor {
 
@@ -33,8 +36,7 @@ public class ORMApplicationListener extends BaseInterceptor {
 	 */
 	@InterceptionPoint
 	public void ORMPreConfigLoad( IStruct interceptData ) {
-		IStruct				properties	= ( IStruct ) interceptData.get( "properties" );
-		RequestBoxContext	context		= ( RequestBoxContext ) interceptData.get( "context" );
+		IStruct properties = ( IStruct ) interceptData.get( "properties" );
 
 		// backwards compatibility for `skipCFCWithError`
 		properties.computeIfAbsent(
@@ -55,6 +57,8 @@ public class ORMApplicationListener extends BaseInterceptor {
 			    return null;
 		    }
 		);
+
+		// backwards compatibility for `autoManageSession` and `flushAtRequestEnd`
 		properties.computeIfAbsent(
 		    KeyDictionary.autoManageSession,
 		    key -> {

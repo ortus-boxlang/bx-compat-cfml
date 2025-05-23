@@ -16,55 +16,60 @@
  * limitations under the License.
  */
 
-import java:ortus.boxlang.runtime.types.unmodifiable.UnmodifiableStruct;
-import java:ortus.boxlang.runtime.scopes.Key;
+ import java:ortus.boxlang.runtime.types.unmodifiable.UnmodifiableStruct;
+ import java:ortus.boxlang.runtime.scopes.Key;
+ import java.util.Locale;
 
-/**
- * Adds collaborations to the server scope as per the lucee server
- */
-class{
+ /**
+  * Adds collaborations to the server scope as per the lucee server
+  */
+ class{
 
-	/**
-	 * Injections by BoxLang
-	 */
+	 /**
+	  * Injections by BoxLang
+	  */
 
-	property name;
-	property properties;
-	property log;
-	property interceptorService;
-	property boxRuntime;
-	property moduleRecord;
+	 property name;
+	 property properties;
+	 property log;
+	 property interceptorService;
+	 property boxRuntime;
+	 property moduleRecord;
 
-	function configure(){
-		// Nothing to do here
-	}
+	 function configure(){
+		 // Nothing to do here
+	 }
 
-	/**
-	 * Listen to scope creation
-	 *
-	 * Incoming data:
-	 * - scope : The scope that was created
-	 * - scopeName : The name of the scope
-	 */
-	function onServerScopeCreation( data ){
-		// Add coldfusion struct
-		data.scope.coldfusion = {
-			"productlevel" : "os",
-			"productname" : "Lucee",
-			"productversion" : "2016,0,03,300357"
-		}.toUnmodifiable();
+	 /**
+	  * Listen to scope creation
+	  *
+	  * Incoming data:
+	  * - scope : The scope that was created
+	  * - scopeName : The name of the scope
+	  */
+	 function onServerScopeCreation( data ){
+		 // Add coldfusion struct
+		 data.scope.coldfusion = {
+			 "productlevel" : "os",
+			 "productname" : "Lucee",
+			 "productversion" : "2016,0,03,300357",
+			 "supportedLocales" : Locale.getAvailableLocales()
+										 .map( l->l.getDisplayName(Locale.US).lcase() )
+										 .filter( l -> len( l ) )
+										 .toList()
+		 }.toUnmodifiable();
 
-		// Add lucee struct
-		data.scope.lucee = {
-			"environment" : "boxlang",
-			"loaderPath" : "",
-			"loaderVersion" : "0",
-			"release-date" : now(),
-			"state" : "stable",
-			"version" : "6.0.0",
-			"versionName" : "Lucee",
-			"versionNameExplanation" : ""
-		}.toUnmodifiable();
-	}
+		 // Add lucee struct
+		 data.scope.lucee = {
+			 "environment" : "boxlang",
+			 "loaderPath" : "",
+			 "loaderVersion" : "0",
+			 "release-date" : now(),
+			 "state" : "stable",
+			 "version" : "6.0.0",
+			 "versionName" : "Lucee",
+			 "versionNameExplanation" : ""
+		 }.toUnmodifiable();
+	 }
 
-}
+ }

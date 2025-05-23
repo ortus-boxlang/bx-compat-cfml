@@ -1,3 +1,17 @@
+/**
+ * [BoxLang]
+ *
+ * Copyright [2023] [Ortus Solutions, Corp]
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
 package ortus.boxlang.modules.compat.bifs.conversion;
 
 import ortus.boxlang.modules.compat.util.KeyDictionary;
@@ -13,8 +27,6 @@ import ortus.boxlang.runtime.types.BoxLangType;
 @BoxBIF
 @BoxMember( type = BoxLangType.STRING )
 public class JSONDeserialize extends ortus.boxlang.runtime.bifs.global.conversion.JSONDeserialize {
-
-	public static final Key moduleName = Key.of( "compat-cfml" );
 
 	/**
 	 * Converts a JSON (JavaScript Object Notation) string data representation into data, such as a structure or array.
@@ -33,7 +45,7 @@ public class JSONDeserialize extends ortus.boxlang.runtime.bifs.global.conversio
 	@Override
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
 		String			json					= arguments.getAsString( Key.json );
-		ModuleRecord	moduleRecord			= moduleService.getModuleRecord( moduleName );
+		ModuleRecord	moduleRecord			= moduleService.getModuleRecord( KeyDictionary.moduleName );
 		Object			moduleSetting			= moduleRecord.settings.get( KeyDictionary.jsonEscapeControlCharacters );
 		Boolean			escapeControlCharacters	= BooleanCaster
 		    .attempt( moduleSetting )
