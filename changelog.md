@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Missing `@build.version` on ModuleConfig
+- `ApplicationCompatListener` doing a recursive stackoverflow when updating settings
+- `ApplicationCompatListenerTest` had wrong charset
+
+### Added
+
+- Updated performance tuning for several key interceptions
+- Missing package ortus headers
+- [BL-1416](https://ortussolutions.atlassian.net/browse/BL-1416) - Support ACF/Lucee `blockedExtForFileUpload` Application Setting
+- [BL-1409](https://ortussolutions.atlassian.net/browse/BL-1409) - Added `supportedLocales` to the `server.coldfusion` scope
+
 ## [1.26.0] - 2025-05-12
 
 ### Changed

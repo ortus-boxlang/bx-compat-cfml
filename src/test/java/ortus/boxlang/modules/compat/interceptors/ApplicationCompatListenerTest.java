@@ -23,20 +23,24 @@ public class ApplicationCompatListenerTest extends BaseIntegrationTest {
 	public void testBifSecurity() {
 		variables.put( Key.of( "targetFile" ), Path.of( good ).toAbsolutePath().toString() );
 		variables.put( Key.of( "destinationFile" ), Path.of( bad ).toAbsolutePath().toString() );
+
 		if ( !FileSystemUtil.exists( tmpDirectory ) ) {
 			FileSystemUtil.createDirectory( tmpDirectory );
 		}
+
 		try {
+			// @formatter:off
 			assertThrows(
 			    BoxRuntimeException.class,
 			    () -> runtime.executeSource(
 			        """
-			        bx:application name="myApp-with-legacy-fileUploadSetting" blockedExtForFileUpload="exe";
-			        fileWrite( targetFile, "blah", true );
-			        fileMove( targetFile, "blah.exe" );
-			        		""",
+						bx:application name="myApp-with-legacy-fileUploadSetting" blockedExtForFileUpload="exe";
+						fileWrite( targetFile, "blah" );
+						fileMove( targetFile, "blah.exe" );
+			        """,
 			        context )
 			);
+			// @formatter:on
 		} finally {
 			FileSystemUtil.deleteDirectory( tmpDirectory, true );
 		}
