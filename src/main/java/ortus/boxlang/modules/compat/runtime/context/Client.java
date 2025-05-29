@@ -34,6 +34,10 @@ import ortus.boxlang.runtime.types.exceptions.BoxRuntimeException;
 /**
  * I represent a Client. This will be stored in a BoxLang cache
  * and will be used to store session data.
+ *
+ * @author Ortus Solutions, Corp.
+ *
+ * @since 1.0.0
  */
 public class Client implements Serializable {
 

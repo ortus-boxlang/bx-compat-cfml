@@ -18,6 +18,7 @@
 
 import java:ortus.boxlang.runtime.types.unmodifiable.UnmodifiableStruct;
 import java:ortus.boxlang.runtime.scopes.Key;
+import java.util.Locale;
 
 /**
  * Adds collaborations to the server scope as per the Adobe server
@@ -56,7 +57,11 @@ class{
 			"productname" : "ColdFusion Server",
 			"productversion" : "2023,0,06,330617",
 			"rootdir" : "'",
-			"updatelevel" : "0"
+			"updatelevel" : "0",
+			"supportedLocales" : Locale.getAvailableLocales()
+										.map( l->l.getDisplayName(Locale.US).lcase() )
+										.filter( l -> len( l ) )
+										.toList()
 		}.toUnmodifiable();
 	}
 

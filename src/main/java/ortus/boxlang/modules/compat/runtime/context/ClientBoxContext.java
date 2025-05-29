@@ -27,6 +27,10 @@ import ortus.boxlang.runtime.types.exceptions.ScopeNotFoundException;
  * This class represents the context of a client in the BoxLang runtime
  * It is a child of the RuntimeBoxContext and has access to the client scope
  * and the parent context and its scopes
+ *
+ * @author Ortus Solutions, Corp.
+ *
+ * @since 1.0.0
  */
 public class ClientBoxContext extends BaseBoxContext {
 

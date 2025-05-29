@@ -25,6 +25,14 @@ import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.DateTime;
 import ortus.boxlang.runtime.types.IStruct;
 
+/**
+ * This interceptor is used to convert date/time masks to the Java date/time format.
+ * It checks for the Lucee/ACF date/time format and converts it to the Java date/time format.
+ *
+ * @author Ortus Solutions, Corp.
+ *
+ * @since 1.26.0
+ */
 public class DateTimeMaskCompat extends BaseInterceptor {
 
 	public static final String			ON_LEGACY_DATE_FORMAT_REQUEST	= "onLegacyDateFormatRequest";

@@ -57,13 +57,13 @@ class{
 	function onQueryBuild( struct data ){
 		if ( IsStruct( data.bindings ) ){
 			data.bindings.each( ( key, param ) -> {
-				if( isStruct( param ) && param.keyExists( "cfsqltype" ) && !param.keyExists( "sqltype" ) ){
+				if( !isNull( param ) && isStruct( param ) && param.keyExists( "cfsqltype" ) && !param.keyExists( "sqltype" ) ){
 					param.sqltype = param.cfsqltype;
 				}
 			});
 		} else if ( IsArray( data.bindings ) ){
 			data.bindings.map( ( param ) -> {
-				if( isStruct( param ) && param.keyExists( "cfsqltype" ) && !param.keyExists( "sqltype" ) ){
+				if( !isNull( param ) && isStruct( param ) && param.keyExists( "cfsqltype" ) && !param.keyExists( "sqltype" ) ){
 					param.sqltype = param.cfsqltype;
 				}
 			});
