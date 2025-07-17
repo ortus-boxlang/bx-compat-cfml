@@ -4,6 +4,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -110,6 +111,7 @@ public class NullIsUndefinedTest extends BaseIntegrationTest {
 	@DisplayName( "It can dump an array list " )
 	@Test
 	public void testCanDumpAnArrayInHTML() {
+		context.setOut( new PrintStream( ( baos = new ByteArrayOutputStream() ), true ) );
 		// @formatter:off
 		runtime.executeSource(
 		    """
