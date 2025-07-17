@@ -3,6 +3,8 @@ package ortus.boxlang.modules.compat;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.ByteArrayOutputStream;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +16,8 @@ import ortus.boxlang.runtime.types.exceptions.KeyNotFoundException;
  * This loads the module and runs an integration test on the module.
  */
 public class NullIsUndefinedTest extends BaseIntegrationTest {
+
+	ByteArrayOutputStream baos;
 
 	@DisplayName( "Test null is undefined" )
 	@Test
@@ -101,6 +105,20 @@ public class NullIsUndefinedTest extends BaseIntegrationTest {
 			""",
 			context, BoxSourceType.CFSCRIPT );
 		assertThat( variables.getAsString( result ) ).isEqualTo( "set this time" );
+	}
+
+	@DisplayName( "It can dump an array list " )
+	@Test
+	public void testCanDumpAnArrayInHTML() {
+		// @formatter:off
+		runtime.executeSource(
+		    """
+				val = [1,2,3,null,5];
+				dump( var = val, format = "html" );
+		    """,
+		    context );
+			assertThat( baos.toString().replaceAll( "[ \\t\\r\\n]", "" ) ).contains( "Array:5" );
+			// @formatter:on
 	}
 
 }
