@@ -21,12 +21,19 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.jr.ob.JSONObjectException;
 
+import ortus.boxlang.modules.compat.util.KeyDictionary;
+import ortus.boxlang.runtime.BoxRuntime;
 import ortus.boxlang.runtime.bifs.BoxBIF;
 import ortus.boxlang.runtime.bifs.BoxMember;
 import ortus.boxlang.runtime.context.IBoxContext;
+import ortus.boxlang.runtime.dynamic.casters.BooleanCaster;
+import ortus.boxlang.runtime.dynamic.casters.IntegerCaster;
 import ortus.boxlang.runtime.dynamic.casters.StringCaster;
 import ortus.boxlang.runtime.scopes.ArgumentsScope;
+import ortus.boxlang.runtime.scopes.Key;
+import ortus.boxlang.runtime.types.Argument;
 import ortus.boxlang.runtime.types.BoxLangType;
+import ortus.boxlang.runtime.types.IStruct;
 
 @BoxBIF
 @BoxBIF( alias = "Hash40" )
@@ -35,6 +42,25 @@ import ortus.boxlang.runtime.types.BoxLangType;
 @BoxMember( type = BoxLangType.ARRAY, name = "hash" )
 @BoxMember( type = BoxLangType.DATETIME, name = "hash" )
 public class Hash extends ortus.boxlang.runtime.bifs.global.encryption.Hash {
+
+	private static final String		DEFAULT_ALGORITHM	= "MD5";
+	private static final String		DEFAULT_ENCODING	= "utf-8";
+
+	private static final IStruct	MODULE_SETTINGS		= BoxRuntime.getInstance().getModuleService().getModuleSettings( KeyDictionary.moduleName );
+
+	/**
+	 * Constructor
+	 */
+	public Hash() {
+		super();
+		declaredArguments = new Argument[] {
+		    new Argument( true, "any", Key.input ),
+		    new Argument( false, "string", Key.algorithm, DEFAULT_ALGORITHM ),
+		    new Argument( false, "string", Key.encoding, DEFAULT_ENCODING ),
+		    // we null default this in the override so we can handle the engine differences in how iterations are applied
+		    new Argument( false, "integer", Key.numIterations )
+		};
+	}
 
 	/**
 	 * Creates an algorithmic hash of an object and returns it in the CFML compat upper case format
@@ -54,6 +80,18 @@ public class Hash extends ortus.boxlang.runtime.bifs.global.encryption.Hash {
 	 * @argument.iterations The number of iterations to re-digest the object ( default 1 );
 	 */
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
+		Object	iterations	= arguments.get( Key.numIterations );
+		Integer	appliedIterations;
+		if ( iterations == null ) {
+			appliedIterations = 1;
+		} else if ( BooleanCaster.cast( MODULE_SETTINGS.getOrDefault( KeyDictionary.isAdobe, false ) ) ) {
+			appliedIterations = IntegerCaster.cast( iterations ) + 1; // Adobe engines default to 0 iterations and each iteration is an additional digest
+		} else {
+			appliedIterations = IntegerCaster.cast( iterations );
+		}
+
+		arguments.put( Key.numIterations, appliedIterations );
+
 		return StringCaster.cast( super._invoke( context, arguments ) ).toUpperCase();
 	}
 }
