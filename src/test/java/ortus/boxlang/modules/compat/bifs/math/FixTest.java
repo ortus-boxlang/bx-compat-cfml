@@ -19,6 +19,8 @@ package ortus.boxlang.modules.compat.bifs.math;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import java.math.BigDecimal;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,7 +67,7 @@ public class FixTest {
 		    result = fix( now() );
 		    """,
 		    context );
-		assertThat( variables.get( result ) ).isInstanceOf( Double.class );
+		assertThat( variables.get( result ) ).isInstanceOf( BigDecimal.class );
 		assertThat( StringCaster.cast( BigDecimalCaster.cast( variables.get( result ) ) ).contains( "." ) ).isFalse();
 
 	}

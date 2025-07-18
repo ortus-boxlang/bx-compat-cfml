@@ -50,6 +50,7 @@ public abstract class BaseIntegrationTest {
 	public static void setup() {
 		runtime			= BoxRuntime.getInstance( true, Path.of( "src/test/resources/boxlang.json" ).toString() );
 		moduleService	= runtime.getModuleService();
+		cacheService	= runtime.getCacheService();
 		// Load the module
 		loadModule( runtime.getRuntimeContext() );
 	}
