@@ -25,7 +25,7 @@ class{
 	 * @addNewLine Print with a line break or without one. Defaults to false
 	 * @doErrorStream If true, it sends it to the error stream
 	 */
-	function invoke( required any obj, boolean addNewLine = false, boolean doErrorStream = false  ){
+	function invoke( any obj, boolean addNewLine = false, boolean doErrorStream = false  ){
 		if( !arguments.doErrorStream ){
 			if( arguments.addNewLine ){
 				println( arguments.obj );

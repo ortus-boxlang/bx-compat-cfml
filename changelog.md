@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Updated gradle wrapper to 8.14.1
+- `obj` in the `SystemOutput` BIF should not be required as it can be null
+
+## [1.27.0] - 2025-05-29
+
+### Fixed
+
 - Missing `@build.version` on ModuleConfig
 - `ApplicationCompatListener` doing a recursive stackoverflow when updating settings
 - `ApplicationCompatListenerTest` had wrong charset

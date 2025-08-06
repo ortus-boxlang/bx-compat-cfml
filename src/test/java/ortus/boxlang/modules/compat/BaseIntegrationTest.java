@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
+import ortus.boxlang.modules.compat.util.KeyDictionary;
 import ortus.boxlang.runtime.BoxRuntime;
 import ortus.boxlang.runtime.context.IBoxContext;
 import ortus.boxlang.runtime.context.ScriptingRequestBoxContext;
@@ -36,13 +37,14 @@ import ortus.boxlang.runtime.services.ModuleService;
  */
 public abstract class BaseIntegrationTest {
 
-	protected static BoxRuntime					runtime;
-	protected static ModuleService				moduleService;
-	protected static CacheService				cacheService;
-	protected static Key						result		= new Key( "result" );
-	protected static Key						moduleName	= new Key( "compat-cfml" );
-	protected static ScriptingRequestBoxContext	context;
-	protected IScope							variables;
+	protected static BoxRuntime				runtime;
+	protected static ModuleService			moduleService;
+	protected static ModuleRecord			moduleRecord;
+	protected static CacheService			cacheService;
+	protected static Key					result		= new Key( "result" );
+	protected static Key					moduleName	= KeyDictionary.moduleName;
+	protected ScriptingRequestBoxContext	context;
+	protected IScope						variables;
 
 	@BeforeAll
 	public static void setup() {
@@ -55,25 +57,25 @@ public abstract class BaseIntegrationTest {
 
 	@BeforeEach
 	public void setupEach() {
-		context		= new ScriptingRequestBoxContext( runtime.getRuntimeContext() );
+		// Create the mock contexts
+		context		= new ScriptingRequestBoxContext();
 		variables	= context.getScopeNearby( VariablesScope.name );
 	}
 
 	protected static void loadModule( IBoxContext context ) {
 		if ( !runtime.getModuleService().hasModule( moduleName ) ) {
-			System.out.println( "===> Loading module: " + moduleName );
-			String			physicalPath	= Paths.get( "./build/module" ).toAbsolutePath().toString();
-			ModuleRecord	moduleRecord	= new ModuleRecord( physicalPath );
+			System.out.println( "Loading module: " + moduleName );
+			String physicalPath = Paths.get( "./build/module" ).toAbsolutePath().toString();
+			moduleRecord = new ModuleRecord( physicalPath );
 
 			moduleService.getRegistry().put( moduleName, moduleRecord );
 
-			// When
 			moduleRecord
 			    .loadDescriptor( context )
 			    .register( context )
 			    .activate( context );
 		} else {
-			System.out.println( "===> Module already loaded: " + moduleName );
+			System.out.println( "Module already loaded: " + moduleName );
 		}
 	}
 
