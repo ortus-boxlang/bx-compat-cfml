@@ -42,8 +42,8 @@ dependencies {
 		testImplementation files( '../boxlang/build/libs/boxlang-' + boxlangVersion + '.jar' )
 	} else {
 		// Downloaded Dependencies
-		compileOnly files( 'src/test/resources/libs/boxlang-' + boxlangVersion + '.jar' )
-		testImplementation files( 'src/test/resources/libs/boxlang-' + boxlangVersion + '.jar' )
+		compileOnly "io.boxlang:boxlang:1.4.0"
+		testImplementation "io.boxlang:boxlang:1.4.0"
 	}
 
 	// Test Frameworks
