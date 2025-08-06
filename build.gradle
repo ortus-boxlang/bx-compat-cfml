@@ -130,7 +130,6 @@ shadowJar {
     mergeServiceFiles()
     destinationDirectory = file( "build/libs" )
 }
-build.finalizedBy( shadowJar )
 
 /**
  * Source Code Formatting
@@ -152,6 +151,7 @@ spotless {
  * - Copies the src/main/bx/** to build/module/ folder.
  */
 task createModuleStructure(type: Copy) {
+    dependsOn jar
     from( 'build/libs' ) {
 		// Note: I have no idea why gradle still adds the -all to the .jar in this directory
 		include "${project.name}-${version}.jar"
