@@ -1,9 +1,11 @@
 package ortus.boxlang.modules.compat.interceptors;
 
+import ortus.boxlang.modules.compat.util.BlowFishy;
 import ortus.boxlang.runtime.events.BaseInterceptor;
 import ortus.boxlang.runtime.events.InterceptionPoint;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.IStruct;
+import ortus.boxlang.runtime.types.exceptions.BoxRuntimeException;
 
 /**
  * This interceptor is used to convert null values to empty strings in query results
@@ -29,10 +31,27 @@ public class RuntimeConfigListener extends BaseInterceptor {
 		String	datasourceName		= interceptData.getAsString( Key._name );
 		IStruct	datasourceConfig	= interceptData.getAsStruct( Key.datasource );
 
-		decryptDatasourcePasswords( datasourceConfig );
+		decryptDatasourcePasswords( datasourceName, datasourceConfig );
 	}
 
-	private void decryptDatasourcePasswords( IStruct datasourceConfig ) {
-		// Implement your decryption logic here
+	/**
+	 * Perform the decryption of any encrypted passwords in the datasource config.
+	 * If the password is not encrypted, it is left as-is.
+	 * If the password begins with "encrypted:" but the decryption fails, an exception is thrown.
+	 * 
+	 * @param datasourceName   Datasource name for error reporting
+	 * @param datasourceConfig Datasource configuration struct - the `password` value will be modified in cases of successful decryption
+	 */
+	private void decryptDatasourcePasswords( String datasourceName, IStruct datasourceConfig ) {
+		String password = datasourceConfig.getAsString( Key.password );
+		if ( password != null && password.startsWith( "encrypted:" ) ) {
+			// Decrypt the password
+			String decryptedPassword = new BlowFishy( "sdfsdfs" )
+			    .decryptString( password.substring( "encrypted:".length() ) );
+			if ( decryptedPassword == null ) {
+				throw new BoxRuntimeException( String.format( "Failed to decrypt datasource password on [%s]", datasourceName ) );
+			}
+			datasourceConfig.put( Key.password, decryptedPassword );
+		}
 	}
 }
