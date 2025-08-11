@@ -71,9 +71,8 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 		// Lucee/ACF seconds mask handling
 		DATE_MASK_REPLACEMENTS.put( ":SS", ":ss" );
 		// Lucee/ACF awful milliseconds handling
-		DATE_MASK_REPLACEMENTS.put( ".lll", ".SSS" );
-		DATE_MASK_REPLACEMENTS.put( ".ll", ".SS" );
-		DATE_MASK_REPLACEMENTS.put( ".l", ".S" );
+		DATE_MASK_REPLACEMENTS.put( "l", "S" );
+		// We need to keep this weird uppercase pattern match since `L` is also a DateTimeFormatter mask for Month
 		DATE_MASK_REPLACEMENTS.put( ".LLL", ".SSS" );
 		DATE_MASK_REPLACEMENTS.put( ".LL", ".SS" );
 		DATE_MASK_REPLACEMENTS.put( ".L", ".S" );
