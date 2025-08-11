@@ -1,6 +1,6 @@
 package ortus.boxlang.modules.compat.interceptors;
 
-import ortus.boxlang.modules.compat.util.BlowFishy;
+import ortus.boxlang.modules.compat.util.BlowFishEasy;
 import ortus.boxlang.runtime.events.BaseInterceptor;
 import ortus.boxlang.runtime.events.InterceptionPoint;
 import ortus.boxlang.runtime.scopes.Key;
@@ -46,7 +46,7 @@ public class RuntimeConfigListener extends BaseInterceptor {
 		String password = datasourceConfig.getAsString( Key.password );
 		if ( password != null && password.startsWith( "encrypted:" ) ) {
 			// Decrypt the password
-			String decryptedPassword = new BlowFishy( "sdfsdfs" )
+			String decryptedPassword = new BlowFishEasy( "sdfsdfs" )
 			    .decryptString( password.substring( "encrypted:".length() ) );
 			if ( decryptedPassword == null ) {
 				throw new BoxRuntimeException( String.format( "Failed to decrypt datasource password on [%s]", datasourceName ) );
