@@ -22,14 +22,14 @@ public class RuntimeConfigListener extends BaseInterceptor {
 	 *
 	 * Incoming data:
 	 * - name : The datasource name
-	 * - datasource : Datasource configuration struct
+	 * - properties : Datasource configuration struct
 	 *
 	 * @param interceptData
 	 */
 	@InterceptionPoint
 	public void onDatasourceConfigLoad( IStruct interceptData ) {
 		String	datasourceName		= interceptData.getAsString( Key._name );
-		IStruct	datasourceConfig	= interceptData.getAsStruct( Key.datasource );
+		IStruct	datasourceConfig	= interceptData.getAsStruct( Key.properties );
 
 		decryptDatasourcePasswords( datasourceName, datasourceConfig );
 	}

@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 
 import ortus.boxlang.modules.compat.BaseIntegrationTest;
 import ortus.boxlang.runtime.scopes.Key;
-import ortus.boxlang.runtime.types.exceptions.BoxRuntimeException;
-import ortus.boxlang.runtime.types.Struct;
 import ortus.boxlang.runtime.types.IStruct;
+import ortus.boxlang.runtime.types.Struct;
+import ortus.boxlang.runtime.types.exceptions.BoxRuntimeException;
 
 public class RuntimeConfigListenerTest extends BaseIntegrationTest {
 
@@ -19,13 +19,13 @@ public class RuntimeConfigListenerTest extends BaseIntegrationTest {
 	public void testDatasourcePasswordDecryption() {
 		IStruct eventData = Struct.of(
 		    Key._name, "testDatasource1",
-		    Key.datasource, Struct.of(
+		    Key.properties, Struct.of(
 		        Key.username, "testUser",
 		        Key.password, "encrypted:d3522dc6a54f43af66386db4d7392d24687cbddef0255617386fdb776b704176"
 		    )
 		);
 		runtime.announce( "onDatasourceConfigLoad", eventData );
-		assertThat( eventData.getAsStruct( Key.datasource ).getAsString( Key.password ) ).isEqualTo( "password123" );
+		assertThat( eventData.getAsStruct( Key.properties ).getAsString( Key.password ) ).isEqualTo( "password123" );
 	}
 
 	@DisplayName( "It ignores unencrypted passwords" )
@@ -33,14 +33,14 @@ public class RuntimeConfigListenerTest extends BaseIntegrationTest {
 	public void testDatasourcePasswordIgnore() {
 		IStruct eventData = Struct.of(
 		    Key._name, "testDatasource2",
-		    Key.datasource, Struct.of(
+		    Key.properties, Struct.of(
 		        Key.username, "testUser",
 		        Key.password, "isnotencrypted"
 		    )
 		);
 		runtime.announce( "onDatasourceConfigLoad", eventData );
 
-		assertThat( eventData.getAsStruct( Key.datasource ).getAsString( Key.password ) ).isEqualTo( "isnotencrypted" );
+		assertThat( eventData.getAsStruct( Key.properties ).getAsString( Key.password ) ).isEqualTo( "isnotencrypted" );
 	}
 
 	@DisplayName( "It throws on invalid encryption values" )
@@ -48,7 +48,7 @@ public class RuntimeConfigListenerTest extends BaseIntegrationTest {
 	public void testDatasourcePasswordFailedDecryption() {
 		IStruct eventData = Struct.of(
 		    Key._name, "testDatasource3",
-		    Key.datasource, Struct.of(
+		    Key.properties, Struct.of(
 		        Key.username, "testUser",
 		        Key.password, "encrypted:xxx"
 		    )
