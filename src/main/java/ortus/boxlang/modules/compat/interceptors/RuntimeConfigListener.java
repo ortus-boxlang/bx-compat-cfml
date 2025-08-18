@@ -9,7 +9,8 @@ import ortus.boxlang.runtime.types.exceptions.BoxRuntimeException;
 
 /**
  * This interceptor is used to convert null values to empty strings in query results
- * for CFML compatibility.
+ * This interceptor listens for datasource configuration loading events and decrypts
+ * any encrypted datasource passwords for CFML compatibility.
  *
  * @author Ortus Solutions, Corp.
  *
