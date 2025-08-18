@@ -56,7 +56,7 @@ public class RuntimeConfigListenerTest extends BaseIntegrationTest {
 
 		assertThrows( BoxRuntimeException.class, () -> {
 			runtime.announce( "onDatasourceConfigLoad", eventData );
-		}, "Failed to decrypt datasource password on [testDatasource]" );
+		}, "Failed to decrypt datasource password on [testDatasource3]" );
 	}
 
 }
