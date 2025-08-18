@@ -17,6 +17,8 @@ import ortus.boxlang.runtime.types.exceptions.BoxRuntimeException;
  */
 public class RuntimeConfigListener extends BaseInterceptor {
 
+	private static final String LUCEE_ENCRYPTION_KEY = "sdfsdfs";
+
 	/**
 	 * Listen for onDatasourceConfigLoad and decrypt any encrypted datasource passwords.
 	 *
@@ -46,7 +48,7 @@ public class RuntimeConfigListener extends BaseInterceptor {
 		String password = datasourceConfig.getAsString( Key.password );
 		if ( password != null && password.startsWith( "encrypted:" ) ) {
 			// Decrypt the password
-			String decryptedPassword = new BlowFishEasy( "sdfsdfs" )
+			String decryptedPassword = new BlowFishEasy( LUCEE_ENCRYPTION_KEY )
 			    .decryptString( password.substring( "encrypted:".length() ) );
 			if ( decryptedPassword == null ) {
 				throw new BoxRuntimeException( String.format( "Failed to decrypt datasource password on [%s]", datasourceName ) );
