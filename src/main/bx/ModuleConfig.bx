@@ -184,10 +184,10 @@ import ortus.boxlang.runtime.dynamic.casters.StructCasterLoose;
 		StringCaster.castThrowablesToStrings = settings.castThrowablesToStrings;
 		Compare.lenientDateComparison = settings.lenientDateComparison;
 		
-		// Backwards compat
-		println( 'structKeyExists( StructCasterLoose, "extraLooseStructCasting" ): ' & structKeyExists( StructCasterLoose, "extraLooseStructCasting" ) )
-		if( structKeyExists( StructCasterLoose, "extraLooseStructCasting" ) ) {
+		try {
 			StructCasterLoose.extraLooseStructCasting = settings.extraLooseStructCasting;
+		} catch( any e ) {
+			// Backwards compat	for older BL core versions
 		}
 
 		// Verify Engine
