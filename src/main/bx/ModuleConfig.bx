@@ -188,6 +188,7 @@ import ortus.boxlang.runtime.dynamic.casters.StructCasterLoose;
 			StructCasterLoose.extraLooseStructCasting = settings.extraLooseStructCasting;
 		} catch( any e ) {
 			// Backwards compat	for older BL core versions
+			println( e.message )
 		}
 
 		// Verify Engine
