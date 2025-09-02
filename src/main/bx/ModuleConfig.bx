@@ -185,6 +185,7 @@ import ortus.boxlang.runtime.dynamic.casters.StructCasterLoose;
 		Compare.lenientDateComparison = settings.lenientDateComparison;
 		
 		// Backwards compat
+		println( 'structKeyExists( StructCasterLoose, "extraLooseStructCasting" ): ' & structKeyExists( StructCasterLoose, "extraLooseStructCasting" ) )
 		if( structKeyExists( StructCasterLoose, "extraLooseStructCasting" ) ) {
 			StructCasterLoose.extraLooseStructCasting = settings.extraLooseStructCasting;
 		}
