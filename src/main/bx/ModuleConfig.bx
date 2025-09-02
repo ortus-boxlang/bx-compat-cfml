@@ -19,6 +19,7 @@ import java:ortus.boxlang.runtime.context.BaseBoxContext;
 import java:ortus.boxlang.runtime.dynamic.casters.NumberCaster;
 import java:ortus.boxlang.runtime.dynamic.casters.StringCaster;
 import java:ortus.boxlang.runtime.operators.Compare;
+import ortus.boxlang.runtime.dynamic.casters.StructCasterLoose;
 
  class {
 
@@ -123,6 +124,10 @@ import java:ortus.boxlang.runtime.operators.Compare;
 			// This simulates the query to empty value that Adobe/Lucee do when NOT in full null support
 			// We default it to true to simulate Adobe/Lucee behavior
 			queryNullToEmpty = true,
+			// CF will allow ANY java class to be generically cast into a struct (using public fields and getters) only excepting arrays and "simple" values.
+			// This allows even things like a closure to be passed into a struct BIF.  
+			// BL will only use the generic class-to-struct logic for inputs which pass the isObject() test unless this flag is true
+			extraLooseStructCasting = true,
 			// The CF -> BL AST transpiler settings
 			// The transpiler is in the core, but will eventually live in this module, so the settings are here.
             transpiler = {
@@ -178,6 +183,11 @@ import java:ortus.boxlang.runtime.operators.Compare;
 		StringCaster.castClassesToStrings = settings.castClassesToStrings;
 		StringCaster.castThrowablesToStrings = settings.castThrowablesToStrings;
 		Compare.lenientDateComparison = settings.lenientDateComparison;
+		
+		// Backwards compat
+		if( structKeyExists( StructCasterLoose, "extraLooseStructCasting" ) ) {
+			StructCasterLoose.extraLooseStructCasting = settings.extraLooseStructCasting;
+		}
 
 		// Verify Engine
 		if( isNull( settings.engine ) || settings.engine.isEmpty() ){
