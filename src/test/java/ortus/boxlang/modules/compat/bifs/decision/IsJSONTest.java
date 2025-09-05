@@ -27,7 +27,7 @@ import ortus.boxlang.modules.compat.BaseIntegrationTest;
 
 public class IsJSONTest extends BaseIntegrationTest {
 
-	@DisplayName( "Tests Lucee compat with no quoted keys" )
+	@DisplayName( "Tests with no quoted keys and lenient parsing disabled" )
 	@Test
 	void testIsJSONNoQuoteKeys() {
 		runtime.executeSource(
@@ -38,12 +38,34 @@ public class IsJSONTest extends BaseIntegrationTest {
 		assertThat( variables.getAsBoolean( result ) ).isTrue();
 	}
 
-	@DisplayName( "Tests Lucee compat with single quoted keys" )
+	@DisplayName( "Tests with single quoted keys and lenient parsing disabled" )
 	@Test
 	void testIsJSONSingleQuoteKeys() {
 		runtime.executeSource(
 		    """
 		    result = isJSON( "{ 'a' : 1, 'b' : 2, 'c' : 3 }" );
+		    """,
+		    context );
+		assertThat( variables.getAsBoolean( result ) ).isTrue();
+	}
+
+	@DisplayName( "Tests with trailing commas and lenient parsing disabled" )
+	@Test
+	void testIsJSONTrailingCommas() {
+		runtime.executeSource(
+		    """
+		    result = isJSON( '{ "foo" : "bar", }' );
+		    """,
+		    context );
+		assertThat( variables.getAsBoolean( result ) ).isTrue();
+	}
+
+	@DisplayName( "Tests with leading numeric zeroes and lenient parsing disabled" )
+	@Test
+	void testIsJSONLeadingZero() {
+		runtime.executeSource(
+		    """
+		    result = isJSON( '{ "foo" : 01 }' );
 		    """,
 		    context );
 		assertThat( variables.getAsBoolean( result ) ).isTrue();

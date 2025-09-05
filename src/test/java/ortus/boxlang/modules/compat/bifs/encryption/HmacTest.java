@@ -10,7 +10,7 @@ import ortus.boxlang.modules.compat.BaseIntegrationTest;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.util.EncryptionUtil;
 
-public class Hmac extends BaseIntegrationTest {
+public class HmacTest extends BaseIntegrationTest {
 
 	@DisplayName( "It returns a hmac with all uppercase letters" )
 	@Test
