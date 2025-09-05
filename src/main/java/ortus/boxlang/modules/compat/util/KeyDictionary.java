@@ -26,6 +26,7 @@ import ortus.boxlang.runtime.scopes.Key;
 public class KeyDictionary {
 
 	public static final Key	isAdobe						= Key.of( "isAdobe" );
+	public static final Key	isLucee						= Key.of( "isLucee" );
 	public static final Key	bxClients					= Key.of( "bxClients" );
 	public static final Key	blockedExtForFileUpload		= Key.of( "blockedExtForFileUpload" );
 	public static final Key	client						= Key.of( "client" );

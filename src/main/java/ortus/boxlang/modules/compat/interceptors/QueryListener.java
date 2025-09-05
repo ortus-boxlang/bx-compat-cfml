@@ -15,14 +15,13 @@
 package ortus.boxlang.modules.compat.interceptors;
 
 import ortus.boxlang.modules.compat.util.KeyDictionary;
-import ortus.boxlang.runtime.BoxRuntime;
+import ortus.boxlang.modules.compat.util.SettingsUtil;
 import ortus.boxlang.runtime.dynamic.casters.BooleanCaster;
 import ortus.boxlang.runtime.events.BaseInterceptor;
 import ortus.boxlang.runtime.events.InterceptionPoint;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.IStruct;
 import ortus.boxlang.runtime.types.Query;
-import ortus.boxlang.runtime.types.Struct;
 
 /**
  * This interceptor is used to convert null values to empty strings in query results
@@ -33,25 +32,6 @@ import ortus.boxlang.runtime.types.Struct;
  * @since 1.0.0
  */
 public class QueryListener extends BaseInterceptor {
-
-	/**
-	 * Seed the module settings
-	 */
-	private static IStruct MODULE_SETTINGS = Struct.EMPTY;
-
-	/**
-	 * Get the module settings, caching them for future use.
-	 * 
-	 * We use a getter over static initialization to ensure the module is fully initialized before we attempt to access it.
-	 *
-	 * @return Module settings struct
-	 */
-	private IStruct getModuleSettings() {
-		if ( MODULE_SETTINGS.isEmpty() ) {
-			MODULE_SETTINGS = BoxRuntime.getInstance().getModuleService().getModuleSettings( KeyDictionary.moduleName );
-		}
-		return MODULE_SETTINGS;
-	}
 
 	/**
 	 * Modify the query results before they are returned to the calling code.
@@ -74,7 +54,7 @@ public class QueryListener extends BaseInterceptor {
 	 */
 	@InterceptionPoint
 	public void postQueryExecute( IStruct interceptData ) {
-		Boolean nullToEmpty = BooleanCaster.cast( getModuleSettings().getOrDefault( KeyDictionary.queryNullToEmpty, false ) );
+		Boolean nullToEmpty = BooleanCaster.cast( SettingsUtil.getSetting( KeyDictionary.queryNullToEmpty, false ) );
 
 		if ( !nullToEmpty ) {
 			return;
@@ -104,7 +84,7 @@ public class QueryListener extends BaseInterceptor {
 	 */
 	@InterceptionPoint
 	public void queryAddRow( IStruct interceptData ) {
-		Boolean nullToEmpty = BooleanCaster.cast( getModuleSettings().getOrDefault( KeyDictionary.queryNullToEmpty, false ) );
+		Boolean nullToEmpty = BooleanCaster.cast( SettingsUtil.getSetting( KeyDictionary.queryNullToEmpty, false ) );
 
 		if ( !nullToEmpty ) {
 			return;

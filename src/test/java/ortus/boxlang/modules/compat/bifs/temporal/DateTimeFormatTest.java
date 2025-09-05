@@ -27,6 +27,21 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 
 	}
 
+	@DisplayName( "It can handle Lucee DD conversion to dd in DateFormat" )
+	@Test
+	@Disabled
+	public void canConvertLuceeDD() {
+		DateTime refNow = new DateTime();
+		variables.put( Key.date, refNow );
+		runtime.executeSource(
+		    """
+		    result = dateformat( date, "YYYY-MM-DD" );
+		    """,
+		    context );
+		assertEquals( variables.getAsString( result ), refNow.clone().format( "yyyy-MM-dd" ) );
+
+	}
+
 	@DisplayName( "It tests the BIF Will Maintain Locale-specific compatibility with common returns" )
 	@Test
 	public void testDateFormatCompat() {

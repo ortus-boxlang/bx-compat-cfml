@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import ortus.boxlang.modules.compat.util.SettingsUtil;
 import ortus.boxlang.runtime.bifs.BIF;
 import ortus.boxlang.runtime.events.BaseInterceptor;
 import ortus.boxlang.runtime.events.InterceptionPoint;
@@ -90,6 +91,11 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 		LITERAL_MASK_REPLACEMENTS.put( "nn", "mm" );
 	}
 
+	private static final Map<String, String> LUCEE_DATE_FORMAT_REPLACEMENTS = new LinkedHashMap<>();
+	static {
+		LUCEE_DATE_FORMAT_REPLACEMENTS.put( "D", "d" );
+	}
+
 	/**
 	 * Intercept BIF Invocation
 	 *
@@ -124,11 +130,16 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 		Key		commonFormatKey	= Key.of( format.trim() + mode );
 
 		if ( !formatKey.equals( FORMAT_EPOCH ) && !formatKey.equals( FORMAT_EPOCHMS ) && !DateTime.COMMON_FORMATTERS.containsKey( commonFormatKey ) ) {
-
 			if ( LITERAL_MASK_REPLACEMENTS.containsKey( format ) ) {
 				arguments.put( finalArg, LITERAL_MASK_REPLACEMENTS.get( format ) );
 			} else {
 				DATE_MASK_REPLACEMENTS.entrySet().stream().forEach( entry -> {
+					arguments.put( finalArg, arguments.getAsString( finalArg ).replaceAll( entry.getKey(), entry.getValue() ) );
+				} );
+			}
+
+			if ( mode.equals( DateTime.MODE_DATE ) && SettingsUtil.isLucee() ) {
+				LUCEE_DATE_FORMAT_REPLACEMENTS.entrySet().stream().forEach( entry -> {
 					arguments.put( finalArg, arguments.getAsString( finalArg ).replaceAll( entry.getKey(), entry.getValue() ) );
 				} );
 			}
