@@ -14,9 +14,9 @@ public class NullEqualsEmptyStringTest extends BaseIntegrationTest {
 
 	ByteArrayOutputStream baos;
 
-	@DisplayName( "Test null is undefined" )
+	@DisplayName( "Test null equals empty string" )
 	@Test
-	public void testNullIsUndefined() {
+	public void testNullEqualsEmptyString() {
 		runtime.executeSource(
 		    """
 		    result = (nullValue() == "");
