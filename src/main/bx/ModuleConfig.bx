@@ -119,6 +119,8 @@ import ortus.boxlang.runtime.types.util.JSONUtil;
 			castThrowablesToStrings = true,
 			// Mimic the CFML behavior of loose date comparison only to the instant level ( and not the TZ)
 			lenientDateComparison = true,
+			// Mimic the CF behavior of null and empty string being equal
+			nullEqualsEmptyString = true,
 			// JSON control character auto-escaping flag
 			// IF you turn to true, be aware that the entire JSON serialization will be escaped and be slower.
 			jsonEscapeControlCharacters = true,
@@ -186,6 +188,11 @@ import ortus.boxlang.runtime.types.util.JSONUtil;
 		StringCaster.castClassesToStrings = settings.castClassesToStrings;
 		StringCaster.castThrowablesToStrings = settings.castThrowablesToStrings;
 		Compare.lenientDateComparison = settings.lenientDateComparison;
+
+		// Backwards compat
+		if( structKeyExists( Compare, "nullEqualsEmptyString" ) ){
+			Compare.nullEqualsEmptyString = settings.nullEqualsEmptyString;
+		}
 
 		// Backwards compat
 		if( structKeyExists( StructCasterLoose, "extraLooseStructCasting" ) ) {
