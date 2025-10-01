@@ -19,10 +19,8 @@ public class NullEqualsEmptyStringTest extends BaseIntegrationTest {
 	public void testNullEqualsEmptyString() {
 		runtime.executeSource(
 		    """
-		    import java:ortus.boxlang.runtime.operators.Compare;
-		    		    println( "in test set to: " & Compare.nullEqualsEmptyString );
-		    		       result = (nullValue() == "");
-		    		       """, context );
+		    result = (nullValue() == "");
+		    """, context );
 		// @formatter:on
 		assertThat( variables.get( result ) ).isEqualTo( true );
 	}
