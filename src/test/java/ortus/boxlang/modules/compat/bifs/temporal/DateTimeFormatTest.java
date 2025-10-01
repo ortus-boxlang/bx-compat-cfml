@@ -126,6 +126,16 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 		    context );
 		result = ( String ) variables.get( Key.of( "result" ) );
 		assertEquals( result, "2:30" );
+
+		runtime.executeSource(
+		    """
+		    setTimezone( "UTC" );
+		       ref = createDateTime( 2023, 12, 31, 14, 30, 0, 0, "UTC" );
+		          result = dateFormat( ref, "mm" );
+		          """,
+		    context );
+		result = ( String ) variables.get( Key.of( "result" ) );
+		assertEquals( result, "12" );
 	}
 
 	@DisplayName( "It tests the BIF DateFormat will return empty strings when passed an empty string" )
@@ -147,4 +157,5 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 		result = variables.getAsString( Key.of( "result" ) );
 		assertEquals( result, "" );
 	}
+
 }
