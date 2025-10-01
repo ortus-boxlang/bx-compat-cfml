@@ -191,7 +191,9 @@ import ortus.boxlang.runtime.types.util.JSONUtil;
 
 		// Backwards compat
 		if( structKeyExists( Compare, "nullEqualsEmptyString" ) ){
+			println( "Setting Compare.nullEqualsEmptyString to " & settings.nullEqualsEmptyString );
 			Compare.nullEqualsEmptyString = settings.nullEqualsEmptyString;
+			println( "set to: " & Compare.nullEqualsEmptyString );
 		}
 
 		// Backwards compat
