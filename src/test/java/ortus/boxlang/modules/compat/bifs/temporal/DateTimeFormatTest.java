@@ -27,6 +27,21 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 
 	}
 
+	@DisplayName( "It can handle Lucee DD conversion to dd in DateFormat" )
+	@Test
+	@Disabled
+	public void canConvertLuceeDD() {
+		DateTime refNow = new DateTime();
+		variables.put( Key.date, refNow );
+		runtime.executeSource(
+		    """
+		    result = dateformat( date, "YYYY-MM-DD" );
+		    """,
+		    context );
+		assertEquals( variables.getAsString( result ), refNow.clone().format( "yyyy-MM-dd" ) );
+
+	}
+
 	@DisplayName( "It tests the BIF Will Maintain Locale-specific compatibility with common returns" )
 	@Test
 	public void testDateFormatCompat() {
@@ -111,6 +126,16 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 		    context );
 		result = ( String ) variables.get( Key.of( "result" ) );
 		assertEquals( result, "2:30" );
+
+		runtime.executeSource(
+		    """
+		    setTimezone( "UTC" );
+		       ref = createDateTime( 2023, 12, 31, 14, 30, 0, 0, "UTC" );
+		          result = dateFormat( ref, "mm" );
+		          """,
+		    context );
+		result = ( String ) variables.get( Key.of( "result" ) );
+		assertEquals( result, "12" );
 	}
 
 	@DisplayName( "It tests the BIF DateFormat will return empty strings when passed an empty string" )
@@ -132,4 +157,5 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 		result = variables.getAsString( Key.of( "result" ) );
 		assertEquals( result, "" );
 	}
+
 }

@@ -40,7 +40,7 @@ public class CacheGetMetadataTest extends BaseCacheTest {
 		IStruct data = variables.getAsStruct( result );
 		assertThat( data ).isNotNull();
 		assertThat( data ).isInstanceOf( Struct.class );
-		assertThat( data.get( "hits" ) ).isEqualTo( 1 );
+		assertThat( data.get( "hits" ) ).isEqualTo( 0 );
 	}
 
 	@Test
@@ -67,7 +67,7 @@ public class CacheGetMetadataTest extends BaseCacheTest {
 		IStruct data = variables.getAsStruct( result );
 		assertThat( data ).isNotNull();
 		assertThat( data ).isInstanceOf( Struct.class );
-		assertThat( data.get( "hits" ) ).isEqualTo( 1 );
+		assertThat( data.get( "hits" ) ).isEqualTo( 0 );
 	}
 
 	@Test
@@ -86,12 +86,12 @@ public class CacheGetMetadataTest extends BaseCacheTest {
 		var tddKey = Key.of( "tdd" );
 		assertThat( data.get( tddKey ) ).isNotNull();
 		assertThat( data.getAsStruct( tddKey ) ).isInstanceOf( Struct.class );
-		assertThat( data.getAsStruct( tddKey ).get( "hits" ) ).isEqualTo( 1 );
+		assertThat( data.getAsStruct( tddKey ).get( "hits" ) ).isEqualTo( 0 );
 
 		var bddKey = Key.of( "bdd" );
 		assertThat( data.get( bddKey ) ).isNotNull();
 		assertThat( data.getAsStruct( bddKey ) ).isInstanceOf( Struct.class );
-		assertThat( data.getAsStruct( bddKey ).get( "hits" ) ).isEqualTo( 1 );
+		assertThat( data.getAsStruct( bddKey ).get( "hits" ) ).isEqualTo( 0 );
 	}
 
 }

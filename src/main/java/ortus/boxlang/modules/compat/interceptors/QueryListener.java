@@ -15,7 +15,7 @@
 package ortus.boxlang.modules.compat.interceptors;
 
 import ortus.boxlang.modules.compat.util.KeyDictionary;
-import ortus.boxlang.runtime.BoxRuntime;
+import ortus.boxlang.modules.compat.util.SettingsUtil;
 import ortus.boxlang.runtime.dynamic.casters.BooleanCaster;
 import ortus.boxlang.runtime.events.BaseInterceptor;
 import ortus.boxlang.runtime.events.InterceptionPoint;
@@ -32,11 +32,6 @@ import ortus.boxlang.runtime.types.Query;
  * @since 1.0.0
  */
 public class QueryListener extends BaseInterceptor {
-
-	/**
-	 * Seed the module settings
-	 */
-	private static final IStruct MODULE_SETTINGS = BoxRuntime.getInstance().getModuleService().getModuleSettings( KeyDictionary.moduleName );
 
 	/**
 	 * Modify the query results before they are returned to the calling code.
@@ -59,7 +54,7 @@ public class QueryListener extends BaseInterceptor {
 	 */
 	@InterceptionPoint
 	public void postQueryExecute( IStruct interceptData ) {
-		Boolean nullToEmpty = BooleanCaster.cast( MODULE_SETTINGS.getOrDefault( KeyDictionary.queryNullToEmpty, false ) );
+		Boolean nullToEmpty = BooleanCaster.cast( SettingsUtil.getSetting( KeyDictionary.queryNullToEmpty, false ) );
 
 		if ( !nullToEmpty ) {
 			return;
@@ -89,7 +84,7 @@ public class QueryListener extends BaseInterceptor {
 	 */
 	@InterceptionPoint
 	public void queryAddRow( IStruct interceptData ) {
-		Boolean nullToEmpty = BooleanCaster.cast( MODULE_SETTINGS.getOrDefault( KeyDictionary.queryNullToEmpty, false ) );
+		Boolean nullToEmpty = BooleanCaster.cast( SettingsUtil.getSetting( KeyDictionary.queryNullToEmpty, false ) );
 
 		if ( !nullToEmpty ) {
 			return;

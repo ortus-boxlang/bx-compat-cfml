@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import ortus.boxlang.modules.compat.util.SettingsUtil;
 import ortus.boxlang.runtime.bifs.BIF;
 import ortus.boxlang.runtime.events.BaseInterceptor;
 import ortus.boxlang.runtime.events.InterceptionPoint;
@@ -71,9 +72,8 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 		// Lucee/ACF seconds mask handling
 		DATE_MASK_REPLACEMENTS.put( ":SS", ":ss" );
 		// Lucee/ACF awful milliseconds handling
-		DATE_MASK_REPLACEMENTS.put( ".lll", ".SSS" );
-		DATE_MASK_REPLACEMENTS.put( ".ll", ".SS" );
-		DATE_MASK_REPLACEMENTS.put( ".l", ".S" );
+		DATE_MASK_REPLACEMENTS.put( "l", "S" );
+		// We need to keep this weird uppercase pattern match since `L` is also a DateTimeFormatter mask for Month
 		DATE_MASK_REPLACEMENTS.put( ".LLL", ".SSS" );
 		DATE_MASK_REPLACEMENTS.put( ".LL", ".SS" );
 		DATE_MASK_REPLACEMENTS.put( ".L", ".S" );
@@ -89,6 +89,16 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 		LITERAL_MASK_REPLACEMENTS.put( "mmmm", "MMMM" );
 		LITERAL_MASK_REPLACEMENTS.put( "n", "m" );
 		LITERAL_MASK_REPLACEMENTS.put( "nn", "mm" );
+	}
+
+	private static final Map<String, String> DATE_FORMAT_REPLACEMENTS = new LinkedHashMap<>();
+	static {
+		DATE_FORMAT_REPLACEMENTS.put( "m", "M" );
+	}
+
+	private static final Map<String, String> LUCEE_DATE_FORMAT_REPLACEMENTS = new LinkedHashMap<>();
+	static {
+		LUCEE_DATE_FORMAT_REPLACEMENTS.put( "D", "d" );
 	}
 
 	/**
@@ -124,8 +134,19 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 
 		Key		commonFormatKey	= Key.of( format.trim() + mode );
 
-		if ( !formatKey.equals( FORMAT_EPOCH ) && !formatKey.equals( FORMAT_EPOCHMS ) && !DateTime.COMMON_FORMATTERS.containsKey( commonFormatKey ) ) {
+		if ( mode.equals( DateTime.MODE_DATE ) ) {
+			// for dateFormat compat, specifically, we replace all lowercase `m` characters with uppercase
+			DATE_FORMAT_REPLACEMENTS.entrySet().stream().forEach( entry -> {
+				arguments.put( finalArg, arguments.getAsString( finalArg ).replaceAll( entry.getKey(), entry.getValue() ) );
+			} );
+		}
+		if ( mode.equals( DateTime.MODE_DATE ) && SettingsUtil.isLucee() ) {
+			LUCEE_DATE_FORMAT_REPLACEMENTS.entrySet().stream().forEach( entry -> {
+				arguments.put( finalArg, arguments.getAsString( finalArg ).replaceAll( entry.getKey(), entry.getValue() ) );
+			} );
+		}
 
+		if ( !formatKey.equals( FORMAT_EPOCH ) && !formatKey.equals( FORMAT_EPOCHMS ) && !DateTime.COMMON_FORMATTERS.containsKey( commonFormatKey ) ) {
 			if ( LITERAL_MASK_REPLACEMENTS.containsKey( format ) ) {
 				arguments.put( finalArg, LITERAL_MASK_REPLACEMENTS.get( format ) );
 			} else {
@@ -133,7 +154,6 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 					arguments.put( finalArg, arguments.getAsString( finalArg ).replaceAll( entry.getKey(), entry.getValue() ) );
 				} );
 			}
-
 		}
 
 	}

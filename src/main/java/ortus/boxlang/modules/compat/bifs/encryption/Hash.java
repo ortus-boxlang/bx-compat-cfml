@@ -22,7 +22,7 @@ import java.io.IOException;
 import com.fasterxml.jackson.jr.ob.JSONObjectException;
 
 import ortus.boxlang.modules.compat.util.KeyDictionary;
-import ortus.boxlang.runtime.BoxRuntime;
+import ortus.boxlang.modules.compat.util.SettingsUtil;
 import ortus.boxlang.runtime.bifs.BoxBIF;
 import ortus.boxlang.runtime.bifs.BoxMember;
 import ortus.boxlang.runtime.context.IBoxContext;
@@ -33,7 +33,6 @@ import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Argument;
 import ortus.boxlang.runtime.types.BoxLangType;
-import ortus.boxlang.runtime.types.IStruct;
 
 @BoxBIF
 @BoxBIF( alias = "Hash40" )
@@ -43,10 +42,8 @@ import ortus.boxlang.runtime.types.IStruct;
 @BoxMember( type = BoxLangType.DATETIME, name = "hash" )
 public class Hash extends ortus.boxlang.runtime.bifs.global.encryption.Hash {
 
-	private static final String		DEFAULT_ALGORITHM	= "MD5";
-	private static final String		DEFAULT_ENCODING	= "utf-8";
-
-	private static final IStruct	MODULE_SETTINGS		= BoxRuntime.getInstance().getModuleService().getModuleSettings( KeyDictionary.moduleName );
+	private static final String	DEFAULT_ALGORITHM	= "MD5";
+	private static final String	DEFAULT_ENCODING	= "utf-8";
 
 	/**
 	 * Constructor
@@ -84,7 +81,7 @@ public class Hash extends ortus.boxlang.runtime.bifs.global.encryption.Hash {
 		Integer	appliedIterations;
 		if ( iterations == null ) {
 			appliedIterations = 1;
-		} else if ( BooleanCaster.cast( MODULE_SETTINGS.getOrDefault( KeyDictionary.isAdobe, false ) ) ) {
+		} else if ( BooleanCaster.cast( SettingsUtil.getSetting( KeyDictionary.isAdobe, false ) ) ) {
 			appliedIterations = IntegerCaster.cast( iterations ) + 1; // Adobe engines default to 0 iterations and each iteration is an additional digest
 		} else {
 			appliedIterations = IntegerCaster.cast( iterations );
