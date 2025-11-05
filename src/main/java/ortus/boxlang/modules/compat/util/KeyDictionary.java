@@ -47,6 +47,9 @@ public class KeyDictionary {
 	public static final Key	queryNullToEmpty			= Key.of( "queryNullToEmpty" );
 	public static final Key	tagName						= Key.of( "tagName" );
 	public static final Key	throwWhenNotExist			= Key.of( "throwWhenNotExist" );
+	public static final Key	serverStartEnabled			= Key.of( "serverStartEnabled" );
+	public static final Key	serverStartPath				= Key.of( "serverStartPath" );
+	public static final Key	onServerStart				= Key.of( "onServerStart" );
 
 	// ORM keys
 	public static final Key	autoManageSession			= Key.of( "autoManageSession" );

@@ -1,0 +1,10 @@
+import ortus.boxlang.modules.compat.interceptors.ServerStartTest;
+
+class {
+
+	function onServerStart() {
+		ServerStartTest.serverStarted = true;
+		println("Server is starting up!");
+	}
+
+}
