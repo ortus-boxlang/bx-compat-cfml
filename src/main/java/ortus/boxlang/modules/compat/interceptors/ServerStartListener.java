@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import ortus.boxlang.modules.compat.util.KeyDictionary;
 import ortus.boxlang.modules.compat.util.SettingsUtil;
 import ortus.boxlang.runtime.context.IBoxContext;
+import ortus.boxlang.runtime.context.ThreadBoxContext;
 import ortus.boxlang.runtime.dynamic.casters.BooleanCaster;
 import ortus.boxlang.runtime.dynamic.casters.StringCaster;
 import ortus.boxlang.runtime.events.BaseInterceptor;
@@ -94,7 +95,11 @@ public class ServerStartListener extends BaseInterceptor {
 				    .unWrapBoxLangClass();
 
 				// Fire it! If the method doesn't exist, this will blow up which I prefer.
-				serverStartClass.dereferenceAndInvoke( context, KeyDictionary.onServerStart, new Object[] {}, false );
+				// Use a ThreadBoxContext so we have a JDBC-capable context
+				ThreadBoxContext.runInContext(
+				    context,
+				    ( ctx ) -> serverStartClass.dereferenceAndInvoke( ctx, KeyDictionary.onServerStart, new Object[] {}, false )
+				);
 
 				// Clean up our temp mapping
 				getRuntime().getConfiguration().unregisterMapping( "/" + tempMappingName );
