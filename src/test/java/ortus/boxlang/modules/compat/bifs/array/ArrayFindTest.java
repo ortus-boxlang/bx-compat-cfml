@@ -27,6 +27,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import ortus.boxlang.modules.compat.BaseIntegrationTest;
 import ortus.boxlang.runtime.BoxRuntime;
 import ortus.boxlang.runtime.context.IBoxContext;
 import ortus.boxlang.runtime.context.ScriptingRequestBoxContext;
@@ -34,7 +35,7 @@ import ortus.boxlang.runtime.scopes.IScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.scopes.VariablesScope;
 
-public class ArrayFindTest {
+public class ArrayFindTest extends BaseIntegrationTest {
 
 	static BoxRuntime	instance;
 	IBoxContext			context;
@@ -229,13 +230,15 @@ public class ArrayFindTest {
 		        testArray = [ "true", 1, "1", 1.0, "1.0", true, "yes", "Y" ];
 				result = testArray.find( 1 );
 				arrayResult = testArray.findAll( 1 );
+				// println( arrayResult );
 				result2 = testArray.find( 99 );
 				arrayResult2 = testArray.findAll( 99 );
+				// println( arrayResult2 );
 		    """,
 		    context );
 		// @formatter:on
-		assertThat( variables.get( result ) ).isEqualTo( 2 );
-		assertThat( variables.getAsArray( Key.of( "arrayResult" ) ).size() ).isEqualTo( 4 );
+		assertThat( variables.get( result ) ).isEqualTo( 1 );
+		assertThat( variables.getAsArray( Key.of( "arrayResult" ) ).size() ).isEqualTo( 7 );
 		assertThat( variables.get( Key.of( "result2" ) ) ).isEqualTo( 0 );
 		assertThat( variables.getAsArray( Key.of( "arrayResult2" ) ).size() ).isEqualTo( 0 );
 	}
