@@ -22,6 +22,7 @@ import ortus.boxlang.runtime.events.InterceptionPoint;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.IStruct;
 import ortus.boxlang.runtime.types.Query;
+import ortus.boxlang.runtime.types.Struct;
 
 /**
  * This interceptor is used to convert null values to empty strings in query results
@@ -97,5 +98,36 @@ public class QueryListener extends BaseInterceptor {
 				rowData[ i ] = "";
 			}
 		}
+	}
+
+	/**
+	 * Listen for queries being serialized, and upper case the keys in the structs, if needed
+	 *
+	 * Incoming data:
+	 * - query : The query object data which is about to be serialized.
+	 *
+	 * @param interceptData
+	 */
+	@InterceptionPoint
+	public void onJSONQuerySerialize( IStruct interceptData ) {
+		Boolean upperCaseKeys = BooleanCaster
+		    .attempt( ( ( IStruct ) SettingsUtil.getSetting( KeyDictionary.transpiler, Struct.EMPTY ) ).get( KeyDictionary.upperCaseKeys ) )
+		    .getOrDefault( false );
+
+		if ( !upperCaseKeys ) {
+			return;
+		}
+
+		Object data = interceptData.get( Key.data );
+		// Upper case all top level keys of the struct
+		if ( data instanceof IStruct sData ) {
+			Key[] keys = sData.keySet().toArray( new Key[ 0 ] );
+			for ( Key key : keys ) {
+				Object rowObj = sData.get( key );
+				sData.remove( key );
+				sData.put( Key.of( key.toString().toUpperCase() ), rowObj );
+			}
+		}
+
 	}
 }

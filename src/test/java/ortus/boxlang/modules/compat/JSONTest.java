@@ -1,5 +1,7 @@
 package ortus.boxlang.modules.compat;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -66,5 +68,20 @@ public class JSONTest extends BaseIntegrationTest {
 			"""
 			, context, BoxSourceType.CFSCRIPT );
 		// @formatter:on
+	}
+
+	@DisplayName( "Test serialize query to JSON with upper case keys" )
+	@Test
+	// @Disabled
+	public void testSerializeQueryToJSONUpperCaseKeys() {
+		// @formatter:off
+		runtime.executeSource( """
+			query = queryNew( "id,name", "integer,varchar", [ { id=1, name="Brad" }, { id=2, name="Scott" } ] );
+			result = serializeJSON( query );
+			"""
+			, context, BoxSourceType.CFSCRIPT );
+		// @formatter:on
+		assertThat( variables.getAsString( result ) ).contains( "COLUMNS" );
+		assertThat( variables.getAsString( result ) ).contains( "DATA" );
 	}
 }

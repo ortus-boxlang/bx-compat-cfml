@@ -25,10 +25,8 @@ import ortus.boxlang.runtime.scopes.Key;
  */
 public class KeyDictionary {
 
-	public static final Key	isAdobe						= Key.of( "isAdobe" );
-	public static final Key	isLucee						= Key.of( "isLucee" );
-	public static final Key	bxClients					= Key.of( "bxClients" );
 	public static final Key	blockedExtForFileUpload		= Key.of( "blockedExtForFileUpload" );
+	public static final Key	bxClients					= Key.of( "bxClients" );
 	public static final Key	client						= Key.of( "client" );
 	public static final Key	clientManagement			= Key.of( "clientManagement" );
 	public static final Key	clientStorage				= Key.of( "clientStorage" );
@@ -36,7 +34,9 @@ public class KeyDictionary {
 	public static final Key	filterOrTags				= Key.of( "filterOrTags" );
 	public static final Key	functionName				= Key.of( "functionName" );
 	public static final Key	hitCount					= Key.of( "hitCount" );
+	public static final Key	isAdobe						= Key.of( "isAdobe" );
 	public static final Key	isKey						= Key.of( "isKey" );
+	public static final Key	isLucee						= Key.of( "isLucee" );
 	public static final Key	jsonEscapeControlCharacters	= Key.of( "jsonEscapeControlCharacters" );
 	public static final Key	LUCEE_UPLOAD_BLOCKLIST		= Key.of( "LUCEE_UPLOAD_BLOCKLIST" );
 	public static final Key	moduleName					= Key.of( "compat-cfml" );
@@ -44,12 +44,14 @@ public class KeyDictionary {
 	public static final Key	objectType					= Key.of( "objectType" );
 	public static final Key	ON_CLIENT_CREATED			= Key.of( "onClientCreated" );
 	public static final Key	ON_CLIENT_DESTROYED			= Key.of( "onClientDestroyed" );
+	public static final Key	onServerStart				= Key.of( "onServerStart" );
 	public static final Key	queryNullToEmpty			= Key.of( "queryNullToEmpty" );
-	public static final Key	tagName						= Key.of( "tagName" );
-	public static final Key	throwWhenNotExist			= Key.of( "throwWhenNotExist" );
 	public static final Key	serverStartEnabled			= Key.of( "serverStartEnabled" );
 	public static final Key	serverStartPath				= Key.of( "serverStartPath" );
-	public static final Key	onServerStart				= Key.of( "onServerStart" );
+	public static final Key	tagName						= Key.of( "tagName" );
+	public static final Key	throwWhenNotExist			= Key.of( "throwWhenNotExist" );
+	public static final Key	transpiler					= Key.of( "transpiler" );
+	public static final Key	upperCaseKeys				= Key.of( "upperCaseKeys" );
 
 	// ORM keys
 	public static final Key	autoManageSession			= Key.of( "autoManageSession" );
