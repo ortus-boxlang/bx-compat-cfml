@@ -15,6 +15,7 @@
 package ortus.boxlang.modules.compat.interceptors;
 
 import ortus.boxlang.runtime.application.Session;
+import ortus.boxlang.runtime.dynamic.casters.StringCaster;
 import ortus.boxlang.runtime.events.BaseInterceptor;
 import ortus.boxlang.runtime.events.InterceptionPoint;
 import ortus.boxlang.runtime.scopes.Key;
@@ -33,7 +34,7 @@ public class SessionListener extends BaseInterceptor {
 	/**
 	 * The URL token format
 	 */
-	public static final String URL_TOKEN_FORMAT = "CFID=%s";
+	public static final String URL_TOKEN_FORMAT = "CFID=%s&CFTOKEN=%s";
 
 	/**
 	 * Intercept BIF Invocation
@@ -53,8 +54,8 @@ public class SessionListener extends BaseInterceptor {
 		sessionScope.put( Key.cfid, sessionID.getName() );
 
 		// URL Token Compat
-		String bxid = userSession.getApplicationName() + Session.ID_CONCATENATOR + sessionID;
-		sessionScope.put( Key.urlToken, String.format( URL_TOKEN_FORMAT, bxid ) );
+		sessionScope.put( Key.urlToken,
+		    String.format( URL_TOKEN_FORMAT, sessionScope.getAsString( Key.cfid ), StringCaster.cast( sessionScope.get( Key.cftoken ) ) ) );
 	}
 
 }
