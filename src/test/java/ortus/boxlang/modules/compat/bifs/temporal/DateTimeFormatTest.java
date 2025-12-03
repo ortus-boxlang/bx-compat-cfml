@@ -42,6 +42,21 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 
 	}
 
+	@DisplayName( "It can use the undocumented member format function to rewrite masks" )
+	@Test
+	@Disabled
+	public void canUseFormatMember() {
+		DateTime refNow = new DateTime();
+		variables.put( Key.date, refNow );
+		runtime.executeSource(
+		    """
+		    result = date.format( "HH:nn:ss.lll" );
+		    """,
+		    context );
+		assertEquals( variables.getAsString( result ), refNow.clone().format( "HH:mm:ss.SSS" ) );
+
+	}
+
 	@DisplayName( "It tests the BIF Will Maintain Locale-specific compatibility with common returns" )
 	@Test
 	public void testDateFormatCompat() {
