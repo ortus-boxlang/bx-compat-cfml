@@ -39,7 +39,10 @@ public class DateTimeFormat extends ortus.boxlang.runtime.bifs.global.temporal.D
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
 		// Lucee and ACF will accept a empty string and return an empty string...
 		Object formattable = arguments.get( Key.date );
-		if ( formattable instanceof String && StringCaster.cast( formattable ).trim().isEmpty() ) {
+		// return an empty string if a null value was passed
+		if ( formattable == null ) {
+			return "";
+		} else if ( formattable instanceof String && StringCaster.cast( formattable ).trim().isEmpty() ) {
 			return formattable;
 		}
 		interceptorService.announce(

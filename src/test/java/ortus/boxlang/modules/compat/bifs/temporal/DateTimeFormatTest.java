@@ -173,4 +173,24 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 		assertEquals( result, "" );
 	}
 
+	@DisplayName( "It tests the BIF DateFormat will return empty strings when passed a null" )
+	@Test
+	public void testsNullRidiculousness() {
+		runtime.executeSource(
+		    """
+		    result = dateFormat( nullValue(), "yyyy-mm-dd" );
+		          """,
+		    context );
+		String result = variables.getAsString( Key.of( "result" ) );
+		assertEquals( result, "" );
+
+		runtime.executeSource(
+		    """
+		    result = dateTimeFormat( nullValue(), "yyyy-mm-dd hh:nn:ss" );
+		          """,
+		    context );
+		result = variables.getAsString( Key.of( "result" ) );
+		assertEquals( result, "" );
+	}
+
 }
