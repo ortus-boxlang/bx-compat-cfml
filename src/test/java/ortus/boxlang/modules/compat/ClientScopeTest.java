@@ -1,8 +1,8 @@
 package ortus.boxlang.modules.compat;
 
-import static com.google.common.truth.Truth.assertThat;
-
 import org.junit.jupiter.api.Test;
+
+import static com.google.common.truth.Truth.assertThat;
 
 import ortus.boxlang.modules.compat.runtime.context.ClientScope;
 import ortus.boxlang.modules.compat.util.KeyDictionary;
@@ -41,6 +41,8 @@ public class ClientScopeTest extends BaseIntegrationTest {
 		assertThat( client.containsKey( Key.cfid ) ).isTrue();
 		assertThat( client.containsKey( Key.cftoken ) ).isTrue();
 		assertThat( client.containsKey( Key.urlToken ) ).isTrue();
+		assertThat( client.getAsString( Key.urlToken ) ).contains( "CFID=" );
+		assertThat( client.getAsString( Key.urlToken ) ).contains( "CFTOKEN=" );
 		assertThat( client.containsKey( KeyDictionary.hitCount ) ).isTrue();
 		assertThat( client.containsKey( Key.lastVisit ) ).isTrue();
 		assertThat( client.containsKey( Key.timeCreated ) ).isTrue();

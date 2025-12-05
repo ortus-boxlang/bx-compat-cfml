@@ -20,11 +20,13 @@ package ortus.boxlang.modules.compat.runtime.context;
 import java.io.Serializable;
 import java.time.Duration;
 
+import ortus.boxlang.modules.compat.interceptors.SessionListener;
 import ortus.boxlang.modules.compat.util.KeyDictionary;
 import ortus.boxlang.runtime.BoxRuntime;
 import ortus.boxlang.runtime.application.Application;
 import ortus.boxlang.runtime.application.BaseApplicationListener;
 import ortus.boxlang.runtime.context.IBoxContext;
+import ortus.boxlang.runtime.dynamic.casters.StringCaster;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.DateTime;
 import ortus.boxlang.runtime.types.IStruct;
@@ -114,8 +116,8 @@ public class Client implements Serializable {
 		// This is 0 for compatibility with CFML and for security.
 		this.clientScope.put( Key.cftoken, 0 );
 		// URL Token Compat
-		String bxid = application.getName() + Client.ID_CONCATENATOR + ID.getName();
-		this.clientScope.put( Key.urlToken, String.format( Client.URL_TOKEN_FORMAT, bxid ) );
+		this.clientScope.put( Key.urlToken, String.format( SessionListener.URL_TOKEN_FORMAT, this.clientScope.getAsString( Key.cfid ),
+		    StringCaster.cast( this.clientScope.get( Key.cftoken ) ) ) );
 		this.clientScope.put( KeyDictionary.hitCount, 0 );
 		this.clientScope.put( Key.lastVisit, timeNow );
 		this.clientScope.put( Key.timeCreated, timeNow );

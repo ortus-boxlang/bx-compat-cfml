@@ -142,7 +142,11 @@ import ortus.boxlang.runtime.types.util.JSONUtil;
 				forceOutputTrue = true,
 				// Merged doc comments into actual function, class, and property annotations
 				mergeDocsIntoAnnotations = true
-            }
+            },
+			// Whether to enable server start interception
+			serverStartEnabled = true,
+			// The server start class path.  Either a dot-delimited path that uses a mapping or an absolute path on disk
+			serverStartPath = ""
 		};
 
 		/**

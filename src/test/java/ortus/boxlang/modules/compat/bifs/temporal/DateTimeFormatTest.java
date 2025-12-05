@@ -42,6 +42,21 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 
 	}
 
+	@DisplayName( "It can use the undocumented member format function to rewrite masks" )
+	@Test
+	@Disabled
+	public void canUseFormatMember() {
+		DateTime refNow = new DateTime();
+		variables.put( Key.date, refNow );
+		runtime.executeSource(
+		    """
+		    result = date.format( "HH:nn:ss.lll" );
+		    """,
+		    context );
+		assertEquals( variables.getAsString( result ), refNow.clone().format( "HH:mm:ss.SSS" ) );
+
+	}
+
 	@DisplayName( "It tests the BIF Will Maintain Locale-specific compatibility with common returns" )
 	@Test
 	public void testDateFormatCompat() {
@@ -152,6 +167,26 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 		runtime.executeSource(
 		    """
 		    result = dateTimeFormat( "", "yyyy-mm-dd hh:nn:ss" );
+		          """,
+		    context );
+		result = variables.getAsString( Key.of( "result" ) );
+		assertEquals( result, "" );
+	}
+
+	@DisplayName( "It tests the BIF DateFormat will return empty strings when passed a null" )
+	@Test
+	public void testsNullRidiculousness() {
+		runtime.executeSource(
+		    """
+		    result = dateFormat( nullValue(), "yyyy-mm-dd" );
+		          """,
+		    context );
+		String result = variables.getAsString( Key.of( "result" ) );
+		assertEquals( result, "" );
+
+		runtime.executeSource(
+		    """
+		    result = dateTimeFormat( nullValue(), "yyyy-mm-dd hh:nn:ss" );
 		          """,
 		    context );
 		result = variables.getAsString( Key.of( "result" ) );
