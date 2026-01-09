@@ -9,11 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.30.0] - 2026-01-09
+
 ### Fixed
 
-* BL-1756 - ListDeleteAt Compat Behavior
-* BL-2061 - Ensure `j2ee` session time does not have prefixed `session.sessionId` value
-* BL-2075 - Improvements to the core allow removal of extra `equals` overload for DateTime
+- BL-1756 - ListDeleteAt Compat Behavior
+- BL-2061 - Ensure `j2ee` session time does not have prefixed `session.sessionId` value
+- BL-2075 - Improvements to the core allow removal of extra `equals` overload for DateTime
 
 ## [1.29.0] - 2025-12-05
 
@@ -25,29 +27,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-* Updated gradle wrapper to 8.14.1
-* `obj` in the `SystemOutput` BIF should not be required as it can be null
+- Updated gradle wrapper to 8.14.1
+- `obj` in the `SystemOutput` BIF should not be required as it can be null
 
 ## [1.27.0] - 2025-05-29
 
 ### Fixed
 
-* Missing `@build.version` on ModuleConfig
-* `ApplicationCompatListener` doing a recursive stackoverflow when updating settings
-* `ApplicationCompatListenerTest` had wrong charset
+- Missing `@build.version` on ModuleConfig
+- `ApplicationCompatListener` doing a recursive stackoverflow when updating settings
+- `ApplicationCompatListenerTest` had wrong charset
 
 ### Added
 
-* Updated performance tuning for several key interceptions
-* Missing package ortus headers
-* [BL-1416](https://ortussolutions.atlassian.net/browse/BL-1416) - Support ACF/Lucee `blockedExtForFileUpload` Application Setting
-* [BL-1409](https://ortussolutions.atlassian.net/browse/BL-1409) - Added `supportedLocales` to the `server.coldfusion` scope
+- Updated performance tuning for several key interceptions
+- Missing package ortus headers
+- [BL-1416](https://ortussolutions.atlassian.net/browse/BL-1416) - Support ACF/Lucee `blockedExtForFileUpload` Application Setting
+- [BL-1409](https://ortussolutions.atlassian.net/browse/BL-1409) - Added `supportedLocales` to the `server.coldfusion` scope
 
 ## [1.26.0] - 2025-05-12
 
 ### Changed
 
-* [BL-1375](https://ortussolutions.atlassian.net/browse/BL-1375) Compat - Move Legacy Date Format Interception to Module-Specific Interception Point for performance
+- [BL-1375](https://ortussolutions.atlassian.net/browse/BL-1375) Compat - Move Legacy Date Format Interception to Module-Specific Interception Point for performance
 
 ## [1.25.0] - 2025-04-30
 
@@ -59,32 +61,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* BL-1100 resolve - Ensure the code and text are returned in compat mode for cfhttp.statusCode
+- BL-1100 resolve - Ensure the code and text are returned in compat mode for cfhttp.statusCode
 
 ## [1.20.0] - 2025-02-21
 
 ### Fixed
 
-* Ensure client cache is not created or checked when not enabled
+- Ensure client cache is not created or checked when not enabled
 
 ### Added
 
-* BL-1097 Resolve - Allow for cachePut as a decimal number of days
-* BL-1091 Resolve - Add `HTMLCodeFormat` BIF
+- BL-1097 Resolve - Allow for cachePut as a decimal number of days
+- BL-1091 Resolve - Add `HTMLCodeFormat` BIF
 
 ## [1.19.0] - 2025-02-18
 
 ### Fixed
 
-* Fixed gradle issues and build process
-* Tests for BL-1031
-* Ensure LS methods are handled
-* `cacheKeyExists` alias was typed wrong.
+- Fixed gradle issues and build process
+- Tests for BL-1031
+- Ensure LS methods are handled
+- `cacheKeyExists` alias was typed wrong.
 
 ### Added
 
-* Upgrade shadow plugin and non -all.jar usage
-* `<cfobjectcache>` component
+- Upgrade shadow plugin and non -all.jar usage
+- `<cfobjectcache>` component
 
 ## [1.18.0] - 2025-02-12
 
@@ -98,18 +100,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-* When calling `getMetadata()` with a `DynamicObject` make sure the class is unwrapped
-* Pre-seed `clientManagement` setting to `false` to avoid issues with Adobe/Lucee CFML engines
+- When calling `getMetadata()` with a `DynamicObject` make sure the class is unwrapped
+- Pre-seed `clientManagement` setting to `false` to avoid issues with Adobe/Lucee CFML engines
 
 ## [1.13.0] - 2024-12-10
 
 ### Added
 
-* `CFIDE` mapping for compatibility for `orm` and `scheduler` interfaces
-* More integration tests
-* `Client` scope
-* Many more test scenarios
-* `struckKeyExists()` transpilers
+- `CFIDE` mapping for compatibility for `orm` and `scheduler` interfaces
+- More integration tests
+- `Client` scope
+- Many more test scenarios
+- `struckKeyExists()` transpilers
 
 ## [1.12.0] - 2024-11-15
 
@@ -117,18 +119,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* `getTagData()` and `getFunctionData()` lucee compats
+- `getTagData()` and `getFunctionData()` lucee compats
 
 ## [1.10.0] - 2024-10-28
 
 ### Fixed
 
-* Change to `toUnmodifiable` from `toImmutable`
+- Change to `toUnmodifiable` from `toImmutable`
 
 ### Added
 
-* `cftoken` migration to comply with CFML engines.
-* `cfid` migration to comply with CFML engines.
+- `cftoken` migration to comply with CFML engines.
+- `cfid` migration to comply with CFML engines.
 
 ## [1.9.0] - 2024-10-15
 
@@ -136,14 +138,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-* Bug with json escape characters in `serializeJSON()`
+- Bug with json escape characters in `serializeJSON()`
 
 ## [1.8.0] - 2024-10-10
 
 ### Fixed
 
-* Bug with `structGet()` and invalid paths not working with `null` values
-* `structGet()` not adhering to the actual Adobe CFML behavior
+- Bug with `structGet()` and invalid paths not working with `null` values
+- `structGet()` not adhering to the actual Adobe CFML behavior
 
 ## [1.7.0] - 2024-09-30
 
@@ -151,7 +153,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-* Name change to `bx-compat-cfml` to better describe the module
+- Name change to `bx-compat-cfml` to better describe the module
 
 ## [1.4.1] - 2024-09-19
 
@@ -163,7 +165,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* BL-491 New module settings:
+- BL-491 New module settings:
 
 ```js
 // The CF -> BL AST transpiler settings
@@ -178,35 +180,36 @@ transpiler = {
 }
 ```
 
-* BL-449 preserve single quotes
-* Added more docs
-* Added new BIFS: `getVariable()`, `setVariable()`, `getComponentMetadata()`, `getMetaData()`, `deleteClientVariable()`, `getClientVariablesList()`
+- BL-449 preserve single quotes
+- Added more docs
+- Added new BIFS: `getVariable()`, `setVariable()`, `getComponentMetadata()`, `getMetaData()`, `deleteClientVariable()`, `getClientVariablesList()`
 
 ## [1.2.0] - 2024-08-09
 
 ### Added
 
-* Module should coerce null values to empty string if the `queryNullToEmpty` is set to true, which is the default
-* `objectLoad(), and objectSave()` aliases for `objectSerialize()` and `objectDeserialize()` respectively.
+- Module should coerce null values to empty string if the `queryNullToEmpty` is set to true, which is the default
+- `objectLoad(), and objectSave()` aliases for `objectSerialize()` and `objectDeserialize()` respectively.
 
 ### Fixed
 
-* Updated to use Attempts instead of Optionals for caching.
+- Updated to use Attempts instead of Optionals for caching.
 
 ## [1.1.0] - 2024-06-29
 
 ### Fixed
 
-* change of interface for cache provider returning arrays now since beta3
-* New setting `engine` so you can chose "adobe" or "lucee" instead of the boolean operators
-* Use the latest stable BoxLang beta build
-* Gradle not using the `boxlangVersion` property
+- change of interface for cache provider returning arrays now since beta3
+- New setting `engine` so you can chose "adobe" or "lucee" instead of the boolean operators
+- Use the latest stable BoxLang beta build
+- Gradle not using the `boxlangVersion` property
 
 ## [1.0.0] - 2024-06-13
 
-* First iteration of this module
+- First iteration of this module
 
-[unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.29.0...HEAD
+[unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.30.0...HEAD
+[1.30.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.29.0...v1.30.0
 [1.29.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.28.1...v1.29.0
 [1.28.1]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.27.1...v1.28.1
 [1.27.1]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.27.0...v1.27.1
