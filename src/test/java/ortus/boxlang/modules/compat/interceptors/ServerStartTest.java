@@ -77,7 +77,7 @@ public class ServerStartTest extends BaseIntegrationTest {
 		moduleSettings.put( KeyDictionary.serverStartEnabled, true );
 		moduleSettings.put( KeyDictionary.serverStartPath, "src.test.java.ortus.boxlang.modules.compat.interceptors.InvalidServerStartTestClass" );
 		Throwable t = assertThrows( BoxRuntimeException.class, () -> runtime.announce( BoxEvent.ON_RUNTIME_START, Struct.EMPTY ) );
-		assertThat( t.getCause().getMessage() ).contains( "Method 'onServerStart' not found" );
+		assertThat( t.getMessage() ).contains( "Method 'onServerStart' not found" );
 		assertThat( serverStarted ).isFalse();
 	}
 
@@ -89,7 +89,7 @@ public class ServerStartTest extends BaseIntegrationTest {
 		moduleSettings.put( KeyDictionary.serverStartEnabled, true );
 		moduleSettings.put( KeyDictionary.serverStartPath, "src.test.java.ortus.boxlang.modules.compat.interceptors.sdfsdf" );
 		Throwable t = assertThrows( BoxRuntimeException.class, () -> runtime.announce( BoxEvent.ON_RUNTIME_START, Struct.EMPTY ) );
-		assertThat( t.getCause().getMessage() ).contains( "has not been located" );
+		assertThat( t.getMessage() ).contains( "has not been located" );
 		assertThat( serverStarted ).isFalse();
 
 		serverStarted = false;
@@ -97,7 +97,7 @@ public class ServerStartTest extends BaseIntegrationTest {
 		moduleSettings.put( KeyDictionary.serverStartPath,
 		    Paths.get( "src/test/java/ortus/boxlang/modules/compat/interceptors/sdfsdf.bx" ).toAbsolutePath().toString() );
 		t = assertThrows( BoxRuntimeException.class, () -> runtime.announce( BoxEvent.ON_RUNTIME_START, Struct.EMPTY ) );
-		assertThat( t.getCause().getMessage() ).contains( "Server Start Path file does not exist" );
+		assertThat( t.getMessage() ).contains( "Server Start Path file does not exist" );
 		assertThat( serverStarted ).isFalse();
 	}
 

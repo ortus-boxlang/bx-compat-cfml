@@ -14,11 +14,18 @@
  */
 package ortus.boxlang.modules.compat.bifs.temporal;
 
+import java.time.ZoneId;
+
 import ortus.boxlang.runtime.bifs.BoxBIF;
 import ortus.boxlang.runtime.bifs.BoxMember;
+import ortus.boxlang.runtime.context.IBoxContext;
+import ortus.boxlang.runtime.dynamic.casters.DateTimeCaster;
+import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Argument;
 import ortus.boxlang.runtime.types.BoxLangType;
+import ortus.boxlang.runtime.types.DateTime;
+import ortus.boxlang.runtime.util.LocalizationUtil;
 
 @BoxBIF
 @BoxMember( type = BoxLangType.DATETIME, name = "compare" )
@@ -35,6 +42,25 @@ public class DateCompare extends ortus.boxlang.runtime.bifs.global.temporal.Date
 		    new Argument( true, "any", Key.date2 ),
 		    new Argument( false, "string", Key.datepart, "s" )
 		};
+	}
+
+	/**
+	 * Compares the difference between two dates - returning 0 if equal, -1 if date2 is less than date1 and 1 if the inverse
+	 *
+	 * @param context   The context in which the BIF is being invoked.
+	 * @param arguments Argument scope for the BIF.
+	 *
+	 * @argument.date1 The reference date object
+	 *
+	 * @argument.date2 The date which to compare against date1
+	 */
+	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
+		ZoneId		timezone	= LocalizationUtil.parseZoneId( null, context );
+		DateTime	date1		= DateTimeCaster.cast( arguments.get( Key.date1 ), true, timezone, context ).convertToZone( timezone );
+		arguments.put( Key.date1, date1 );
+		DateTime date2 = DateTimeCaster.cast( arguments.get( Key.date2 ), true, timezone, context ).convertToZone( timezone );
+		arguments.put( Key.date2, date2 );
+		return super._invoke( context, arguments );
 	}
 
 }

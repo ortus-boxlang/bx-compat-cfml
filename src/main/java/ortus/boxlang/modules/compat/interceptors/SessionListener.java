@@ -15,6 +15,8 @@
 package ortus.boxlang.modules.compat.interceptors;
 
 import ortus.boxlang.runtime.application.Session;
+import ortus.boxlang.runtime.context.IBoxContext;
+import ortus.boxlang.runtime.context.RequestBoxContext;
 import ortus.boxlang.runtime.dynamic.casters.StringCaster;
 import ortus.boxlang.runtime.events.BaseInterceptor;
 import ortus.boxlang.runtime.events.InterceptionPoint;
@@ -34,7 +36,9 @@ public class SessionListener extends BaseInterceptor {
 	/**
 	 * The URL token format
 	 */
-	public static final String URL_TOKEN_FORMAT = "CFID=%s&CFTOKEN=%s";
+	public static final String	URL_TOKEN_FORMAT	= "CFID=%s&CFTOKEN=%s";
+
+	public static final String	SESSION_TYPE_J2EE	= "j2ee";
 
 	/**
 	 * Intercept BIF Invocation
@@ -47,11 +51,20 @@ public class SessionListener extends BaseInterceptor {
 		Session			userSession		= ( Session ) interceptData.get( Key.session );
 		SessionScope	sessionScope	= userSession.getSessionScope();
 		Key				sessionID		= userSession.getID();
+		IBoxContext		requestContext	= RequestBoxContext.getCurrent();
 
 		// This is 0 for compatibility with CFML and for security.
 		sessionScope.put( Key.cftoken, 0 );
 		// This is the session ID for compatibility with CFML
 		sessionScope.put( Key.cfid, sessionID.getName() );
+
+		// Session type compat for sessionID being non-prefixed with j2ee
+		if ( requestContext != null ) {
+			Object sessionType = requestContext.getConfigItems( Key.applicationSettings, Key.sessionType );
+			if ( sessionType != null && StringCaster.cast( sessionType ).equalsIgnoreCase( SESSION_TYPE_J2EE ) ) {
+				sessionScope.put( Key.sessionId, sessionID.getName() );
+			}
+		}
 
 		// URL Token Compat
 		sessionScope.put( Key.urlToken,

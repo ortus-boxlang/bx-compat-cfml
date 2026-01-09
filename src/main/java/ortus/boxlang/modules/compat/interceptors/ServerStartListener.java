@@ -29,6 +29,7 @@ import ortus.boxlang.runtime.loader.ClassLocator;
 import ortus.boxlang.runtime.runnables.IClassRunnable;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.IStruct;
+import ortus.boxlang.runtime.types.exceptions.BoxRuntimeException;
 import ortus.boxlang.runtime.util.FileSystemUtil;
 
 /**
@@ -69,7 +70,7 @@ public class ServerStartListener extends BaseInterceptor {
 					}
 					// Let's blow up if the file doesn't exist
 					if ( !pathPath.toFile().exists() ) {
-						throw new RuntimeException( "Server Start Path file does not exist: " + pathPath.toString() );
+						throw new BoxRuntimeException( "Server Start Path file does not exist: " + pathPath.toString() );
 					}
 					// separate out the filename and the folder it lives in
 					String	filename	= pathPath.getFileName().toString();
