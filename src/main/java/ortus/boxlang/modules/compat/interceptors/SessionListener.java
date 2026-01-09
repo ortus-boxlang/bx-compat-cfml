@@ -60,9 +60,8 @@ public class SessionListener extends BaseInterceptor {
 
 		// Session type compat for sessionID being non-prefixed with j2ee
 		if ( requestContext != null ) {
-			// @TODO Once 1.9 is released we can use the first class `Key.sessionType` and remove the check for type on the conditional
-			Object sessionType = requestContext.getConfigItems( Key.applicationSettings, Key.of( "sessionType" ) );
-			if ( sessionType != null && sessionType instanceof String castString && castString.equalsIgnoreCase( SESSION_TYPE_J2EE ) ) {
+			Object sessionType = requestContext.getConfigItems( Key.applicationSettings, Key.sessionType );
+			if ( sessionType != null && StringCaster.cast( sessionType ).equalsIgnoreCase( SESSION_TYPE_J2EE ) ) {
 				sessionScope.put( Key.sessionId, sessionID.getName() );
 			}
 		}
