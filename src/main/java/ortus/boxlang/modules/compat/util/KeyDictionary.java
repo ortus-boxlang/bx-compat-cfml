@@ -52,6 +52,7 @@ public class KeyDictionary {
 	public static final Key	throwWhenNotExist			= Key.of( "throwWhenNotExist" );
 	public static final Key	transpiler					= Key.of( "transpiler" );
 	public static final Key	upperCaseKeys				= Key.of( "upperCaseKeys" );
+	public static final Key	sessionType					= Key.of( "sessionType" );
 
 	// ORM keys
 	public static final Key	autoManageSession			= Key.of( "autoManageSession" );

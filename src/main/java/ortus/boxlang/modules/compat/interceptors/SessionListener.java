@@ -14,6 +14,7 @@
  */
 package ortus.boxlang.modules.compat.interceptors;
 
+import ortus.boxlang.modules.compat.util.KeyDictionary;
 import ortus.boxlang.runtime.application.Session;
 import ortus.boxlang.runtime.context.IBoxContext;
 import ortus.boxlang.runtime.context.RequestBoxContext;
@@ -60,8 +61,9 @@ public class SessionListener extends BaseInterceptor {
 
 		// Session type compat for sessionID being non-prefixed with j2ee
 		if ( requestContext != null ) {
-			Object sessionType = requestContext.getConfigItems( Key.applicationSettings, Key.sessionType );
-			if ( sessionType != null && StringCaster.cast( sessionType ).equalsIgnoreCase( SESSION_TYPE_J2EE ) ) {
+			// @TODO Once 1.9 is released we can use the first class `Key.sessionType` and remove the check for type on the conditional
+			Object sessionType = requestContext.getConfigItems( Key.applicationSettings, KeyDictionary.sessionType );
+			if ( sessionType != null && sessionType instanceof String castString && castString.equalsIgnoreCase( SESSION_TYPE_J2EE ) ) {
 				sessionScope.put( Key.sessionId, sessionID.getName() );
 			}
 		}
