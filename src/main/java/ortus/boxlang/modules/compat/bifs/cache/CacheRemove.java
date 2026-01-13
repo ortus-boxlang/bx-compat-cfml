@@ -62,7 +62,7 @@ public class CacheRemove extends BIF {
 	 *         it returns a Struct with the keys and their results.
 	 */
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
-		ICacheProvider	cache			= cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
+		ICacheProvider	cache			= context.getApplicationCache( arguments.getAsKey( Key.cacheName ).getName() );
 		Boolean			throwOnError	= arguments.getAsBoolean( Key.throwOnError );
 		Boolean			results			= false;
 

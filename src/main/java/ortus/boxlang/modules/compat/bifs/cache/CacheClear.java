@@ -61,7 +61,7 @@ public class CacheClear extends BIF {
 	 * @return Boolean if a single id, or a Struct with the status of each key
 	 */
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
-		ICacheProvider	cache	= cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
+		ICacheProvider	cache	= context.getApplicationCache( arguments.getAsKey( Key.cacheName ).getName() );
 		Object			filter	= arguments.get( KeyDictionary.filterOrTags );
 
 		// We only support strings not array

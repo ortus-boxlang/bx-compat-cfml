@@ -65,7 +65,7 @@ public class CacheGetAllIds extends BIF {
 	 * @return The keys in the cache that match the filter.
 	 */
 	public Array _invoke( IBoxContext context, ArgumentsScope arguments ) {
-		ICacheProvider	cache		= cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
+		ICacheProvider	cache		= context.getApplicationCache( arguments.getAsKey( Key.cacheName ).getName() );
 		String			filter		= arguments.getAsString( Key.filter );
 		Boolean			useRegex	= arguments.getAsBoolean( Key.useRegex );
 

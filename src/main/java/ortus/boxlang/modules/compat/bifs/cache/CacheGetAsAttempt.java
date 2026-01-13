@@ -59,7 +59,7 @@ public class CacheGetAsAttempt extends BIF {
 	 */
 	public Attempt<Object> _invoke( IBoxContext context, ArgumentsScope arguments ) {
 		// Get the requested cache
-		ICacheProvider cache = cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
+		ICacheProvider cache = context.getApplicationCache( arguments.getAsKey( Key.cacheName ).getName() );
 		// Get it
 		return cache.get( arguments.getAsString( Key.id ) );
 

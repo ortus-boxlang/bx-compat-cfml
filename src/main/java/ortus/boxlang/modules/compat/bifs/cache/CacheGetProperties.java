@@ -48,7 +48,7 @@ public class CacheGetProperties extends BIF {
 
 		// If we have a cache name, get the results of the cache
 		if ( !cacheName.isEmpty() ) {
-			return cacheService.getCache( Key.of( cacheName ) )
+			return context.getApplicationCache( Key.of( cacheName ).getName() )
 			    .getConfig()
 			    .toStruct();
 		}
