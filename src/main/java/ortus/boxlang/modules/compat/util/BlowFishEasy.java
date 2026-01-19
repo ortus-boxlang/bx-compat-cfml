@@ -1,38 +1,38 @@
 /*
  * Coding by maddany@madloutre.org
- * 
+ *
  * 01-01-2000
  *
- * 
- * 
+ *
+ *
  * This program is free software; you can redistribute it and/or modify
- * 
+ *
  * it under the terms of the GNU General Public License as published by
- * 
+ *
  * the Free Software Foundation; either version 2 of the License, or
- * 
+ *
  * (at your option) any later version.
  *
- * 
- * 
+ *
+ *
  * This program is distributed in the hope that it will be useful,
- * 
+ *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * 
+ *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * 
+ *
  * GNU General Public License for more details.
  *
- * 
- * 
+ *
+ *
  * You should have received a copy of the GNU General Public License
- * 
+ *
  * along with this program; if not, write to the Free Software
- * 
+ *
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * 
- * 
+ *
+ *
  */
 package ortus.boxlang.modules.compat.util;
 
@@ -60,11 +60,11 @@ public final class BlowFishEasy {
 	}
 
 	/**
-	 * 
+	 *
 	 * constructor to set up a string as the key (oversized password will be cut)
-	 * 
+	 *
 	 * @param sPassword the password (treated as a real unicode array)
-	 * 
+	 *
 	 */
 
 	public BlowFishEasy( String sPassword ) {
@@ -86,13 +86,13 @@ public final class BlowFishEasy {
 	}
 
 	/**
-	 * 
+	 *
 	 * decrypts a hexbin string (handling is case sensitive)
-	 * 
+	 *
 	 * @param sCipherText hexbin string to decrypt
-	 * 
+	 *
 	 * @return decrypted string (null equals an error)
-	 * 
+	 *
 	 */
 
 	public String decryptString( String sCipherText ) {
@@ -188,11 +188,11 @@ public final class BlowFishEasy {
 	}
 
 	/**
-	 * 
+	 *
 	 * destroys (clears) the encryption engine,
-	 * 
+	 *
 	 * after that the instance is not valid anymore
-	 * 
+	 *
 	 */
 
 	public void destroy() {
@@ -205,10 +205,10 @@ public final class BlowFishEasy {
 
 		/**
 		 * gets bytes from an array into a long
-		 * 
+		 *
 		 * @param buffer      where to get the bytes
 		 * @param nStartIndex index from where to read the data
-		 * 
+		 *
 		 * @return the 64bit integer
 		 */
 		public static long byteArrayToLong( byte[] buffer, int nStartIndex ) {
@@ -223,7 +223,7 @@ public final class BlowFishEasy {
 
 		/**
 		 * converts a long o bytes which are put into a given array
-		 * 
+		 *
 		 * @param lValue      the 64bit integer to convert
 		 * @param buffer      the target buffer
 		 * @param nStartIndex where to place the bytes in the buffer
@@ -241,10 +241,10 @@ public final class BlowFishEasy {
 
 		/**
 		 * converts values from an integer array to a long
-		 * 
+		 *
 		 * @param buffer      where to get the bytes
 		 * @param nStartIndex index from where to read the data
-		 * 
+		 *
 		 * @return the 64bit integer
 		 */
 		public static long intArrayToLong( int[] buffer, int nStartIndex ) {
@@ -253,7 +253,7 @@ public final class BlowFishEasy {
 
 		/**
 		 * converts a long to integers which are put into a given array
-		 * 
+		 *
 		 * @param lValue      the 64bit integer to convert
 		 * @param buffer      the target buffer
 		 * @param nStartIndex where to place the bytes in the buffer
@@ -265,10 +265,10 @@ public final class BlowFishEasy {
 
 		/**
 		 * makes a long from two integers (treated unsigned)
-		 * 
+		 *
 		 * @param nLo lower 32bits
 		 * @param nHi higher 32bits
-		 * 
+		 *
 		 * @return the built long
 		 */
 		public static long makeLong( int nLo, int nHi ) {
@@ -277,9 +277,9 @@ public final class BlowFishEasy {
 
 		/**
 		 * gets the lower 32 bits of a long
-		 * 
+		 *
 		 * @param lVal the long integer
-		 * 
+		 *
 		 * @return lower 32 bits
 		 */
 		public static int longLo32( long lVal ) {
@@ -288,9 +288,9 @@ public final class BlowFishEasy {
 
 		/**
 		 * gets the higher 32 bits of a long
-		 * 
+		 *
 		 * @param lVal the long integer
-		 * 
+		 *
 		 * @return higher 32 bits
 		 */
 		public static int longHi32( long lVal ) {
@@ -301,9 +301,9 @@ public final class BlowFishEasy {
 
 		/**
 		 * converts a byte array to a binhex string
-		 * 
+		 *
 		 * @param data the byte array
-		 * 
+		 *
 		 * @return the binhex string
 		 */
 		public static String bytesToBinHex( byte[] data ) {
@@ -312,11 +312,11 @@ public final class BlowFishEasy {
 
 		/**
 		 * converts a byte array to a binhex string
-		 * 
+		 *
 		 * @param data        the byte array
 		 * @param nStartPos   start index where to get the bytes
 		 * @param nNumOfBytes number of bytes to convert
-		 * 
+		 *
 		 * @return the binhex string
 		 */
 		public static String bytesToBinHex( byte[] data, int nStartPos, int nNumOfBytes ) {
@@ -332,14 +332,14 @@ public final class BlowFishEasy {
 
 		/**
 		 * converts a binhex string back into a byte array (invalid codes will be skipped)
-		 * 
+		 *
 		 * @param sBinHex     binhex string
 		 * @param data        the target array
 		 * @param nSrcPos     from which character in the string the conversion should begin, remember that
 		 *                    (nSrcPos modulo 2) should equals 0 normally
 		 * @param nDstPos     to store the bytes from which position in the array
 		 * @param nNumOfBytes number of bytes to extract
-		 * 
+		 *
 		 * @return number of extracted bytes
 		 */
 		public static int binHexToBytes( String sBinHex, byte[] data, int nSrcPos, int nDstPos, int nNumOfBytes ) {
@@ -376,11 +376,11 @@ public final class BlowFishEasy {
 
 		/**
 		 * converts a byte array into an UNICODE string
-		 * 
+		 *
 		 * @param data        the byte array
 		 * @param nStartPos   where to begin the conversion
 		 * @param nNumOfBytes number of bytes to handle
-		 * 
+		 *
 		 * @return the string
 		 */
 		public static String byteArrayToUNCString( byte[] data, int nStartPos, int nNumOfBytes ) {
@@ -409,7 +409,7 @@ public final class BlowFishEasy {
 
 		/**
 		 * set the current CBC IV (for cipher resets)
-		 * 
+		 *
 		 * @param lNewCBCIV the new CBC IV
 		 */
 		public void setCBCIV( long lNewCBCIV ) {
@@ -417,11 +417,11 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * set the current CBC IV (for cipher resets)
-		 * 
+		 *
 		 * @param newCBCIV the new CBC IV in network byte ordered array
-		 * 
+		 *
 		 */
 
 		public void setCBCIV( byte[] newCBCIV ) {
@@ -431,11 +431,11 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * constructor, stores a zero CBC IV
-		 * 
+		 *
 		 * @param bfkey key material, up to MAXKEYLENGTH bytes
-		 * 
+		 *
 		 */
 
 		public BlowfishCBC( byte[] bfkey ) {
@@ -449,13 +449,13 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * constructor
-		 * 
+		 *
 		 * @param bfkey      key material, up to MAXKEYLENGTH bytes
-		 * 
+		 *
 		 * @param lInitCBCIV the CBC IV
-		 * 
+		 *
 		 */
 
 		public BlowfishCBC( byte[] bfkey,
@@ -471,33 +471,33 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * constructor
-		 * 
+		 *
 		 * @param bfkey      key material, up to MAXKEYLENGTH bytes
-		 * 
+		 *
 		 * @param lInitCBCIV the CBC IV (array with min. BLOCKSIZE bytes)
-		 * 
+		 *
 		 */
 
 		public BlowfishCBC( byte[] bfkey,
 
-		    byte[] initCBCIV ) {
+		    byte[] lInitCBCIV ) {
 
 			super( bfkey );
 
 			// store the CBCB IV
 
-			setCBCIV( initCBCIV );
+			setCBCIV( lInitCBCIV );
 
 		}
 
 		/**
-		 * 
+		 *
 		 * cleans up all critical internals,
-		 * 
+		 *
 		 * call this if you don't need an instance anymore
-		 * 
+		 *
 		 */
 
 		@Override
@@ -556,15 +556,15 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * encrypts a byte buffer (should be aligned to an 8 byte border)
-		 * 
+		 *
 		 * to another buffer (of the same size or bigger)
-		 * 
+		 *
 		 * @param inbuffer  buffer with plaintext data
-		 * 
+		 *
 		 * @param outbuffer buffer to get the ciphertext data
-		 * 
+		 *
 		 */
 
 		@Override
@@ -590,11 +590,11 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * encrypts a byte buffer (should be aligned to an 8 byte border) to itself
-		 * 
+		 *
 		 * @param buffer buffer to encrypt
-		 * 
+		 *
 		 */
 
 		@Override
@@ -618,17 +618,17 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * encrypts an int buffer (should be aligned to an
-		 * 
+		 *
 		 * two integer border) to another int buffer (of the same
-		 * 
+		 *
 		 * size or bigger)
-		 * 
+		 *
 		 * @param inbuffer  buffer with plaintext data
-		 * 
-		 * @param outBuffer buffer to get the ciphertext data
-		 * 
+		 *
+		 * @param outbuffer buffer to get the ciphertext data
+		 *
 		 */
 
 		@Override
@@ -654,11 +654,11 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * encrypts an integer buffer (should be aligned to an
-		 * 
+		 *
 		 * @param buffer buffer to encrypt
-		 * 
+		 *
 		 */
 
 		@Override
@@ -682,13 +682,13 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * encrypts a long buffer to another long buffer (of the same size or bigger)
-		 * 
+		 *
 		 * @param inbuffer  buffer with plaintext data
-		 * 
+		 *
 		 * @param outbuffer buffer to get the ciphertext data
-		 * 
+		 *
 		 */
 
 		@Override
@@ -705,11 +705,11 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * encrypts a long buffer to itself
-		 * 
+		 *
 		 * @param buffer buffer to encrypt
-		 * 
+		 *
 		 */
 
 		@Override
@@ -726,15 +726,15 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * decrypts a byte buffer (should be aligned to an 8 byte border)
-		 * 
+		 *
 		 * to another buffer (of the same size or bigger)
-		 * 
+		 *
 		 * @param inbuffer  buffer with ciphertext data
-		 * 
-		 * @param outBuffer buffer to get the plaintext data
-		 * 
+		 *
+		 * @param outbuffer buffer to get the plaintext data
+		 *
 		 */
 
 		@Override
@@ -760,11 +760,11 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * decrypts a byte buffer (should be aligned to an 8 byte border) to itself
-		 * 
+		 *
 		 * @param buffer buffer to decrypt
-		 * 
+		 *
 		 */
 
 		@Override
@@ -788,15 +788,15 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * decrypts an integer buffer (should be aligned to an
-		 * 
+		 *
 		 * two integer border) to another int buffer (of the same size or bigger)
-		 * 
+		 *
 		 * @param inbuffer  buffer with ciphertext data
-		 * 
+		 *
 		 * @param outbuffer buffer to get the plaintext data
-		 * 
+		 *
 		 */
 
 		@Override
@@ -822,13 +822,13 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * decrypts an int buffer (should be aligned to a
-		 * 
+		 *
 		 * two integer border)
-		 * 
+		 *
 		 * @param buffer buffer to decrypt
-		 * 
+		 *
 		 */
 
 		@Override
@@ -852,13 +852,13 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * decrypts a long buffer to another long buffer (of the same size or bigger)
-		 * 
+		 *
 		 * @param inbuffer  buffer with ciphertext data
-		 * 
+		 *
 		 * @param outbuffer buffer to get the plaintext data
-		 * 
+		 *
 		 */
 
 		@Override
@@ -875,11 +875,11 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * decrypts a long buffer to itself
-		 * 
+		 *
 		 * @param buffer buffer to decrypt
-		 * 
+		 *
 		 */
 
 		@Override
@@ -913,7 +913,7 @@ public final class BlowFishEasy {
 
 		/**
 		 * default constructor
-		 * 
+		 *
 		 * @param bfkey key material, up to MAXKEYLENGTH bytes
 		 */
 		public BlowfishECB( byte[] bfkey ) {
@@ -1265,15 +1265,15 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * encrypts a byte buffer (should be aligned to an 8 byte border)
-		 * 
+		 *
 		 * to another buffer (of the same size or bigger)
-		 * 
+		 *
 		 * @param inbuffer  buffer with plaintext data
-		 * 
+		 *
 		 * @param outbuffer buffer to get the ciphertext data
-		 * 
+		 *
 		 */
 
 		public void encrypt( byte[] inbuffer,
@@ -1299,11 +1299,11 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * encrypts a byte buffer (should be aligned to an 8 byte border) to itself
-		 * 
+		 *
 		 * @param buffer buffer to encrypt
-		 * 
+		 *
 		 */
 
 		public void encrypt( byte[] buffer ) {
@@ -1327,17 +1327,17 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * encrypts an integer buffer (should be aligned to an
-		 * 
+		 *
 		 * two integer border) to another int buffer (of the
-		 * 
+		 *
 		 * same size or bigger)
-		 * 
+		 *
 		 * @param inbuffer  buffer with plaintext data
-		 * 
-		 * @param outBuffer buffer to get the ciphertext data
-		 * 
+		 *
+		 * @param outbuffer buffer to get the ciphertext data
+		 *
 		 */
 
 		public void encrypt( int[] inbuffer,
@@ -1363,13 +1363,13 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * encrypts an int buffer (should be aligned to a
-		 * 
+		 *
 		 * two integer border)
-		 * 
+		 *
 		 * @param buffer buffer to encrypt
-		 * 
+		 *
 		 */
 
 		public void encrypt( int[] buffer ) {
@@ -1393,13 +1393,13 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * encrypts a long buffer to another long buffer (of the same size or bigger)
-		 * 
+		 *
 		 * @param inbuffer  buffer with plaintext data
-		 * 
+		 *
 		 * @param outbuffer buffer to get the ciphertext data
-		 * 
+		 *
 		 */
 
 		public void encrypt( long[] inbuffer,
@@ -1415,11 +1415,11 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * encrypts a long buffer to itself
-		 * 
+		 *
 		 * @param buffer buffer to encrypt
-		 * 
+		 *
 		 */
 
 		public void encrypt( long[] buffer ) {
@@ -1435,15 +1435,15 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * decrypts a byte buffer (should be aligned to an 8 byte border)
-		 * 
+		 *
 		 * to another byte buffer (of the same size or bigger)
-		 * 
+		 *
 		 * @param inbuffer  buffer with ciphertext data
-		 * 
-		 * @param outBuffer buffer to get the plaintext data
-		 * 
+		 *
+		 * @param outbuffer buffer to get the plaintext data
+		 *
 		 */
 
 		public void decrypt( byte[] inbuffer,
@@ -1469,11 +1469,11 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * decrypts a byte buffer (should be aligned to an 8 byte border) to itself
-		 * 
+		 *
 		 * @param buffer buffer to decrypt
-		 * 
+		 *
 		 */
 
 		public void decrypt( byte[] buffer ) {
@@ -1497,15 +1497,15 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * decrypts an integer buffer (should be aligned to an
-		 * 
+		 *
 		 * two integer border) to another int buffer (of the same size or bigger)
-		 * 
+		 *
 		 * @param inbuffer  buffer with ciphertext data
-		 * 
+		 *
 		 * @param outbuffer buffer to get the plaintext data
-		 * 
+		 *
 		 */
 
 		public void decrypt( int[] inbuffer,
@@ -1531,13 +1531,13 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * decrypts an int buffer (should be aligned to an
-		 * 
+		 *
 		 * two integer border)
-		 * 
+		 *
 		 * @param buffer buffer to decrypt
-		 * 
+		 *
 		 */
 
 		public void decrypt( int[] buffer ) {
@@ -1561,13 +1561,13 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * decrypts a long buffer to another long buffer (of the same size or bigger)
-		 * 
+		 *
 		 * @param inbuffer  buffer with ciphertext data
-		 * 
+		 *
 		 * @param outbuffer buffer to get the plaintext data
-		 * 
+		 *
 		 */
 
 		public void decrypt( long[] inbuffer,
@@ -1583,11 +1583,11 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * decrypts a long buffer to itself
-		 * 
+		 *
 		 * @param buffer buffer to decrypt
-		 * 
+		 *
 		 */
 
 		public void decrypt( long[] buffer ) {
@@ -1991,9 +1991,9 @@ public final class BlowFishEasy {
 		private int				m_nBlockIndex;
 
 		/**
-		 * 
+		 *
 		 * constructor
-		 * 
+		 *
 		 */
 
 		public SHA1() {
@@ -2009,9 +2009,9 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * clears all data, use reset() to start again
-		 * 
+		 *
 		 */
 
 		public void clear() {
@@ -2339,9 +2339,9 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * initializes or resets the hasher for a new session respectively
-		 * 
+		 *
 		 */
 
 		public void reset() {
@@ -2365,9 +2365,9 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * adds a single byte to the digest
-		 * 
+		 *
 		 */
 
 		public void update( byte bB ) {
@@ -2392,9 +2392,9 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * adds a byte array to the digest
-		 * 
+		 *
 		 */
 
 		public void update( byte[] data ) {
@@ -2406,9 +2406,9 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * adds an ASCII string to the digest
-		 * 
+		 *
 		 */
 
 		public void update( String sData ) {
@@ -2420,9 +2420,9 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * finalizes the digest
-		 * 
+		 *
 		 */
 
 		@Override
@@ -2457,11 +2457,11 @@ public final class BlowFishEasy {
 		}
 
 		/**
-		 * 
+		 *
 		 * gets the digest
-		 * 
+		 *
 		 * @return the digst bytes as an array if DIGEST_SIZE bytes
-		 * 
+		 *
 		 */
 
 		public byte[] getDigest() {
@@ -2481,11 +2481,11 @@ public final class BlowFishEasy {
 		private final static String HEXTAB = "0123456789abcdef";
 
 		/**
-		 * 
+		 *
 		 * makes a binhex string representation of the current digest
-		 * 
+		 *
 		 * @return the string representation
-		 * 
+		 *
 		 */
 
 		@Override
