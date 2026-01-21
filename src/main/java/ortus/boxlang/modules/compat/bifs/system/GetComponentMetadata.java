@@ -14,6 +14,7 @@
  */
 package ortus.boxlang.modules.compat.bifs.system;
 
+import ortus.boxlang.compiler.IBoxpiler;
 import ortus.boxlang.runtime.bifs.BIF;
 import ortus.boxlang.runtime.bifs.BoxBIF;
 import ortus.boxlang.runtime.context.IBoxContext;
@@ -49,6 +50,7 @@ public class GetComponentMetadata extends BIF {
 	 *
 	 * @argument.path The path to the component.
 	 */
+	@SuppressWarnings( "unused" )
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
 		Object path = arguments.get( Key.path );
 
@@ -73,9 +75,15 @@ public class GetComponentMetadata extends BIF {
 		}
 		// Else we have a class
 		else {
-			loadedClass.invokeConstructor( context, Key.noInit );
-			IClassRunnable boxClass = ( IClassRunnable ) loadedClass.unWrapBoxLangClass();
-			return boxClass.getMetaData();
+			// As of BoxLang 1.10, we can get static metadata directly
+			if ( IBoxpiler.BYTECODE_VERSION >= 2 ) {
+				return loadedClass.invokeStatic( context, "getMetaDataStatic" );
+			} else {
+				// Shim for BoxLang 1.9 and earlier where we had to invoke the constructor to get metadata
+				loadedClass.invokeConstructor( context, Key.noInit );
+				IClassRunnable boxClass = ( IClassRunnable ) loadedClass.unWrapBoxLangClass();
+				return boxClass.getMetaData();
+			}
 		}
 	}
 }
