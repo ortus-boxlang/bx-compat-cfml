@@ -15,9 +15,8 @@
 
 package ortus.boxlang.modules.compat.bifs.io;
 
-import java.security.Key;
-
 import ortus.boxlang.runtime.bifs.BoxBIF;
+import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Argument;
 
 @BoxBIF
