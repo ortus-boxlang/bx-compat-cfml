@@ -41,7 +41,6 @@ public class URLEncodedFormat extends ortus.boxlang.runtime.bifs.global.system.U
 	 */
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
 		String str = StringCaster.cast( arguments.get( Key.string ) );
-		System.out.println( "Using bx-compat-cfml URLEncodedFormat: " + str );
 		return EncryptionUtil.urlEncode( str )
 		    .replace( ".", "%2E" )
 		    .replace( "*", "%2A" )
