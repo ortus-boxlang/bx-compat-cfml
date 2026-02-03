@@ -70,7 +70,7 @@ public class CacheGetMetadata extends BIF {
 	 */
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
 		// Get the requested cache
-		ICacheProvider cache = cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
+		ICacheProvider cache = context.getApplicationCache( arguments.getAsKey( Key.cacheName ).getName() );
 
 		// Single or multiple ids
 		if ( arguments.get( Key.id ) instanceof Array aKeys ) {

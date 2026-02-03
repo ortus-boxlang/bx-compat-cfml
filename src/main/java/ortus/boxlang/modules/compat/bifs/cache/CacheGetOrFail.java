@@ -62,7 +62,7 @@ public class CacheGetOrFail extends BIF {
 	 */
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
 		// Get the requested cache
-		ICacheProvider cache = cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
+		ICacheProvider cache = context.getApplicationCache( arguments.getAsKey( Key.cacheName ).getName() );
 		// Get the value
 		Attempt<Object> results = cache.get( arguments.getAsString( Key.id ) );
 		// If we have a value return it, else throw an exception

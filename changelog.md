@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- [BL-1917](https://ortussolutions.atlassian.net/browse/BL-1917) - remove debug code
+- [BL-2088](https://ortussolutions.atlassian.net/browse/BL-2088) - Fix context for cache retrieval
+- [BL-2110](https://ortussolutions.atlassian.net/browse/BL-2110) - `getClassMetadata` in compat does not call pseudo constructor
+- [BL-2124](https://ortussolutions.atlassian.net/browse/BL-2124) - compat version of `directoryCopy` overwrites by default
+- Added all cache operations to use the context aware `getApplicationCache()` so the proper app-global hierarchy is respected.
+
 ## [1.30.1] - 2026-01-10
 
 ## [1.30.0] - 2026-01-09

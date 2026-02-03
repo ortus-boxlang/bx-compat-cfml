@@ -55,6 +55,6 @@ public class CacheGetSession extends BIF {
 	 */
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
 		// Get the requested cache
-		return cacheService.getCache( arguments.getAsKey( KeyDictionary.objectType ) );
+		return context.getApplicationCache( arguments.getAsKey( KeyDictionary.objectType ).getName() );
 	}
 }

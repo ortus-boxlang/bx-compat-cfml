@@ -52,7 +52,7 @@ public class CacheRemoveAll extends BIF {
 	 * @return nothing
 	 */
 	public Boolean _invoke( IBoxContext context, ArgumentsScope arguments ) {
-		ICacheProvider cache = cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
+		ICacheProvider cache = context.getApplicationCache( arguments.getAsKey( Key.cacheName ).getName() );
 		cache.clearAll();
 		return true;
 	}

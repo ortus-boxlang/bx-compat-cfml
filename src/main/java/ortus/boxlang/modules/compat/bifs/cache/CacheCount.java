@@ -52,7 +52,7 @@ public class CacheCount extends BIF {
 	 * @return The number of items in the cache
 	 */
 	public Integer _invoke( IBoxContext context, ArgumentsScope arguments ) {
-		ICacheProvider cache = cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
+		ICacheProvider cache = context.getApplicationCache( arguments.getAsKey( Key.cacheName ).getName() );
 		return cache.getSize();
 	}
 }

@@ -67,7 +67,7 @@ public class CacheGetAll extends BIF {
 	 * @return A struct containing the keys and their values from the cache.
 	 */
 	public IStruct _invoke( IBoxContext context, ArgumentsScope arguments ) {
-		ICacheProvider	cache		= cacheService.getCache( arguments.getAsKey( Key.cacheName ) );
+		ICacheProvider	cache		= context.getApplicationCache( arguments.getAsKey( Key.cacheName ).getName() );
 		String			filter		= arguments.getAsString( Key.filter );
 		Boolean			useRegex	= arguments.getAsBoolean( Key.useRegex );
 
