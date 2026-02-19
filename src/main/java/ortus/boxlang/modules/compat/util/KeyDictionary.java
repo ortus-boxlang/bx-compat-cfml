@@ -63,4 +63,6 @@ public class KeyDictionary {
 	public static final Key	flushAtRequestEnd			= Key.of( "flushAtRequestEnd" );
 	public static final Key	ignoreParseErrors			= Key.of( "ignoreParseErrors" );
 	public static final Key	skipCFCWithError			= Key.of( "skipCFCWithError" );
+	public static final Key	proxyLazyLoading			= Key.of( "proxyLazyLoading" );
+	public static final Key	defaultBatchSize			= Key.of( "defaultBatchSize" );
 }
