@@ -127,9 +127,6 @@ import ortus.boxlang.runtime.types.util.JSONUtil;
 			// This simulates the query to empty value that Adobe/Lucee do when NOT in full null support
 			// We default it to true to simulate Adobe/Lucee behavior
 			queryNullToEmpty = true,
-			// Treat empty strings as nulls on non-string query columns.
-			// Defaults to true to simulate Adobe/Lucee behavior
-			queryNullIsString = true,
 			// CF will allow ANY java class to be generically cast into a struct (using public fields and getters) only excepting arrays and "simple" values.
 			// This allows even things like a closure to be passed into a struct BIF.
 			// BL will only use the generic class-to-struct logic for inputs which pass the isObject() test unless this flag is true
@@ -199,11 +196,6 @@ import ortus.boxlang.runtime.types.util.JSONUtil;
 		// Backwards compat
 		if( structKeyExists( Compare, "nullEqualsEmptyString" ) ){
 			Compare.nullEqualsEmptyString = settings.nullEqualsEmptyString;
-		}
-
-		// Backwards compat empty string coercion
-		if( structKeyExists( Query, "queryNullIsString" ) ){
-			Query.queryNullIsString = settings.queryNullIsString;
 		}
 
 		// Backwards compat
