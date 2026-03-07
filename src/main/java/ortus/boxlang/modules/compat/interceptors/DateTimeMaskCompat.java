@@ -137,25 +137,28 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 
 		if ( mode.equals( DateTime.MODE_DATE ) ) {
 			// for dateFormat compat, specifically, we replace all lowercase `m` characters with uppercase
-			DATE_FORMAT_REPLACEMENTS.entrySet().stream().forEach( entry -> {
-				arguments.put( finalArg, arguments.getAsString( finalArg ).replaceAll( entry.getKey(), entry.getValue() ) );
-			} );
+			for ( String key : DATE_FORMAT_REPLACEMENTS.keySet() ) {
+				format = format.replaceAll( key, DATE_FORMAT_REPLACEMENTS.get( key ) );
+			}
 		}
+
 		if ( mode.equals( DateTime.MODE_DATE ) && SettingsUtil.isLucee() ) {
-			LUCEE_DATE_FORMAT_REPLACEMENTS.entrySet().stream().forEach( entry -> {
-				arguments.put( finalArg, arguments.getAsString( finalArg ).replaceAll( entry.getKey(), entry.getValue() ) );
-			} );
+			for ( String key : LUCEE_DATE_FORMAT_REPLACEMENTS.keySet() ) {
+				format = format.replaceAll( key, LUCEE_DATE_FORMAT_REPLACEMENTS.get( key ) );
+			}
 		}
 
 		if ( !formatKey.equals( FORMAT_EPOCH ) && !formatKey.equals( FORMAT_EPOCHMS ) && !DateTime.COMMON_FORMATTERS.containsKey( commonFormatKey ) ) {
 			if ( LITERAL_MASK_REPLACEMENTS.containsKey( format ) ) {
-				arguments.put( finalArg, LITERAL_MASK_REPLACEMENTS.get( format ) );
+				format = LITERAL_MASK_REPLACEMENTS.get( format );
 			} else {
-				DATE_MASK_REPLACEMENTS.entrySet().stream().forEach( entry -> {
-					arguments.put( finalArg, arguments.getAsString( finalArg ).replaceAll( entry.getKey(), entry.getValue() ) );
-				} );
+				for ( String key : DATE_MASK_REPLACEMENTS.keySet() ) {
+					format = format.replaceAll( key, DATE_MASK_REPLACEMENTS.get( key ) );
+				}
 			}
 		}
+
+		arguments.put( finalArg, format );
 
 	}
 

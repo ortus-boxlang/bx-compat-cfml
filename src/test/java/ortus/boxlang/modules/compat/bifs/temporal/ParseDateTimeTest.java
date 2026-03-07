@@ -3,6 +3,7 @@ package ortus.boxlang.modules.compat.bifs.temporal;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +11,7 @@ import ortus.boxlang.modules.compat.BaseIntegrationTest;
 import ortus.boxlang.runtime.dynamic.casters.IntegerCaster;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.DateTime;
+import ortus.boxlang.runtime.types.IStruct;
 
 public class ParseDateTimeTest extends BaseIntegrationTest {
 
@@ -56,6 +58,56 @@ public class ParseDateTimeTest extends BaseIntegrationTest {
 		     """,
 		    context );
 		assertEquals( variables.getAsDateTime( result ).format( "hh:mm a" ), "03:00 PM" );
+
+	}
+
+	@DisplayName( "It tests the speed of both masked and non-masked parsing" )
+	@Test
+	@Disabled( "Disabled for CI performance. Comment to test locally" )
+	public void testSpeed() {
+		// @formatter:off
+		runtime.executeSource(
+		    """
+		    function parseIt( string dateString, string mask ){
+			var iterations = 10000;
+			var start = getTickCount();
+			for( var i = 1; i <= iterations; i++ ){
+				var result = !isNull( mask ) ? parseDateTime( dateString, mask ) : parseDateTime( dateString )
+			}
+			var totalTime = ( getTickCount() - start );
+			return totalTime;
+			}
+
+			setLocale( "de_CH" );
+
+			result = [
+				"singleMillisTimestamp" : parseIt( "2025-11-12 00:45:00.0" ),
+				"singleMillisTimestampWithMask" : parseIt( "2025-11-12 00:45:00.0", "yyyy-MM-dd HH:mm:ss.S" ),
+				"isoTimestamp" : parseIt( "2024-04-02T21:01:00Z" ),
+				"isoTimestampWMask" : parseIt( "2024-04-02T21:01:00Z", "yyyy-MM-dd'T'HH:mm:ssXXX" ),
+				"mediumFormatZoned" : parseIt( "Nov 22, 2022 11:01:51 CET" ),
+				"mediumFormatZonedWithMask" : parseIt( "Nov 22, 2022 11:01:51 CET", "MMM dd, yyyy HH:mm:ss zz" ),
+				"euroFormatZoned" : parseIt( "01.04.2011" ),
+				"euroFormatZonedWithMask" : parseIt( "01.04.2011", "dd.MM.yyyy" )
+			];
+			println( result );
+		       """,
+		    context );
+			// @formatter:on
+
+		IStruct	result			= variables.getAsStruct( Key.of( "result" ) );
+		long	isoTimestamp	= IntegerCaster.cast( result.get( Key.of( "isoTimestamp" ) ) );
+		assertThat( isoTimestamp ).isLessThan( 500 ); // less than 500ms for 10k parses
+		long isoTimestampWMask = IntegerCaster.cast( result.get( Key.of( "isoTimestampWMask" ) ) );
+		assertThat( isoTimestampWMask ).isLessThan( 100 ); // less than 5 seconds for 10k parses
+		long mediumFormatZoned = IntegerCaster.cast( result.get( Key.of( "mediumFormatZoned" ) ) );
+		assertThat( mediumFormatZoned ).isLessThan( 500 ); // less than 500ms for 10k parses
+		long mediumFormatZonedWithMask = IntegerCaster.cast( result.get( Key.of( "mediumFormatZonedWithMask" ) ) );
+		assertThat( mediumFormatZonedWithMask ).isLessThan( 100 ); // less than 100ms for 10k parses
+		long euroFormatZoned = IntegerCaster.cast( result.get( Key.of( "euroFormatZoned" ) ) );
+		assertThat( euroFormatZoned ).isLessThan( 500 ); // less than 500ms for 10k parses
+		long euroFormatZonedWithMask = IntegerCaster.cast( result.get( Key.of( "euroFormatZonedWithMask" ) ) );
+		assertThat( euroFormatZonedWithMask ).isLessThan( 100 ); // less than 100ms for 10k parses
 
 	}
 }
