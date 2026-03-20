@@ -101,7 +101,7 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 		          """,
 		    context );
 		result = ( String ) variables.get( Key.of( "result" ) );
-		assertEquals( result, "12/31/2023 12:30 PM" );
+		assertEquals( result, "12/31/2023 hh:nn tt" );
 		// Default Format
 		runtime.executeSource(
 		    """
@@ -111,6 +111,17 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 		    context );
 		result = ( String ) variables.get( Key.of( "result" ) );
 		assertEquals( result, "Dec 31, 2023" );
+
+		// Make sure conversion is not based on punctuation for dateFormat
+		runtime.executeSource(
+		    """
+		    setTimezone( "UTC" );
+		       ref = createDateTime( 2023, 12, 31, 14, 30, 0, 0, "UTC" );
+		          result = dateFormat( ref, "HH-mm" );
+		          """,
+		    context );
+		result = ( String ) variables.get( Key.of( "result" ) );
+		assertEquals( result, "14-30" );
 
 		// ISO-ish Short-Med-Long Format
 		runtime.executeSource(
@@ -146,11 +157,11 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 		    """
 		    setTimezone( "UTC" );
 		       ref = createDateTime( 2023, 12, 31, 14, 30, 0, 0, "UTC" );
-		          result = dateFormat( ref, "mm" );
+		          result = timeFormat( ref, "mm" );
 		          """,
 		    context );
 		result = ( String ) variables.get( Key.of( "result" ) );
-		assertEquals( result, "12" );
+		assertEquals( result, "30" );
 	}
 
 	@DisplayName( "It tests the BIF DateFormat will return empty strings when passed an empty string" )

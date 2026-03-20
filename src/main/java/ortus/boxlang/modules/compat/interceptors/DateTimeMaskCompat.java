@@ -94,7 +94,30 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 
 	private static final Map<String, String> DATE_FORMAT_REPLACEMENTS = new LinkedHashMap<>();
 	static {
+		DATE_FORMAT_REPLACEMENTS.put( "nn", "'nn'" );
+		DATE_FORMAT_REPLACEMENTS.put( "H", "h" );
+		DATE_FORMAT_REPLACEMENTS.put( "hh", "'hh'" );
+		DATE_FORMAT_REPLACEMENTS.put( "ss", "'ss'" );
+		DATE_FORMAT_REPLACEMENTS.put( "TT", "tt" );
+		DATE_FORMAT_REPLACEMENTS.put( "tt", "'tt'" );
+		DATE_FORMAT_REPLACEMENTS.put( "l", "'l'" );
+		DATE_FORMAT_REPLACEMENTS.put( "Y", "y" );
 		DATE_FORMAT_REPLACEMENTS.put( "m", "M" );
+		// Long form text dates
+		DATE_FORMAT_REPLACEMENTS.put( "dddd", "EEEE" );
+		DATE_FORMAT_REPLACEMENTS.put( "ddd", "EEE" );
+	}
+
+	private static final Map<String, String> TIME_FORMAT_REPLACEMENTS = new LinkedHashMap<>();
+	static {
+		TIME_FORMAT_REPLACEMENTS.put( "M", "m" );
+		TIME_FORMAT_REPLACEMENTS.put( "S", "s" );
+		TIME_FORMAT_REPLACEMENTS.put( "l", "S" );
+		TIME_FORMAT_REPLACEMENTS.put( "L", "S" );
+		// AM/PM indicators
+		TIME_FORMAT_REPLACEMENTS.put( "TT", "a" );
+		TIME_FORMAT_REPLACEMENTS.put( "tt", "a" );
+		TIME_FORMAT_REPLACEMENTS.put( "t", "a" );
 	}
 
 	private static final Map<String, String> LUCEE_DATE_FORMAT_REPLACEMENTS = new LinkedHashMap<>();
@@ -135,20 +158,36 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 
 		Key		commonFormatKey	= Key.of( format.trim() + mode );
 
+		// if it's a common pattern don't bother processing further
+		if ( DateTime.COMMON_FORMATTERS.containsKey( commonFormatKey ) || formatKey.equals( FORMAT_EPOCH ) || formatKey.equals( FORMAT_EPOCHMS ) ) {
+			return;
+		}
+
+		if ( LITERAL_MASK_REPLACEMENTS.containsKey( format ) && !mode.equals( DateTime.MODE_TIME ) ) {
+			format = LITERAL_MASK_REPLACEMENTS.get( format );
+			arguments.put( finalArg, format );
+			return;
+		}
 		if ( mode.equals( DateTime.MODE_DATE ) ) {
+			if ( SettingsUtil.isLucee() ) {
+				for ( String key : LUCEE_DATE_FORMAT_REPLACEMENTS.keySet() ) {
+					format = format.replaceAll( key, LUCEE_DATE_FORMAT_REPLACEMENTS.get( key ) );
+				}
+			}
 			// for dateFormat compat, specifically, we replace all lowercase `m` characters with uppercase
 			for ( String key : DATE_FORMAT_REPLACEMENTS.keySet() ) {
 				format = format.replaceAll( key, DATE_FORMAT_REPLACEMENTS.get( key ) );
 			}
-		}
-
-		if ( mode.equals( DateTime.MODE_DATE ) && SettingsUtil.isLucee() ) {
-			for ( String key : LUCEE_DATE_FORMAT_REPLACEMENTS.keySet() ) {
-				format = format.replaceAll( key, LUCEE_DATE_FORMAT_REPLACEMENTS.get( key ) );
+		} else if ( mode.equals( DateTime.MODE_TIME ) ) {
+			for ( String key : TIME_FORMAT_REPLACEMENTS.keySet() ) {
+				format = format.replaceAll( key, TIME_FORMAT_REPLACEMENTS.get( key ) );
 			}
-		}
-
-		if ( !formatKey.equals( FORMAT_EPOCH ) && !formatKey.equals( FORMAT_EPOCHMS ) && !DateTime.COMMON_FORMATTERS.containsKey( commonFormatKey ) ) {
+		} else {
+			if ( SettingsUtil.isLucee() ) {
+				for ( String key : LUCEE_DATE_FORMAT_REPLACEMENTS.keySet() ) {
+					format = format.replaceAll( key, LUCEE_DATE_FORMAT_REPLACEMENTS.get( key ) );
+				}
+			}
 			if ( LITERAL_MASK_REPLACEMENTS.containsKey( format ) ) {
 				format = LITERAL_MASK_REPLACEMENTS.get( format );
 			} else {
