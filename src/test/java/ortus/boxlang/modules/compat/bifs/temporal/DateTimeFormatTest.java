@@ -117,7 +117,7 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 		    """
 		    setTimezone( "UTC" );
 		       ref = createDateTime( 2023, 12, 31, 14, 30, 0, 0, "UTC" );
-		          result = dateFormat( ref, "HH-mm" );
+		          result = timeFormat( ref, "HH-mm" );
 		          """,
 		    context );
 		result = ( String ) variables.get( Key.of( "result" ) );
