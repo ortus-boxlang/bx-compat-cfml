@@ -146,6 +146,16 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 		runtime.executeSource(
 		    """
 		    setTimezone( "UTC" );
+		       ref = createDateTime( 2023, 12, 31, 12, 30, 30, 999, "UTC" );
+		          result = timeFormat( ref, "HH:mm:ss.sss" );
+		          """,
+		    context );
+		result = ( String ) variables.get( Key.of( "result" ) );
+		assertEquals( result, "12:30:30.030" );
+
+		runtime.executeSource(
+		    """
+		    setTimezone( "UTC" );
 		       ref = createDateTime( 2023, 12, 31, 14, 30, 0, 0, "UTC" );
 		          result = timeFormat( ref, "h:mm" );
 		          """,

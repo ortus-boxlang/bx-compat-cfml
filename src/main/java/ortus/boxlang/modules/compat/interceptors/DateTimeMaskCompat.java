@@ -114,7 +114,7 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 		TIME_FORMAT_REPLACEMENTS.put( "S", "s" );
 		TIME_FORMAT_REPLACEMENTS.put( "l", "S" );
 		TIME_FORMAT_REPLACEMENTS.put( "L", "S" );
-		TIME_FORMAT_REPLACEMENTS.put( ".sss", ".SSS" );
+		TIME_FORMAT_REPLACEMENTS.put( ".sss", ".'0'ss" );
 		// AM/PM indicators
 		TIME_FORMAT_REPLACEMENTS.put( "TT", "a" );
 		TIME_FORMAT_REPLACEMENTS.put( "tt", "a" );
