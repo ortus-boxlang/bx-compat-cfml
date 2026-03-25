@@ -7,9 +7,8 @@ import ortus.boxlang.runtime.types.IStruct;
 
 public class File extends ortus.boxlang.runtime.components.io.File {
 
-	private static final String	VARIABLE_STRING		= "bxfile";
-	private static final String	FILE_STRING			= "file";
-	private static final String	FILE_UPLOAD_STRING	= "fileupload";
+	private static final String	VARIABLE_STRING	= "bxfile";
+	private static final String	FILE_STRING		= "file";
 
 	/**
 	 * Manages interactions with server files. Different combinations cause different attributes to be required.
@@ -53,11 +52,11 @@ public class File extends ortus.boxlang.runtime.components.io.File {
 	 *
 	 */
 	public BodyResult _invoke( IBoxContext context, IStruct attributes, ComponentBody body, IStruct executionState ) {
-		BodyResult	result			= super._invoke( context, attributes, body, executionState );
-		Key			action			= Key.of( attributes.getAsString( Key.action ) );
-		Object		resultVariable	= ExpressionInterpreter.getVariable( context, VARIABLE_STRING, true );
+		BodyResult	result					= super._invoke( context, attributes, body, executionState );
+		Object		resultVariable			= ExpressionInterpreter.getVariable( context, VARIABLE_STRING, true );
+		Object		resultAttributeValue	= attributes.containsKey( Key.result ) ? attributes.get( Key.result ) : null;
 
-		if ( action.getName().toLowerCase().startsWith( FILE_UPLOAD_STRING ) && resultVariable != null ) {
+		if ( resultAttributeValue == null && resultVariable != null ) {
 			ExpressionInterpreter.setVariable(
 			    context,
 			    FILE_STRING,
