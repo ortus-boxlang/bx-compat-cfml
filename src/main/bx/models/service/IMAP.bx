@@ -1,0 +1,54 @@
+/**
+ * Shim for Adobe ColdFusion's new imap() service syntax.
+ *
+ * Usage:
+ *   imapService = new imap();
+ *   imapService.setServer("imap.example.com");
+ *   imapService.setUsername("user");
+ *   imapService.setPassword("pass");
+ *   result = imapService.getHeaderOnly(name="messages");
+ */
+class extends="BxService" {
+
+	variables.imapActions = [
+		"open", "close",
+		"getheaderonly", "getall", "delete",
+		"markread", "movemail", "createfolder", "deletefolder", "renamefolder", "listallfolders"
+	];
+
+	/**
+	 * Override onMissingMethod to handle IMAP actions in addition to set/get.
+	 */
+	public function onMissingMethod( required string missingMethodName, required any missingMethodArguments ) {
+		if ( variables.imapActions.findNoCase( missingMethodName ) ) {
+			return _doAction( missingMethodName, missingMethodArguments );
+		}
+		return super.onMissingMethod( missingMethodName, missingMethodArguments );
+	}
+
+	/**
+	 * Execute an IMAP action.
+	 */
+	private function _doAction( required string action, any args = {} ) {
+		var execAttributes = structCopy( variables.attributes );
+		for ( var key in args ) {
+			execAttributes[ key ] = args[ key ];
+		}
+		execAttributes[ "action" ] = action;
+
+		var resultName = execAttributes.name ?: "__bxImapResult";
+		if ( [ "getheaderonly", "getall" ].findNoCase( action ) ) {
+			execAttributes[ "name" ] = resultName;
+		}
+
+		bx:imap attributeCollection=execAttributes;
+
+		var queryResult = {};
+		if ( isDefined( resultName ) ) {
+			queryResult = evaluate( resultName );
+		}
+
+		return new BxServiceResult( { result=queryResult, prefix={} } );
+	}
+
+}

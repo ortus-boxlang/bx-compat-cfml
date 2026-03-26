@@ -188,6 +188,10 @@ import ortus.boxlang.runtime.types.Query;
 	 */
 	function onLoad(){
 
+		// Register service classes for new HTTP() and new Query(), etc.
+		boxRuntime.getConfiguration().classPaths.add( variables.moduleRecord.path & "/models/service" );
+		println( boxRuntime.getConfiguration().classPaths )
+
 		// Set the nullIsUndefined flag.  This is stored statically on the base context for best performance
 		BaseBoxContext.nullIsUndefined = settings.nullIsUndefined;
 

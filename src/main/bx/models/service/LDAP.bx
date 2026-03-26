@@ -1,0 +1,50 @@
+/**
+ * Shim for Adobe ColdFusion's new ldap() service syntax.
+ *
+ * Usage:
+ *   ldapService = new ldap();
+ *   ldapService.setServer("ldap.example.com");
+ *   ldapService.setUsername("admin");
+ *   ldapService.setPassword("pass");
+ *   result = ldapService.query(name="results", start="dc=example,dc=com", attributes="cn,mail");
+ */
+class extends="BxService" {
+
+	variables.ldapActions = [ "query", "add", "modify", "delete", "modifydn" ];
+
+	/**
+	 * Override onMissingMethod to handle LDAP actions in addition to set/get.
+	 */
+	public function onMissingMethod( required string missingMethodName, required any missingMethodArguments ) {
+		if ( variables.ldapActions.findNoCase( missingMethodName ) ) {
+			return _doAction( missingMethodName, missingMethodArguments );
+		}
+		return super.onMissingMethod( missingMethodName, missingMethodArguments );
+	}
+
+	/**
+	 * Execute an LDAP action.
+	 */
+	private function _doAction( required string action, any args = {} ) {
+		var execAttributes = structCopy( variables.attributes );
+		for ( var key in args ) {
+			execAttributes[ key ] = args[ key ];
+		}
+		execAttributes[ "action" ] = action;
+
+		var resultName = execAttributes.name ?: "__bxLdapResult";
+		if ( action == "query" ) {
+			execAttributes[ "name" ] = resultName;
+		}
+
+		bx:ldap attributeCollection=execAttributes;
+
+		var queryResult = {};
+		if ( action == "query" && isDefined( resultName ) ) {
+			queryResult = evaluate( resultName );
+		}
+
+		return new BxServiceResult( { result=queryResult, prefix={} } );
+	}
+
+}

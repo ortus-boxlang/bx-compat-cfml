@@ -1,0 +1,31 @@
+/**
+ * Shim for Adobe ColdFusion's new dbinfo() service syntax.
+ *
+ * Usage:
+ *   dbService = new dbinfo();
+ *   dbService.setDatasource("myDSN");
+ *   dbService.setType("tables");
+ *   result = dbService.execute();
+ *   tables = result.getResult();
+ */
+class extends="BxService" {
+
+	/**
+	 * Execute the dbinfo action and return the result.
+	 */
+	function execute() {
+		var execAttributes = structCopy( variables.attributes );
+		for ( var key in arguments ) {
+			execAttributes[ key ] = arguments[ key ];
+		}
+
+		execAttributes[ "name" ] = "__bxDbInfoResult";
+
+		bx:dbinfo attributeCollection=execAttributes;
+
+		var queryResult = local.keyExists( "__bxDbInfoResult" ) ? local[ "__bxDbInfoResult" ] : {};
+
+		return new BxServiceResult( result = queryResult, prefix = {} );
+	}
+
+}

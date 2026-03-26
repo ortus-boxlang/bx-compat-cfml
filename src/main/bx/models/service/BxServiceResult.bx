@@ -1,0 +1,9 @@
+/**
+ * Result object returned by the http, query, and other service CFCs.
+ */
+class accessors="true" {
+
+	property name="result" type="any";
+	property name="prefix" type="struct";
+
+}

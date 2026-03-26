@@ -1,0 +1,113 @@
+/**
+ * Base class for Adobe ColdFusion service shims (new Query(), new http(), new ftp(), etc.).
+ * Provides shared attribute management, param storage, and implicit setters/getters.
+ */
+class {
+
+	variables.attributes = {};
+	variables.params = [];
+
+	function init() {
+		for ( var key in arguments ) {
+			variables.attributes[ key ] = arguments[ key ];
+		}
+		return this;
+	}
+
+	/**
+	 * Set multiple attributes at once.
+	 */
+	function setAttributes() {
+		for ( var key in arguments ) {
+			variables.attributes[ key ] = arguments[ key ];
+		}
+		return this;
+	}
+
+	/**
+	 * Get attributes. If a comma-separated list is provided, returns only those.
+	 * If no arguments, returns all attributes.
+	 */
+	struct function getAttributes() {
+		if ( arrayLen( arguments ) == 0 || ( arrayLen( arguments ) == 1 && !len( arguments[ 1 ] ) ) ) {
+			return structCopy( variables.attributes );
+		}
+		var attrList = arguments[ 1 ];
+		var result = {};
+		for ( var attr in listToArray( attrList ) ) {
+			attr = trim( attr );
+			if ( variables.attributes.keyExists( attr ) ) {
+				result[ attr ] = variables.attributes[ attr ];
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Clear specified attributes, or all if a list is not provided.
+	 */
+	function clearAttributes() {
+		if ( arrayLen( arguments ) > 0 && len( arguments[ 1 ] ) ) {
+			for ( var attr in listToArray( arguments[ 1 ] ) ) {
+				structDelete( variables.attributes, trim( attr ) );
+			}
+		} else {
+			variables.attributes = {};
+		}
+		return this;
+	}
+
+	/**
+	 * Add a parameter. Subclasses may override for custom validation.
+	 */
+	function addParam() {
+		var param = {};
+		for ( var key in arguments ) {
+			param[ key ] = arguments[ key ];
+		}
+		arrayAppend( variables.params, param );
+		return this;
+	}
+
+	/**
+	 * Remove all params.
+	 */
+	function clearParams() {
+		variables.params = [];
+		return this;
+	}
+
+	/**
+	 * Remove all attributes and params.
+	 */
+	function clear() {
+		variables.attributes = {};
+		variables.params = [];
+		return this;
+	}
+
+	/**
+	 * Implicit setters/getters via onMissingMethod.
+	 * setXXX(value) sets attribute XXX and returns this for chaining.
+	 * getXXX() gets attribute XXX.
+	 */
+	public function onMissingMethod( required string missingMethodName, required any missingMethodArguments ) {
+		if ( left( missingMethodName, 3 ) == "set" && len( missingMethodName ) > 3 ) {
+			if ( arrayLen( missingMethodArguments ) != 1 ) {
+				throw( message="Method #missingMethodName# expects 1 argument, but got #missingMethodArguments.len()#." );
+			}
+			var attrName = missingMethodName.replace( "set", "", "one" );
+			variables.attributes[ attrName ] = missingMethodArguments[ 1 ];
+			return this;
+		} else if ( left( missingMethodName, 3 ) == "get" && len( missingMethodName ) > 3 ) {
+			var attrName = missingMethodName.replace( "get", "", "one" );
+			if ( variables.attributes.keyExists( attrName ) ) {
+				return variables.attributes[ attrName ];
+			}
+			return;
+		} else {
+			throw( message="Method #missingMethodName# does not exist." );
+		}
+	}
+
+}
