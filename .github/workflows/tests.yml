@@ -61,7 +61,7 @@ jobs:
 
       - name: Install BoxLang Modules
         if: ${{ matrix.os != 'windows-latest' }}
-        run: box install bx-mysql,bx-mail,bx-rss,bx-ftp directory=~/.boxlang/modules --verbose --nosave
+        run: box install id=bx-mysql,bx-mail,bx-rss,bx-ftp directory=~/.boxlang/modules --verbose --nosave
 
       # - name: Setup Database and Fixtures
       #   run: |
