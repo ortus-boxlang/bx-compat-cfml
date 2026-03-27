@@ -338,4 +338,23 @@ public class QueryServiceTest extends BaseIntegrationTest {
 		assertThat( prefix.containsKey( Key.of( "sqlParameters" ) ) ).isTrue();
 	}
 
+	@DisplayName( "It can run a Query of Queries by passing a query to the constructor" )
+	@Test
+	public void testQueryOfQueries() {
+		runtime.executeSource( """
+		                       myQry = queryNew( "id,name,role", "integer,varchar,varchar", [
+		                           [ 1, "Brad", "Admin" ],
+		                           [ 2, "Luis", "Developer" ],
+		                           [ 3, "Jon", "Designer" ]
+		                       ] );
+		                       q = new Query( QoQ=myQry, dbtype="query", sql="SELECT * FROM QoQ WHERE role = 'Admin'" );
+		                       result = q.execute();
+		                       data = result.getResult();
+		                       """,
+		    context );
+
+		Query data = ( Query ) variables.get( Key.of( "data" ) );
+		assertThat( data.size() ).isEqualTo( 1 );
+	}
+
 }

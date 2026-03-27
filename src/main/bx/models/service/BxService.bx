@@ -10,6 +10,11 @@ class {
 	function init() {
 		for ( var key in arguments ) {
 			variables.attributes[ key ] = arguments[ key ];
+
+			// This is for an odd-ball compat behavior where the Query() places any arguments passed to the constructor in a place where the cfquery can "see" them for QoQ execution.
+			if( !variables.keyExists( key ) ) {
+				variables[ key ] = arguments[ key ];
+			}
 		}
 		return this;
 	}
