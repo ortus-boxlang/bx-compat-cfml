@@ -302,6 +302,8 @@ import ortus.boxlang.runtime.types.Query;
 		runtimeConfig = boxRuntime.getConfiguration();
 		if( structKeyExists( runtimeConfig, "enableNestedTransactions" ) ){
 			runtimeConfig.enableNestedTransactions = false;
+			// Clear our config cache
+			getBoxContext().clearConfigCache();
 		}
 
 		// We don't have a hard dependency on the spreadsheet module, but if it's present, we want to tweak the settings.
@@ -311,14 +313,14 @@ import ortus.boxlang.runtime.types.Query;
 			// Is spreadsheet present?
 			if( moduleService.hasModule( "bx-spreadsheet" ) ) {
 				var spreadsheetSettings = moduleService.getModuleSettings( "bx-spreadsheet" );
-				// ONLY change if not already explicitly set to avoid clobbering user settings.  
+				// ONLY change if not already explicitly set to avoid clobbering user settings.
 				// This will generate binary spreadsheet files by default instead of XML
 				spreadsheetSettings.XMLFormatDefault = spreadsheetSettings.XMLFormatDefault ?: false;
 			}
-			
+
 			// Fire after all modules have been loaded
 		}, "onModuleServiceStartup" );
-		
+
 	}
 
 	/**
