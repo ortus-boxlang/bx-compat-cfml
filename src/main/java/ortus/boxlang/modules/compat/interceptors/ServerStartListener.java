@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 import ortus.boxlang.modules.compat.util.KeyDictionary;
 import ortus.boxlang.modules.compat.util.SettingsUtil;
 import ortus.boxlang.runtime.context.IBoxContext;
-import ortus.boxlang.runtime.context.ThreadBoxContext;
+import ortus.boxlang.runtime.context.RequestBoxContext;
 import ortus.boxlang.runtime.dynamic.casters.BooleanCaster;
 import ortus.boxlang.runtime.dynamic.casters.StringCaster;
 import ortus.boxlang.runtime.events.BaseInterceptor;
@@ -80,27 +80,32 @@ public class ServerStartListener extends BaseInterceptor {
 					getRuntime().getConfiguration().registerMapping( "/" + tempMappingName, folderPath, false );
 					dotPath = tempMappingName + "." + filename.substring( 0, filename.lastIndexOf( '.' ) );
 				}
-
+				final String finalDotPath = dotPath;
 				// Assert, now the dotPath is populated
 
-				// Load up our serve start class and instantiate it
-				IClassRunnable serverStartClass = ( IClassRunnable ) getRuntime()
-				    .getClassLocator()
-				    .load(
-				        context,
-				        dotPath,
-				        ClassLocator.BX_PREFIX,
-				        true
-				    )
-				    .invokeConstructor( context, Key.noInit )
-				    .unWrapBoxLangClass();
-
-				// Fire it! If the method doesn't exist, this will blow up which I prefer.
-				// Use a ThreadBoxContext so we have a JDBC-capable context
-				ThreadBoxContext.runInContext(
+				// Use a RequestBoxContext so we have a JDBC-capable context
+				RequestBoxContext.runInContext(
 				    context,
-				    ( ctx ) -> serverStartClass.dereferenceAndInvoke( ctx, KeyDictionary.onServerStart, new Object[] {}, false )
-				);
+				    ( ctx ) -> {
+
+					    // Load up our serve start class and instantiate it
+					    // Create this inside of the request context because the pseudoconstructor or static initializer may need JDBC.
+					    IClassRunnable serverStartClass = ( IClassRunnable ) getRuntime()
+					        .getClassLocator()
+					        .load(
+					            ctx,
+					            finalDotPath,
+					            ClassLocator.BX_PREFIX,
+					            true
+					        )
+					        .invokeConstructor( ctx, Key.noInit )
+					        .unWrapBoxLangClass();
+
+					    // Fire it! If the method doesn't exist, this will blow up which I prefer.
+					    serverStartClass.dereferenceAndInvoke( ctx, KeyDictionary.onServerStart, new Object[] {}, false );
+
+					    return null;
+				    } );
 
 				// Clean up our temp mapping
 				getRuntime().getConfiguration().unregisterMapping( "/" + tempMappingName );
