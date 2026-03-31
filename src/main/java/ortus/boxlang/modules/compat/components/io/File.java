@@ -54,7 +54,7 @@ public class File extends ortus.boxlang.runtime.components.io.File {
 	public BodyResult _invoke( IBoxContext context, IStruct attributes, ComponentBody body, IStruct executionState ) {
 		BodyResult	result					= super._invoke( context, attributes, body, executionState );
 		Object		resultVariable			= ExpressionInterpreter.getVariable( context, VARIABLE_STRING, true );
-		Object		resultAttributeValue	= attributes.containsKey( Key.result ) ? attributes.get( Key.result ) : null;
+		Object		resultAttributeValue	= attributes.get( Key.result );
 
 		if ( resultAttributeValue == null && resultVariable != null ) {
 			ExpressionInterpreter.setVariable(
