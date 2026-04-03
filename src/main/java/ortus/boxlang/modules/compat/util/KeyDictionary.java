@@ -46,13 +46,14 @@ public class KeyDictionary {
 	public static final Key	ON_CLIENT_DESTROYED			= Key.of( "onClientDestroyed" );
 	public static final Key	onServerStart				= Key.of( "onServerStart" );
 	public static final Key	queryNullToEmpty			= Key.of( "queryNullToEmpty" );
+	public static final Key	requesturl					= Key.of( "requesturl" );
 	public static final Key	serverStartEnabled			= Key.of( "serverStartEnabled" );
 	public static final Key	serverStartPath				= Key.of( "serverStartPath" );
+	public static final Key	sessionType					= Key.of( "sessionType" );
 	public static final Key	tagName						= Key.of( "tagName" );
 	public static final Key	throwWhenNotExist			= Key.of( "throwWhenNotExist" );
 	public static final Key	transpiler					= Key.of( "transpiler" );
 	public static final Key	upperCaseKeys				= Key.of( "upperCaseKeys" );
-	public static final Key	sessionType					= Key.of( "sessionType" );
 
 	// ORM keys
 	public static final Key	autoManageSession			= Key.of( "autoManageSession" );
