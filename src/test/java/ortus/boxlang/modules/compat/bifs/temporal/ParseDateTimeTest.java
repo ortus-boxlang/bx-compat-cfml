@@ -3,7 +3,6 @@ package ortus.boxlang.modules.compat.bifs.temporal;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -63,7 +62,7 @@ public class ParseDateTimeTest extends BaseIntegrationTest {
 
 	@DisplayName( "It tests the speed of both masked and non-masked parsing" )
 	@Test
-	@Disabled( "Disabled for CI performance. Comment to test locally" )
+	// @Disabled( "Disabled for CI performance. Comment to test locally" )
 	public void testSpeed() {
 		// @formatter:off
 		runtime.executeSource(

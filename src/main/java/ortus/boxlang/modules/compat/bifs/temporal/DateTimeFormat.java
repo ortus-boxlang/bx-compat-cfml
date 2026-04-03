@@ -18,10 +18,12 @@ import ortus.boxlang.modules.compat.interceptors.DateTimeMaskCompat;
 import ortus.boxlang.runtime.bifs.BoxBIF;
 import ortus.boxlang.runtime.bifs.BoxMember;
 import ortus.boxlang.runtime.context.IBoxContext;
+import ortus.boxlang.runtime.dynamic.casters.DateTimeCaster;
 import ortus.boxlang.runtime.dynamic.casters.StringCaster;
 import ortus.boxlang.runtime.scopes.ArgumentsScope;
 import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.BoxLangType;
+import ortus.boxlang.runtime.types.DateTime;
 import ortus.boxlang.runtime.types.Struct;
 
 @BoxBIF
@@ -52,6 +54,17 @@ public class DateTimeFormat extends ortus.boxlang.runtime.bifs.global.temporal.D
 		        Key.arguments, arguments
 		    )
 		);
+
+		// If the rewritten mask contains the AM/PM abbreviation sentinel, we need to
+		// build the formatter directly via DateTimeFormatterBuilder since
+		// DateTimeFormatter.ofPattern() has no single-char A/P AM/PM letter.
+		Key		formatArg	= arguments.containsKey( Key.mask ) ? Key.mask : Key.format;
+		String	mask		= arguments.getAsString( formatArg );
+		if ( mask != null && mask.contains( DateTimeMaskCompat.AMPM_ABBR_SENTINEL ) ) {
+			DateTime dt = DateTimeCaster.cast( formattable, true, null, context );
+			return dt.format( DateTimeMaskCompat.buildFormatter( mask ) );
+		}
+
 		return super._invoke( context, arguments );
 
 	}
