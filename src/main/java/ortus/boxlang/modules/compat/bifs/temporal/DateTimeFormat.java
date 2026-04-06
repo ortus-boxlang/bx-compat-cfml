@@ -18,6 +18,7 @@ import ortus.boxlang.modules.compat.interceptors.DateTimeMaskCompat;
 import ortus.boxlang.runtime.bifs.BoxBIF;
 import ortus.boxlang.runtime.bifs.BoxMember;
 import ortus.boxlang.runtime.context.IBoxContext;
+import ortus.boxlang.runtime.dynamic.casters.BigDecimalCaster;
 import ortus.boxlang.runtime.dynamic.casters.DateTimeCaster;
 import ortus.boxlang.runtime.dynamic.casters.StringCaster;
 import ortus.boxlang.runtime.scopes.ArgumentsScope;
@@ -25,6 +26,8 @@ import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.BoxLangType;
 import ortus.boxlang.runtime.types.DateTime;
 import ortus.boxlang.runtime.types.Struct;
+import ortus.boxlang.runtime.types.util.DateTimeHelper;
+import ortus.boxlang.runtime.util.LocalizationUtil;
 
 @BoxBIF
 @BoxBIF( alias = "DateFormat" )
@@ -41,11 +44,18 @@ public class DateTimeFormat extends ortus.boxlang.runtime.bifs.global.temporal.D
 	public Object _invoke( IBoxContext context, ArgumentsScope arguments ) {
 		// Lucee and ACF will accept a empty string and return an empty string...
 		Object formattable = arguments.get( Key.date );
+
 		// return an empty string if a null value was passed
 		if ( formattable == null ) {
 			return "";
 		} else if ( formattable instanceof String && StringCaster.cast( formattable ).trim().isEmpty() ) {
 			return formattable;
+		}
+
+		if ( BigDecimalCaster.attempt( formattable ).wasSuccessful() ) {
+			formattable = DateTimeHelper.castIncludeFractionalDays( BigDecimalCaster.cast( formattable ), LocalizationUtil.parseZoneId( null, context ),
+			    context );
+			arguments.put( Key.date, formattable );
 		}
 		interceptorService.announce(
 		    DateTimeMaskCompat.ON_LEGACY_DATE_FORMAT_REQUEST,

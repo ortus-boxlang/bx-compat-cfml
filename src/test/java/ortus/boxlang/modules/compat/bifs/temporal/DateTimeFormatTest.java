@@ -288,6 +288,19 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 		assertEquals( "2024-06-15T10:30:00", variables.getAsString( Key.of( "result" ) ) );
 	}
 
+	@DisplayName( "dateTimeFormat will cast numbers as fractional days" )
+	@Test
+	public void testWillCastNumbersAsFractionalDays() {
+		runtime.executeSource(
+		    """
+		    setTimezone( "UTC" );
+		    ref = createDateTime( 2024, 6, 15, 10, 30, 0, 0, "UTC" );
+		    result = dateTimeFormat( ref - 1 , "yyyy-MM-dd" );
+		    """,
+		    context );
+		assertEquals( "2024-06-14", variables.getAsString( Key.of( "result" ) ) );
+	}
+
 	@DisplayName( "BL-2322/BL-2323: dateTimeFormat handles formats with embedded literal words" )
 	@Test
 	public void testDateTimeFormatWithEmbeddedWords() {
