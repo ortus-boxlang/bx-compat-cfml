@@ -1,0 +1,60 @@
+/**
+ * Shim for Adobe ColdFusion's new feed() service syntax.
+ *
+ * Usage:
+ *   feedService = new feed();
+ *   feedService.setSource("http://rss.example.com/feed.xml");
+ *   result = feedService.read();
+ *   query = result.getResult();
+ *   props = result.getPrefix();
+ */
+class extends="BxService" {
+
+	/**
+	 * Read an RSS or Atom feed.
+	 * Returns BxServiceResult where result = query of items/entries and prefix = feed properties.
+	 */
+	function read() {
+		var execAttributes = structCopy( variables.attributes );
+		for ( var key in arguments ) {
+			execAttributes[ key ] = arguments[ key ];
+		}
+
+		execAttributes[ "action" ] = "read";
+		execAttributes[ "query" ] = "__bxFeedQuery";
+		execAttributes[ "properties" ] = "__bxFeedProps";
+
+		bx:feed attributeCollection=execAttributes;
+
+		var feedQuery = isDefined( "__bxFeedQuery" ) ? evaluate( "__bxFeedQuery" ) : {};
+		var feedProps = isDefined( "__bxFeedProps" ) ? evaluate( "__bxFeedProps" ) : {};
+
+		return new BxServiceResult( { result=feedQuery, prefix=feedProps } );
+	}
+
+	/**
+	 * Create an RSS 2.0 or Atom 1.0 feed.
+	 * Returns BxServiceResult where result = the XML string (if xmlVar is used).
+	 */
+	function create() {
+		var execAttributes = structCopy( variables.attributes );
+		for ( var key in arguments ) {
+			execAttributes[ key ] = arguments[ key ];
+		}
+
+		execAttributes[ "action" ] = "create";
+
+		// If no xmlVar specified, create one to capture output
+		if ( !execAttributes.keyExists( "xmlVar" ) ) {
+			execAttributes[ "xmlVar" ] = "__bxFeedXml";
+		}
+		var xmlVarName = execAttributes.xmlVar;
+
+		bx:feed attributeCollection=execAttributes;
+
+		var feedXml = isDefined( xmlVarName ) ? evaluate( xmlVarName ) : "";
+
+		return new BxServiceResult( { result=feedXml, prefix={} } );
+	}
+
+}

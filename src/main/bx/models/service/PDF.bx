@@ -1,0 +1,52 @@
+/**
+ * Shim for Adobe ColdFusion's new pdf() service syntax.
+ *
+ * Usage:
+ *   pdfService = new pdf();
+ *   pdfService.setSource("myfile.pdf");
+ *   info = pdfService.getPdfInfo(name="pdfinfo");
+ */
+class extends="BxService" {
+
+	variables.pdfActions = [
+		"addwatermark", "removewatermark", "deletepages", "getpdfinfo",
+		"setpdfinfo", "merge", "processddx", "protect",
+		"read", "write", "thumbnail", "transform",
+		"optimize", "extractimage", "extracttext",
+		"addheader", "addfooter", "removeheaderfooter"
+	];
+
+	/**
+	 * Override onMissingMethod to handle PDF actions in addition to set/get.
+	 */
+	public function onMissingMethod( required string missingMethodName, required any missingMethodArguments ) {
+		if ( variables.pdfActions.findNoCase( missingMethodName ) ) {
+			return _doAction( missingMethodName, missingMethodArguments );
+		}
+		return super.onMissingMethod( missingMethodName, missingMethodArguments );
+	}
+
+	/**
+	 * Execute a PDF action.
+	 */
+	private function _doAction( required string action, any args = {} ) {
+		var execAttributes = structCopy( variables.attributes );
+		for ( var key in args ) {
+			execAttributes[ key ] = args[ key ];
+		}
+		execAttributes[ "action" ] = action;
+
+		var resultName = execAttributes.name ?: "__bxPdfResult";
+		execAttributes[ "name" ] = resultName;
+
+		bx:pdf attributeCollection=execAttributes {
+			for ( var param in variables.params ) {
+				bx:pdfparam attributeCollection=param;
+			}
+		}
+
+		var result = isDefined( resultName ) ? evaluate( resultName ) : {};
+		return new BxServiceResult( { result=result, prefix={} } );
+	}
+
+}

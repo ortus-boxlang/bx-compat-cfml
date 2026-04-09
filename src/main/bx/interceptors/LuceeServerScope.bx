@@ -53,6 +53,7 @@
 			 "productlevel" : "os",
 			 "productname" : "Lucee",
 			 "productversion" : "2016,0,03,300357",
+			 "rootdir" : getBoxRuntime().getRuntimeHome().toString(),
 			 "supportedLocales" : Locale.getAvailableLocales()
 										 .map( l->l.getDisplayName(Locale.US).lcase() )
 										 .filter( l -> len( l ) )

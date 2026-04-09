@@ -29,8 +29,8 @@ public class FileMove extends ortus.boxlang.runtime.bifs.global.io.FileMove {
 	public FileMove() {
 		super();
 		declaredArguments = new Argument[] {
-		    new Argument( true, Argument.STRING, Key.source ),
-		    new Argument( true, Argument.STRING, Key.destination ),
+		    new Argument( true, "boxfile", Key.source ),
+		    new Argument( true, "boxfile", Key.destination ),
 		    new Argument( true, Argument.BOOLEAN, Key.overwrite, true )
 		};
 	}

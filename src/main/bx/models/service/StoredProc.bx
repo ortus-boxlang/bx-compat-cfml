@@ -1,0 +1,111 @@
+/**
+ * Shim for Adobe ColdFusion's new storedProc() service syntax.
+ *
+ * Usage:
+ *   spService = new storedProc();
+ *   spService.setDatasource("myDSN");
+ *   spService.setProcedure("myProc");
+ *   spService.addParam(cfsqltype="cf_sql_varchar", type="in", value="test");
+ *   spService.addParam(cfsqltype="cf_sql_integer", type="out", variable="outVar");
+ *   spService.addProcResult(name="rs1", resultset=1);
+ *   result = spService.execute();
+ *   data = result.getProcResultSets().rs1;
+ *   outVars = result.getProcOutVariables();
+ */
+class extends="BxService" {
+
+	variables.procResults = [];
+
+	/**
+	 * Add a proc result definition (equivalent to cfprocresult).
+	 */
+	function addProcResult() {
+		var pr = {};
+		for ( var key in arguments ) {
+			pr[ key ] = arguments[ key ];
+		}
+		arrayAppend( variables.procResults, pr );
+		return this;
+	}
+
+	/**
+	 * Remove all proc result definitions.
+	 */
+	function clearProcResults() {
+		variables.procResults = [];
+		return this;
+	}
+
+	/**
+	 * Remove all attributes, params, and proc results.
+	 */
+	function clear() {
+		super.clear();
+		variables.procResults = [];
+		return this;
+	}
+
+	/**
+	 * Execute the stored procedure.
+	 * Returns a StoredProcResult with getProcResultSets() and getProcOutVariables().
+	 */
+	function execute() {
+		var execAttributes = structCopy( variables.attributes );
+		for ( var key in arguments ) {
+			execAttributes[ key ] = arguments[ key ];
+		}
+
+		// Force the result attribute into local scope with a predictable name
+		var resultVarName = execAttributes.result ?: "bxstoredproc";
+		execAttributes[ "result" ] = "local.__bxResult";
+
+		// Redirect OUT/INOUT variable names into local.outVars struct
+		var outVarKeys = {};
+		var paramsCopy = [];
+		for ( var param in variables.params ) {
+			var p = structCopy( param );
+			var paramType = p.type ?: "";
+			if ( ( paramType == "out" || paramType == "inout" ) && p.keyExists( "variable" ) ) {
+				var originalName = p.variable;
+				p[ "variable" ] = "local.__bxOutVars." & originalName;
+				outVarKeys[ originalName ] = true;
+			}
+			arrayAppend( paramsCopy, p );
+		}
+
+		// Redirect proc result names into local.procResults struct
+		var procResultsCopy = [];
+		var procResultKeys = {};
+		for ( var pr in variables.procResults ) {
+			var prCopy = structCopy( pr );
+			if ( prCopy.keyExists( "name" ) ) {
+				var originalName = prCopy.name;
+				prCopy[ "name" ] = "local.__bxProcResults." & originalName;
+				procResultKeys[ originalName ] = true;
+			}
+			arrayAppend( procResultsCopy, prCopy );
+		}
+
+		// Initialize collection structs
+		var __bxOutVars = {};
+		var __bxProcResults = {};
+		var __bxResult = {};
+
+		// Execute the stored procedure
+		bx:storedproc attributeCollection=execAttributes {
+			for ( var param in paramsCopy ) {
+				bx:procparam attributeCollection=param;
+			}
+			for ( var pr in procResultsCopy ) {
+				bx:procresult attributeCollection=pr;
+			}
+		}
+
+		return new BxStoredProcResult(
+			procResultSets = __bxProcResults,
+			procOutVariables = __bxOutVars,
+			prefix = __bxResult
+		);
+	}
+
+}

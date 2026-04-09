@@ -56,7 +56,7 @@ class{
 			"productlevel" : "Enterprise",
 			"productname" : "ColdFusion Server",
 			"productversion" : "2023,0,06,330617",
-			"rootdir" : "'",
+			"rootdir" : getBoxRuntime().getRuntimeHome().toString(),
 			"updatelevel" : "0",
 			"supportedLocales" : Locale.getAvailableLocales()
 										.map( l->l.getDisplayName(Locale.US).lcase() )

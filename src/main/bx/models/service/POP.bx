@@ -1,0 +1,50 @@
+/**
+ * Shim for Adobe ColdFusion's new pop() service syntax.
+ *
+ * Usage:
+ *   popService = new pop();
+ *   popService.setServer("pop.example.com");
+ *   popService.setUsername("user");
+ *   popService.setPassword("pass");
+ *   result = popService.getHeaderOnly(name="messages");
+ */
+class extends="BxService" {
+
+	variables.popActions = [ "getheaderonly", "getall", "delete" ];
+
+	/**
+	 * Override onMissingMethod to handle POP actions in addition to set/get.
+	 */
+	public function onMissingMethod( required string missingMethodName, required any missingMethodArguments ) {
+		if ( variables.popActions.findNoCase( missingMethodName ) ) {
+			return _doAction( missingMethodName, missingMethodArguments );
+		}
+		return super.onMissingMethod( missingMethodName, missingMethodArguments );
+	}
+
+	/**
+	 * Execute a POP action.
+	 */
+	private function _doAction( required string action, any args = {} ) {
+		var execAttributes = structCopy( variables.attributes );
+		for ( var key in args ) {
+			execAttributes[ key ] = args[ key ];
+		}
+		execAttributes[ "action" ] = action;
+
+		var resultName = execAttributes.name ?: "__bxPopResult";
+		if ( [ "getheaderonly", "getall" ].findNoCase( action ) ) {
+			execAttributes[ "name" ] = resultName;
+		}
+
+		bx:pop attributeCollection=execAttributes;
+
+		var queryResult = {};
+		if ( isDefined( resultName ) ) {
+			queryResult = evaluate( resultName );
+		}
+
+		return new BxServiceResult( { result=queryResult, prefix={} } );
+	}
+
+}

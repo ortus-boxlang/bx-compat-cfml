@@ -78,5 +78,7 @@ public class ORMApplicationListener extends BaseInterceptor {
 		properties.putIfAbsent( KeyDictionary.ignoreParseErrors, true );
 		properties.putIfAbsent( KeyDictionary.autoManageSession, true );
 		properties.putIfAbsent( KeyDictionary.flushAtRequestEnd, true );
+		properties.putIfAbsent( KeyDictionary.proxyLazyLoading, true );
+		properties.putIfAbsent( KeyDictionary.defaultBatchSize, 25 );
 	}
 }

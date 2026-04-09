@@ -1,0 +1,50 @@
+/**
+ * Shim for sending HTTP requests
+ */
+class extends="BxService" {
+
+	function send() {
+		// Merge any passed-in attributes for this execution
+		for ( var key in arguments ) {
+			variables.attributes[ key ] = arguments[ key ];
+		}
+		bx:http attributeCollection=variables.attributes result="local.result" {
+			for( var param in variables.params ) {
+				bx:httpparam attributeCollection=param;
+			}
+		}
+		// Adobe has some dumb StructBean class which can't be assigned to so we have to make a proper struct out of it
+		var prefix = {};
+		for( var key in local.RESULT ) {
+			prefix[ key ] = local.RESULT[ key ];
+		}
+		if( prefix.STATUSCODE contains "Connection Failure" ) {
+			prefix[ "status_code" ] = 0;
+			prefix[ "status_text" ] = "Connection Failure";
+		}
+		 else {
+			// ACF and Lucee both have "statusCode", which contains "200 OK" or similar.
+			// Lucee only has "status_coded" which is just 200 and "status_text" which is "OK".
+			prefix[ "status_code" ] = prefix.STATUSCODE.listFirst( " " );
+			prefix[ "status_text" ] = prefix.STATUSCODE.listRest( " " );
+		}
+		return new BxServiceResult( { prefix=prefix } );
+	}
+
+	function addParam( required string type, string name, required any value ) {
+		var param = {
+			TYPE : arguments.TYPE,
+			VALUE : arguments.VALUE
+		};
+		if( arguments.keyExists( "name" ) ) {
+			param.NAME = arguments.NAME;
+		}
+		 else if( !"body,xml".listFindNoCase( arguments.TYPE ) ) {
+			throw( message="HTTP Param type [#arguments.TYPE#] requires a name.  Only XML and Body are exempt." );
+		}
+
+		arrayAppend( variables.params, param );
+		return this;
+	}
+
+}

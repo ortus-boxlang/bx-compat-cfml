@@ -1,0 +1,60 @@
+/**
+ * Shim for Adobe ColdFusion's new ftp() service syntax.
+ *
+ * Usage:
+ *   ftpService = new ftp();
+ *   ftpService.setServer("ftp.example.com");
+ *   ftpService.setUsername("user");
+ *   ftpService.setPassword("pass");
+ *   result = ftpService.open();
+ *   result.getPrefix().succeeded
+ */
+class extends="BxService" {
+
+	variables.ftpActions = [
+		"open", "close", "quote", "site", "allo", "acct",
+		"changedir", "createdir", "listdir", "removedir",
+		"getfile", "putfile", "rename", "remove",
+		"getcurrentdir", "getcurrenturl",
+		"existdir", "existsfile", "exists"
+	];
+
+	/**
+	 * Override onMissingMethod to handle FTP actions in addition to set/get.
+	 * Actions like getFile, getCurrentDir start with "get" but are FTP actions, not getters.
+	 */
+	public function onMissingMethod( required string missingMethodName, required any missingMethodArguments ) {
+		if ( variables.ftpActions.findNoCase( missingMethodName ) ) {
+			return _doAction( missingMethodName, missingMethodArguments );
+		}
+		return super.onMissingMethod( missingMethodName, missingMethodArguments );
+	}
+
+	/**
+	 * Execute an FTP action.
+	 */
+	private function _doAction( required string action, any args = {} ) {
+		var execAttributes = structCopy( variables.attributes );
+		for ( var key in args ) {
+			execAttributes[ key ] = args[ key ];
+		}
+		execAttributes[ "action" ] = action;
+
+		// For listDir, we need a name for the result query
+		var resultName = execAttributes.name ?: "__bxFtpResult";
+		if ( action == "listdir" ) {
+			execAttributes[ "name" ] = resultName;
+		}
+
+		bx:ftp attributeCollection=execAttributes result="local.__bxFtpPrefix";
+
+		var prefix = local.__bxFtpPrefix ?: {};
+		var queryResult = {};
+		if ( action == "listdir" && isDefined( resultName ) ) {
+			queryResult = evaluate( resultName );
+		}
+
+		return new BxServiceResult( { result=queryResult, prefix=prefix } );
+	}
+
+}

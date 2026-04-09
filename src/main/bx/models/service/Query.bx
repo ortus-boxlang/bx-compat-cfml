@@ -1,0 +1,62 @@
+/**
+ * Shim for Adobe ColdFusion's new Query() service syntax.
+ *
+ * Usage:
+ *   queryService = new Query();
+ *   queryService.setDatasource("myDSN");
+ *   queryService.setSQL("SELECT * FROM users WHERE id = :id");
+ *   queryService.addParam(name="id", value=42, cfsqltype="cf_sql_integer");
+ *   result = queryService.execute();
+ *   data = result.getResult();
+ *   meta = result.getPrefix();
+ */
+class extends="BxService" {
+
+	/**
+	 * Execute the query and return an object with getResult() and getPrefix() methods.
+	 * Accepts optional attribute-value pairs that override current attributes for this execution.
+	 */
+	function execute() {
+		// Merge any passed-in attributes for this execution
+		var execAttributes = structCopy( variables.attributes );
+		for ( var key in arguments ) {
+			execAttributes[ key ] = arguments[ key ];
+		}
+
+		var sql = execAttributes.sql ?: "";
+
+		// Build the params array for queryExecute's second argument
+		// ACF supports both named params (:paramName) and positional params (?)
+		var hasNamedParams = variables.params.len() > 0 && variables.params[ 1 ].keyExists( "name" );
+		var qeParams = hasNamedParams ? {} : [];
+
+		for ( var param in variables.params ) {
+			if ( hasNamedParams && param.keyExists( "name" ) ) {
+				var paramDef = structCopy( param );
+				structDelete( paramDef, "name" );
+				qeParams[ param.name ] = paramDef;
+			} else {
+				arrayAppend( qeParams, param );
+			}
+		}
+
+		// Build queryExecute options from remaining attributes
+		var options = {};
+		var optionKeys = [ "datasource", "dbtype", "maxrows", "timeout", "cachedwithin", "cachedafter",
+			"blockfactor", "debug", "username", "password", "name", "result" ];
+		for ( var optKey in optionKeys ) {
+			if ( execAttributes.keyExists( optKey ) ) {
+				options[ optKey ] = execAttributes[ optKey ];
+			}
+		}
+
+		// Capture query metadata via the result attribute
+		options[ "result" ] = "local.__bxQueryMeta";
+
+		// Execute the query
+		var queryResult = queryExecute( sql, qeParams, options );
+
+		return new BxServiceResult( { result=queryResult, prefix=local.__bxQueryMeta ?: {} } );
+	}
+
+}

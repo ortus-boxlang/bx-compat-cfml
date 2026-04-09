@@ -1,0 +1,10 @@
+/**
+ * Result object returned by StoredProc.execute().
+ * Provides getProcResultSets() and getProcOutVariables() per Adobe ColdFusion API.
+ */
+class extends="BxServiceResult" accessors="true" {
+
+	property name="procResultSets" type="struct";
+	property name="procOutVariables" type="struct";
+
+}

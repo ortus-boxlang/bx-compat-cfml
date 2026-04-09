@@ -1,0 +1,87 @@
+/**
+ * Shim for Adobe ColdFusion's new Mail() service syntax.
+ *
+ * Usage:
+ *   mailService = new Mail();
+ *   mailService.setTo("recipient@example.com");
+ *   mailService.setFrom("sender@example.com");
+ *   mailService.setSubject("Hello");
+ *   mailService.send(body="Hello World!");
+ */
+class extends="BxService" {
+
+	variables.parts = [];
+
+	/**
+	 * Add a mail part (equivalent to cfmailpart).
+	 * Supports: type, charset, wrapText, and body content.
+	 */
+	function addPart() {
+		var part = {};
+		for ( var key in arguments ) {
+			part[ key ] = arguments[ key ];
+		}
+		arrayAppend( variables.parts, part );
+		return this;
+	}
+
+	/**
+	 * Remove all mail parts.
+	 */
+	function clearParts() {
+		variables.parts = [];
+		return this;
+	}
+
+	/**
+	 * Remove all attributes, params, and parts.
+	 */
+	function clear() {
+		super.clear();
+		variables.parts = [];
+		return this;
+	}
+
+	/**
+	 * Send the email.
+	 * Accepts optional attribute-value pairs that are used for this send only
+	 * and do NOT persist to the object's attributes afterward.
+	 */
+	function send() {
+		// Merge any passed-in attributes for this execution only (not persisted)
+		var execAttributes = structCopy( variables.attributes );
+		for ( var key in arguments ) {
+			execAttributes[ key ] = arguments[ key ];
+		}
+
+		// Extract body from attributes if present
+		var mailBody = execAttributes.body ?: "";
+		structDelete( execAttributes, "body" );
+
+		if ( variables.parts.len() > 0 ) {
+			// Multipart mail
+			bx:mail attributeCollection=execAttributes {
+				for ( var part in variables.parts ) {
+					var partBody = part.body ?: "";
+					var partAttribs = structCopy( part );
+					structDelete( partAttribs, "body" );
+					bx:mailpart attributeCollection=partAttribs {
+						writeOutput( partBody );
+					}
+				}
+				for ( var param in variables.params ) {
+					bx:mailparam attributeCollection=param;
+				}
+			}
+		} else {
+			// Simple mail
+			bx:mail attributeCollection=execAttributes {
+				for ( var param in variables.params ) {
+					bx:mailparam attributeCollection=param;
+				}
+				writeOutput( mailBody );
+			}
+		}
+	}
+
+}
