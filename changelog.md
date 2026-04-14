@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+* Allow user config json to override `enableNestedTransactions` setting.
+
 ## [1.31.0] - 2026-04-09
 
 ## [1.30.2] - 2026-02-03

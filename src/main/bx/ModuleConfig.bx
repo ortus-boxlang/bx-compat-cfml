@@ -298,9 +298,9 @@ import ortus.boxlang.runtime.types.Query;
 		// Register the CFIDE Mapping for compatibility
 		boxRuntime.getConfiguration().registerMapping( "CFIDE", variables.moduleRecord.path & "/CFIDE" );
 
-		// Revert to ACF and Lucee-compatible JDBC nested transacton behavior
 		runtimeConfig = boxRuntime.getConfiguration();
-		if( structKeyExists( runtimeConfig, "enableNestedTransactions" ) ){
+		// Revert to ACF and Lucee-compatible JDBC nested transacton behavior if the setting is not explicitly set by the user.
+		if( structKeyExists( runtimeConfig, "enableNestedTransactions" ) && isNull( runtimeConfig.enableNestedTransactions ) ){
 			runtimeConfig.enableNestedTransactions = false;
 			// Clear our config cache
 			getBoxContext().clearConfigCache();
