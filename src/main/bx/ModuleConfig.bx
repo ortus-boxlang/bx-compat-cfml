@@ -300,7 +300,7 @@ import ortus.boxlang.runtime.types.Query;
 
 		runtimeConfig = boxRuntime.getConfiguration();
 		// Revert to ACF and Lucee-compatible JDBC nested transacton behavior if the setting is not explicitly set by the user.
-		if( val( GetBoxVersionInfo().version ) <= 1.12.0 ){
+		if( val( GetBoxVersionInfo().version ) <= 1.12 ){
 			// In older versions of BoxLang, this setting defaulted to true with no way to detect user config.
 			runtimeConfig.enableNestedTransactions = false;
 		} else {
