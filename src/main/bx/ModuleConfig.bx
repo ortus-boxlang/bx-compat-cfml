@@ -298,12 +298,18 @@ import ortus.boxlang.runtime.types.Query;
 		// Register the CFIDE Mapping for compatibility
 		boxRuntime.getConfiguration().registerMapping( "CFIDE", variables.moduleRecord.path & "/CFIDE" );
 
-		// Revert to ACF and Lucee-compatible JDBC nested transacton behavior
 		runtimeConfig = boxRuntime.getConfiguration();
-		if( structKeyExists( runtimeConfig, "enableNestedTransactions" ) ){
+		// Revert to ACF and Lucee-compatible JDBC nested transacton behavior if the setting is not explicitly set by the user.
+		if( val( GetBoxVersionInfo().version ) <= 1.12 ){
+			// In older versions of BoxLang, this setting defaulted to true with no way to detect user config.
 			runtimeConfig.enableNestedTransactions = false;
-			// Clear our config cache
-			getBoxContext().clearConfigCache();
+		} else {
+			// For 1.13.0+ we only override if the setting is null to avoid clobbering user settings.  This allows users to opt into the new nested transaction behavior if they want while maintaining backwards compatibility by default.
+			if( structKeyExists( runtimeConfig, "enableNestedTransactions" ) && isNull( runtimeConfig.enableNestedTransactions ) ){
+				runtimeConfig.enableNestedTransactions = false;
+				// Clear our config cache
+				getBoxContext().clearConfigCache();
+			}
 		}
 
 		// We don't have a hard dependency on the spreadsheet module, but if it's present, we want to tweak the settings.

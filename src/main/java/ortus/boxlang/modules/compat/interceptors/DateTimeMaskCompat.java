@@ -126,6 +126,7 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 	private static final Map<String, String> TIME_FORMAT_REPLACEMENTS = new LinkedHashMap<>();
 	static {
 		TIME_FORMAT_REPLACEMENTS.put( "M", "m" );
+		TIME_FORMAT_REPLACEMENTS.put( "n", "m" );
 		TIME_FORMAT_REPLACEMENTS.put( "S", "s" );
 		TIME_FORMAT_REPLACEMENTS.put( "l", "S" );
 		TIME_FORMAT_REPLACEMENTS.put( "L", "S" );
