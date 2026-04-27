@@ -109,6 +109,12 @@ class{
 				modifiedOptions.cache = structOptions.cache ?: true;
 			}
 		}
+		var zeroTimespan = createTimeSpan( 0, 0, 0, 0 );
+		if( structOptions.keyExists( "cacheTimeout" ) && !isNull( structOptions.cacheTimeout ) && zeroTimespan.equals( structOptions.cacheTimeout ) ){
+			// Treat 0 cacheTimeout as cache=false.
+			modifiedOptions.cacheTimeout = createTimeSpan( -1, 0, 0, 0 );
+			modifiedOptions.cache = false;
+		}
 
 		// Construct a new QueryOptions instance from the modified options struct
 		if( !modifiedOptions.isEmpty() ){
