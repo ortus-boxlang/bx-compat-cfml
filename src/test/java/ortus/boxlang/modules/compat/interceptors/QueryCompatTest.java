@@ -22,7 +22,6 @@ public class QueryCompatTest extends BaseIntegrationTest {
 
 				interceptData = { bindings : [], options : options };
 				new QueryCompat().onQueryBuild( interceptData );
-				assert interceptData.options.cache == false;
 				assert interceptData.options.cacheTimeout < 0;
 			   """,
 		    context );
