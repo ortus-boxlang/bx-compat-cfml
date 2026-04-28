@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- [BL-2374](https://ortussolutions.atlassian.net/browse/BL-2374) - Treat zero-length `cacheTimeout` as negative timeout to evict cache entry. 
+
 ## [1.32.1] - 2026-04-21
 
 ## [1.32.0] - 2026-04-21
