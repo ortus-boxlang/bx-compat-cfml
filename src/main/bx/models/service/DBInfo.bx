@@ -19,11 +19,11 @@ class extends="BxService" {
 			execAttributes[ key ] = arguments[ key ];
 		}
 
-		execAttributes[ "name" ] = "__bxDbInfoResult";
+		execAttributes[ "name" ] = "local.__bxDbInfoResult";
 
 		bx:dbinfo attributeCollection=execAttributes;
 
-		var queryResult = local.keyExists( "__bxDbInfoResult" ) ? local[ "__bxDbInfoResult" ] : {};
+		var queryResult = local.__bxDbInfoResult ?: {};
 
 		return new BxServiceResult( result = queryResult, prefix = {} );
 	}
