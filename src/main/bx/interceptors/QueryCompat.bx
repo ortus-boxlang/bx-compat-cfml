@@ -111,9 +111,8 @@ class{
 		}
 		var zeroTimespan = createTimeSpan( 0, 0, 0, 0 );
 		if( structOptions.keyExists( "cacheTimeout" ) && !isNull( structOptions.cacheTimeout ) && zeroTimespan.equals( structOptions.cacheTimeout ) ){
-			// Treat 0 cacheTimeout as cache=false.
+			// Treat 0 cacheTimeout as negative timeout. In the core, this evicts the cache entry.
 			modifiedOptions.cacheTimeout = createTimeSpan( -1, 0, 0, 0 );
-			modifiedOptions.cache = false;
 		}
 
 		// Construct a new QueryOptions instance from the modified options struct
