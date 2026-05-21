@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Replaced `evaluate()` usage in service shims (FTP, Feed, IMAP, LDAP, PDF, POP) with direct scope dereference.
 
+### Fixed
+
+- [BLMODULES-210](https://ortussolutions.atlassian.net/browse/BLMODULES-210) - Fix QueryCompat failing in ASMBoxpiler with `cannot use a function parameter with the same name as an import`
+
 ## [1.32.1] - 2026-04-21
 
 ## [1.32.0] - 2026-04-21

@@ -56,7 +56,7 @@ class{
 	 */
 	function onQueryBuild( struct data ){
 		if ( IsStruct( data.bindings ) ){
-			data.bindings.each( ( key, param ) -> {
+			data.bindings.each( ( paramKey, param ) -> {
 				if( !isNull( param ) && isStruct( param ) && param.keyExists( "cfsqltype" ) && !param.keyExists( "sqltype" ) ){
 					param.sqltype = param.cfsqltype;
 				}
