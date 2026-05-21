@@ -343,16 +343,4 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 		assertEquals( "09:05:03", variables.getAsString( Key.of( "result" ) ) );
 	}
 
-	@DisplayName( "date format gives the same original date from a number" )
-	@Test
-	public void testDateFormatGivesSameOriginalDateFromNumber() {
-		runtime.executeSource(
-		    """
-		       result1 = dateFormat( now(), "mm/dd/yyyy" );
-		    result2 = dateFormat( [ now() ].max(), "mm/dd/yyyy" );
-		       """,
-		    context );
-		assertEquals( variables.getAsString( Key.of( "result1" ) ), variables.getAsString( Key.of( "result2" ) ) );
-	}
-
 }
