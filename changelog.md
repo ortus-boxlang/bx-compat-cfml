@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- [BLMODULES-207](https://ortussolutions.atlassian.net/browse/BLMODULES-207) - add qry.getColumnList() -> array for CF compat
+
+### Fixed
+
+- [BLMODULES-210](https://ortussolutions.atlassian.net/browse/BLMODULES-210) - Fix QueryCompat failing in ASMBoxpiler with `cannot use a function parameter with the same name as an import`
+- [BLMODULES-187](https://ortussolutions.atlassian.net/browse/BLMODULES-187) - Set spreadsheet module to default type of binary
+- [BL-2389](https://ortussolutions.atlassian.net/browse/BL-2389) - For ACF compat, treat empty strings as list with one value in listQualify()
+- [BL-2435](https://ortussolutions.atlassian.net/browse/BL-2435) - For ACF compat, accept dates in array max/min/sum BIFs
+- [BL-2374](https://ortussolutions.atlassian.net/browse/BL-2374) - Treat zero-length `cacheTimeout` as negative timeout to evict cache entry. 
+
+### Changed
+
+- [BLMODULES-205](https://ortussolutions.atlassian.net/browse/BLMODULES-205) - Replaced `evaluate()` usage in service shims (FTP, Feed, IMAP, LDAP, PDF, POP) with direct scope dereference.
+
 ## [1.32.1] - 2026-04-21
 
 ## [1.32.0] - 2026-04-21

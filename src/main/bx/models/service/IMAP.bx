@@ -36,17 +36,13 @@ class extends="BxService" {
 		}
 		execAttributes[ "action" ] = action;
 
-		var resultName = execAttributes.name ?: "__bxImapResult";
 		if ( [ "getheaderonly", "getall" ].findNoCase( action ) ) {
-			execAttributes[ "name" ] = resultName;
+			execAttributes[ "name" ] = "local.__bxImapResult";
 		}
 
 		bx:imap attributeCollection=execAttributes;
 
-		var queryResult = {};
-		if ( isDefined( resultName ) ) {
-			queryResult = evaluate( resultName );
-		}
+		var queryResult = local.__bxImapResult ?: {};
 
 		return new BxServiceResult( { result=queryResult, prefix={} } );
 	}

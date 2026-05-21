@@ -32,16 +32,15 @@ class extends="BxService" {
 		}
 		execAttributes[ "action" ] = action;
 
-		var resultName = execAttributes.name ?: "__bxLdapResult";
 		if ( action == "query" ) {
-			execAttributes[ "name" ] = resultName;
+			execAttributes[ "name" ] = "local.__bxLdapResult";
 		}
 
 		bx:ldap attributeCollection=execAttributes;
 
 		var queryResult = {};
-		if ( action == "query" && isDefined( resultName ) ) {
-			queryResult = evaluate( resultName );
+		if ( action == "query" ) {
+			queryResult = local.__bxLdapResult ?: {};
 		}
 
 		return new BxServiceResult( { result=queryResult, prefix={} } );

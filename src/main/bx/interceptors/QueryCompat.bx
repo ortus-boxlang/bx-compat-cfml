@@ -56,7 +56,7 @@ class{
 	 */
 	function onQueryBuild( struct data ){
 		if ( IsStruct( data.bindings ) ){
-			data.bindings.each( ( key, param ) -> {
+			data.bindings.each( ( paramKey, param ) -> {
 				if( !isNull( param ) && isStruct( param ) && param.keyExists( "cfsqltype" ) && !param.keyExists( "sqltype" ) ){
 					param.sqltype = param.cfsqltype;
 				}
@@ -108,6 +108,11 @@ class{
 				// If a cachedAfter date value is set and it's older than the current time, cache the query regardless of all other cache options.
 				modifiedOptions.cache = structOptions.cache ?: true;
 			}
+		}
+		var zeroTimespan = createTimeSpan( 0, 0, 0, 0 );
+		if( structOptions.keyExists( "cacheTimeout" ) && !isNull( structOptions.cacheTimeout ) && zeroTimespan.equals( structOptions.cacheTimeout ) ){
+			// Treat 0 cacheTimeout as negative timeout. In the core, this evicts the cache entry.
+			modifiedOptions.cacheTimeout = createTimeSpan( -1, 0, 0, 0 );
 		}
 
 		// Construct a new QueryOptions instance from the modified options struct

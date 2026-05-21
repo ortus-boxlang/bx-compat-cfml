@@ -21,13 +21,13 @@ class extends="BxService" {
 		}
 
 		execAttributes[ "action" ] = "read";
-		execAttributes[ "query" ] = "__bxFeedQuery";
-		execAttributes[ "properties" ] = "__bxFeedProps";
+		execAttributes[ "query" ] = "local.__bxFeedQuery";
+		execAttributes[ "properties" ] = "local.__bxFeedProps";
 
 		bx:feed attributeCollection=execAttributes;
 
-		var feedQuery = isDefined( "__bxFeedQuery" ) ? evaluate( "__bxFeedQuery" ) : {};
-		var feedProps = isDefined( "__bxFeedProps" ) ? evaluate( "__bxFeedProps" ) : {};
+		var feedQuery = local.__bxFeedQuery ?: {};
+		var feedProps = local.__bxFeedProps ?: {};
 
 		return new BxServiceResult( { result=feedQuery, prefix=feedProps } );
 	}
@@ -43,16 +43,11 @@ class extends="BxService" {
 		}
 
 		execAttributes[ "action" ] = "create";
-
-		// If no xmlVar specified, create one to capture output
-		if ( !execAttributes.keyExists( "xmlVar" ) ) {
-			execAttributes[ "xmlVar" ] = "__bxFeedXml";
-		}
-		var xmlVarName = execAttributes.xmlVar;
+		execAttributes[ "xmlVar" ] = "local.__bxFeedXml";
 
 		bx:feed attributeCollection=execAttributes;
 
-		var feedXml = isDefined( xmlVarName ) ? evaluate( xmlVarName ) : "";
+		var feedXml = local.__bxFeedXml ?: "";
 
 		return new BxServiceResult( { result=feedXml, prefix={} } );
 	}
