@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- [BL-2435](https://ortussolutions.atlassian.net/browse/BL-2435) - For ACF compat, accept dates in array max/min/sum BIFs
+
 ## [1.33.0] - 2026-05-21
 
 ### Added
