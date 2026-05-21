@@ -36,8 +36,7 @@ class extends="BxService" {
 		}
 		execAttributes[ "action" ] = action;
 
-		var resultName = execAttributes.name ?: "__bxPdfResult";
-		execAttributes[ "name" ] = resultName;
+		execAttributes[ "name" ] = "local.__bxPdfResult";
 
 		bx:pdf attributeCollection=execAttributes {
 			for ( var param in variables.params ) {
@@ -45,7 +44,7 @@ class extends="BxService" {
 			}
 		}
 
-		var result = isDefined( resultName ) ? evaluate( resultName ) : {};
+		var result = local.__bxPdfResult ?: {};
 		return new BxServiceResult( { result=result, prefix={} } );
 	}
 

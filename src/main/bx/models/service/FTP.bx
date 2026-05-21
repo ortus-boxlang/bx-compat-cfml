@@ -41,17 +41,16 @@ class extends="BxService" {
 		execAttributes[ "action" ] = action;
 
 		// For listDir, we need a name for the result query
-		var resultName = execAttributes.name ?: "__bxFtpResult";
 		if ( action == "listdir" ) {
-			execAttributes[ "name" ] = resultName;
+			execAttributes[ "name" ] = "local.__bxFtpResult";
 		}
 
 		bx:ftp attributeCollection=execAttributes result="local.__bxFtpPrefix";
 
 		var prefix = local.__bxFtpPrefix ?: {};
 		var queryResult = {};
-		if ( action == "listdir" && isDefined( resultName ) ) {
-			queryResult = evaluate( resultName );
+		if ( action == "listdir" ) {
+			queryResult = local.__bxFtpResult ?: {};
 		}
 
 		return new BxServiceResult( { result=queryResult, prefix=prefix } );
