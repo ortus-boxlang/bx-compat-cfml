@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.33.0] - 2026-05-21
+
 ### Added
 
 - [BLMODULES-207](https://ortussolutions.atlassian.net/browse/BLMODULES-207) - add qry.getColumnList() -> array for CF compat
@@ -18,8 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [BLMODULES-210](https://ortussolutions.atlassian.net/browse/BLMODULES-210) - Fix QueryCompat failing in ASMBoxpiler with `cannot use a function parameter with the same name as an import`
 - [BLMODULES-187](https://ortussolutions.atlassian.net/browse/BLMODULES-187) - Set spreadsheet module to default type of binary
 - [BL-2389](https://ortussolutions.atlassian.net/browse/BL-2389) - For ACF compat, treat empty strings as list with one value in listQualify()
-- [BL-2435](https://ortussolutions.atlassian.net/browse/BL-2435) - For ACF compat, accept dates in array max/min/sum BIFs
-- [BL-2374](https://ortussolutions.atlassian.net/browse/BL-2374) - Treat zero-length `cacheTimeout` as negative timeout to evict cache entry. 
+- [BL-2374](https://ortussolutions.atlassian.net/browse/BL-2374) - Treat zero-length `cacheTimeout` as negative timeout to evict cache entry.
 
 ### Changed
 
@@ -241,7 +242,8 @@ transpiler = {
 
 - First iteration of this module
 
-[unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.32.1...HEAD
+[unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.33.0...HEAD
+[1.33.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.32.1...v1.33.0
 [1.32.1]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.32.0...v1.32.1
 [1.32.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.31.0...v1.32.0
 [1.31.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.30.2...v1.31.0
