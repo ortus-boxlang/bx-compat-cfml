@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- [BL-2435](https://ortussolutions.atlassian.net/browse/BL-2435) - For ACF compat, accept dates in array max/min/sum BIFs
+- Override `enableNestedTransactions` setting to `false` for compat mode in boxlang@1.13.0 and below. (previously only 1.12).
+
 ## [1.33.0] - 2026-05-21
 
 ### Added
