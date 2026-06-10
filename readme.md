@@ -119,6 +119,7 @@ The compat module will contribute the following built-in functions globally:
 * `getComponentMetadata` - Learn more here: https://cfdocs.org/getComponentMetadata
 * `getMetaData` - Learn more here: https://cfdocs.org/getMetaData
 * `getVariable` - Learn more here: https://cfdocs.org/getVariable
+* `serialize` - Learn more here: https://cfdocs.org/serialize
 * `setVariable` - Learn more here: https://cfdocs.org/setVariable
 * `systemOutput` - Learn more here: https://cfdocs.org/systemOutput
 
