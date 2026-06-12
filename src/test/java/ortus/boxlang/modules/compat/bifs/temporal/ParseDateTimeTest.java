@@ -34,6 +34,15 @@ public class ParseDateTimeTest extends BaseIntegrationTest {
 
 		runtime.executeSource(
 		    """
+		    result = parseDateTime( "12-02-2025", "mm-dd-yyyy" );
+		     """,
+		    context );
+		assertEquals( variables.getAsDateTime( result ).format( "yyyy-MM-dd" ), "2025-12-02" );
+		assertThat( IntegerCaster.cast( variables.getAsDateTime( result ).format( "M" ) ) ).isEqualTo( 12 );
+		assertThat( IntegerCaster.cast( variables.getAsDateTime( result ).format( "m" ) ) ).isEqualTo( 0 );
+
+		runtime.executeSource(
+		    """
 		    result = parseDateTime( "2024-01-14T00:00:01.001", "yyyy-mm-dd'T'HH:nn:ss.lll" );
 		    """,
 		    context );
