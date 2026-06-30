@@ -311,6 +311,11 @@ import ortus.boxlang.runtime.types.Query;
 			getBoxContext().clearConfigCache();
 		}
 
+		// BoxLang Prime defaults to struct, if an expicit setting has not been provided, put it to "row" for CF compat
+		if( runtimeConfig.keyExists( "defaultJSONQuerySerializationFormat" ) && isNull( runtimeConfig.defaultJSONQuerySerializationFormat ) ){
+			runtimeConfig.defaultJSONQuerySerializationFormat = "row";
+		}
+
 		// We don't have a hard dependency on the spreadsheet module, but if it's present, we want to tweak the settings.
 		BoxRegisterInterceptor( data => {
 			var moduleService = boxRuntime.getModuleService();
