@@ -312,7 +312,7 @@ import ortus.boxlang.runtime.types.Query;
 		}
 
 		// BoxLang Prime defaults to struct, if an expicit setting has not been provided, put it to "row" for CF compat
-		if( structKeyExists( runtimeConfig, "defaultJSONQuerySerializationFormat" ) && isNull( runtimeConfig.defaultJSONQuerySerializationFormat ) ){
+		if( structKeyArray( runtimeConfig ).contains( "defaultJSONQuerySerializationFormat" ) && isNull( runtimeConfig.defaultJSONQuerySerializationFormat ) ){
 			runtimeConfig.defaultJSONQuerySerializationFormat = "row";
 		}
 
