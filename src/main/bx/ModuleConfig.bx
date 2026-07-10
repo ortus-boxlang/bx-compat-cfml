@@ -311,6 +311,29 @@ import ortus.boxlang.runtime.types.Query;
 			getBoxContext().clearConfigCache();
 		}
 
+		// BoxLang Prime defaults to struct, if an expicit setting has not been provided, put it to "row" for CF compat
+		if( structKeyArray( runtimeConfig ).contains( "defaultJSONQuerySerializationFormat" ) && isNull( runtimeConfig.defaultJSONQuerySerializationFormat ) ){
+			runtimeConfig.defaultJSONQuerySerializationFormat = "row";
+		}
+
+		// Detect if we are in a runtime, and override the default content type for remote requests if we're in Adobe mode
+		if( settings.isAdobe ) {
+			try {
+				// use this to detect if we are in a web runtime
+				webRequestExecutor = createObject( "java", "ortus.boxlang.web.WebRequestExecutor" );
+				if( structKeyArray( webRequestExecutor ).contains( "DEFAULT_CLASS_REQUEST_CONTENT_TYPE" ) ) {
+					// This is just to fix a really dumb Adobe behavior and I can't imagine anyone ever actually wanting to do this
+					// on purpose, so not creating any sort of official setting for it for now.
+					println( "Overriding DEFAULT_CLASS_REQUEST_CONTENT_TYPE to #webRequestExecutor.DEFAULT_CONTENT_TYPE# for Adobe mode." );
+					webRequestExecutor.DEFAULT_CLASS_REQUEST_CONTENT_TYPE = webRequestExecutor.DEFAULT_CONTENT_TYPE;
+				}
+
+			} catch( any e ) {
+				// Ignore any errors while trying to create the WebRequestExecutor, it just means we're not in a web runtime.
+				e.printStackTrace();
+			}
+		}
+
 		// We don't have a hard dependency on the spreadsheet module, but if it's present, we want to tweak the settings.
 		BoxRegisterInterceptor( data => {
 			var moduleService = boxRuntime.getModuleService();

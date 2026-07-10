@@ -102,6 +102,7 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 		    context );
 		result = ( String ) variables.get( Key.of( "result" ) );
 		assertEquals( result, "12/31/2023 hh:nn tt" );
+
 		// Default Format
 		runtime.executeSource(
 		    """
@@ -172,6 +173,19 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 		    context );
 		result = ( String ) variables.get( Key.of( "result" ) );
 		assertEquals( result, "30" );
+	}
+
+	@DisplayName( "dateTimeFormat mm-dd-yyyy uses month token, not minute token" )
+	@Test
+	public void testDateTimeFormatMaskMonthNotMinute() {
+		runtime.executeSource(
+		    """
+		    setTimezone( "UTC" );
+		    ref = createDateTime( 2023, 12, 31, 14, 30, 0, 0, "UTC" );
+		    result = dateTimeFormat( ref, "mm-dd-yyyy HH:nn" );
+		    """,
+		    context );
+		assertEquals( "12-31-2023 14:30", variables.getAsString( Key.of( "result" ) ) );
 	}
 
 	@DisplayName( "It tests the BIF DateFormat will return empty strings when passed an empty string" )
@@ -341,6 +355,18 @@ public class DateTimeFormatTest extends BaseIntegrationTest {
 		    """,
 		    context );
 		assertEquals( "09:05:03", variables.getAsString( Key.of( "result" ) ) );
+	}
+
+	@DisplayName( "date format gives the same original date from a number" )
+	@Test
+	public void testDateFormatGivesSameOriginalDateFromNumber() {
+		runtime.executeSource(
+		    """
+		       result1 = dateFormat( now(), "mm/dd/yyyy" );
+		    result2 = dateFormat( [ now() ].max(), "mm/dd/yyyy" );
+		       """,
+		    context );
+		assertEquals( variables.getAsString( Key.of( "result1" ) ), variables.getAsString( Key.of( "result2" ) ) );
 	}
 
 }
