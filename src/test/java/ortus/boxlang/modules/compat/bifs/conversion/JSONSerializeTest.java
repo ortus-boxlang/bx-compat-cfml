@@ -39,8 +39,51 @@ public class JSONSerializeTest extends BaseIntegrationTest {
 		String myResult = variables.getAsString( result );
 		assertThat( myResult ).startsWith( "{" );
 		assertThat( myResult ).contains( "\"COLUMNS\"" );
-		assertThat( myResult ).contains( "\"col1\"" );
+		assertThat( myResult ).contains( "\"COL1\"" );
 		assertThat( myResult ).contains( "\"DATA\"" );
 		assertThat( myResult ).contains( "\"Grant\"" );
+	}
+
+	@DisplayName( "Query toJSON row mode uppercases columns" )
+	@Test
+	public void testQueryToJSONRowUppercaseColumns() {
+		runtime.executeSource(
+		    """
+		       q = queryNew( "col1,COL2,CoLuMn3", "varchar,varchar,varchar", [["brad","luis","jon"]] ).toJSON( "row" )
+		    result = q
+		       """,
+		    context );
+
+		String myResult = variables.getAsString( result );
+		assertThat( myResult ).isEqualTo( "{\"COLUMNS\":[\"COL1\",\"COL2\",\"COLUMN3\"],\"DATA\":[[\"brad\",\"luis\",\"jon\"]]}" );
+	}
+
+	@DisplayName( "Query toJSON column mode uppercases columns" )
+	@Test
+	public void testQueryToJSONColumnUppercaseColumns() {
+		runtime.executeSource(
+		    """
+		       q = queryNew( "col1,COL2,CoLuMn3", "varchar,varchar,varchar", [["brad","luis","jon"]] ).toJSON( "column" )
+		    result = q
+		       """,
+		    context );
+
+		String myResult = variables.getAsString( result );
+		assertThat( myResult ).isEqualTo(
+		    "{\"ROWCOUNT\":1,\"COLUMNS\":[\"COL1\",\"COL2\",\"COLUMN3\"],\"DATA\":{\"COL1\":[\"brad\"],\"COL2\":[\"luis\"],\"COLUMN3\":[\"jon\"]}}" );
+	}
+
+	@DisplayName( "Query toJSON struct mode uppercases keys" )
+	@Test
+	public void testQueryToJSONStructUppercaseColumns() {
+		runtime.executeSource(
+		    """
+		       q = queryNew( "col1,COL2,CoLuMn3", "varchar,varchar,varchar", [["brad","luis","jon"]] ).toJSON( "struct" )
+		    result = q
+		       """,
+		    context );
+
+		String myResult = variables.getAsString( result );
+		assertThat( myResult ).isEqualTo( "[{\"COL1\":\"brad\",\"COL2\":\"luis\",\"COLUMN3\":\"jon\"}]" );
 	}
 }
