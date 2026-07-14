@@ -114,7 +114,7 @@ public class QueryListener extends BaseInterceptor {
 		Boolean upperCaseKeys = BooleanCaster
 		    .attempt( ( ( IStruct ) SettingsUtil.getSetting( KeyDictionary.transpiler, Struct.EMPTY ) ).get( KeyDictionary.upperCaseKeys ) )
 		    .getOrDefault( false );
-
+		System.out.println( "onJSONQuerySerialize firing.  Upper case keys setting: " + upperCaseKeys );
 		if ( !upperCaseKeys ) {
 			return;
 		}
