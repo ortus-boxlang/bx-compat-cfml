@@ -118,21 +118,24 @@ public class QueryListener extends BaseInterceptor {
 			return;
 		}
 
-		Object data = interceptData.get( Key.data );
-		// Upper case all top level keys of the struct
+		boolean	isAdobe	= SettingsUtil.isAdobe();
+		Object	data	= interceptData.get( Key.data );
+
+		// Upper case all top level keys of the struct (both Adobe and Lucee)
 		if ( data instanceof IStruct sData ) {
 			// This applies to the outer keys of both row and column formats:
-			// {"ROWCOUNT":1,"COLUMNS":["COL1","COL2","COLUMN3"],"DATA":{"COL1":["brad"],"COL2":["luis"],"COLUMN3":["jon"]}}
-			// {"COLUMNS":["COL1","COL2","COLUMN3"],"DATA":[["brad","luis","jon"]]}
+			// {"ROWCOUNT":1,"COLUMNS":[...],"DATA":{...}}
+			// {"COLUMNS":[...],"DATA":[[...]]}
 			Key[] keys = sData.keySet().toArray( new Key[ 0 ] );
 			for ( Key key : keys ) {
 				Object rowObj = sData.get( key );
 				sData.remove( key );
 				sData.put( Key.of( key.toString().toUpperCase() ), rowObj );
 			}
-			// if data looks like this, then also upper case column names
-			// {"COLUMNS":["COL1","COL2","COLUMN3"],"DATA":[["brad","luis","jon"]]}
-			if ( sData.containsKey( Key.columns ) ) {
+
+			// Adobe only: upper case column names in the COLUMNS array
+			// Lucee preserves original column name case in the COLUMNS array
+			if ( isAdobe && sData.containsKey( Key.columns ) ) {
 				Object	columnsObj		= sData.get( Key.columns );
 				// Applies to row/column query JSON where COLUMNS may come through as a native String[]:
 				// {"COLUMNS":["col1","COL2","CoLuMn3"],"DATA":[["brad","luis","jon"]]}
@@ -154,8 +157,8 @@ public class QueryListener extends BaseInterceptor {
 				}
 			}
 
-			// For column format, DATA is a struct keyed by column names:
-			// {"ROWCOUNT":1,"COLUMNS":["col1","COL2","CoLuMn3"],"DATA":{"col1":["brad"],"COL2":["luis"],"CoLuMn3":["jon"]}}
+			// Both Adobe and Lucee: upper case DATA struct keys in column format
+			// {"ROWCOUNT":1,"COLUMNS":[...],"DATA":{"col1":["brad"],"COL2":["luis"],"CoLuMn3":["jon"]}}
 			if ( sData.containsKey( Key.data ) && sData.get( Key.data ) instanceof IStruct sColumnData ) {
 				Key[] dataKeys = sColumnData.keySet().toArray( new Key[ 0 ] );
 				for ( Key dataKey : dataKeys ) {
@@ -165,12 +168,14 @@ public class QueryListener extends BaseInterceptor {
 				}
 			}
 		}
-		// If data looks like this, fix each struct key to be upper case
+
+		// Adobe only: upper case row struct keys in struct format
+		// Lucee preserves original column name case as struct keys
 		// [{"COL1":"brad","COL2":"luis","COLUMN3":"jon"}]
 		// This would perform better if the original struct was built with upper case keys in the first place.
 		// We did it this way to keep the core "clean", but we can change this design and put a flagged behavior in the core
 		// or add another intercption point to pre-process things like column names that the core announces and we use to influence.
-		if ( data instanceof Array aData ) {
+		if ( isAdobe && data instanceof Array aData ) {
 			for ( int i = 0; i < aData.size(); i++ ) {
 				IStruct	sRow	= ( IStruct ) aData.get( i );
 				Key[]	keys	= sRow.keySet().toArray( new Key[ 0 ] );
