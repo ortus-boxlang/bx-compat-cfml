@@ -114,14 +114,20 @@ public class QueryListener extends BaseInterceptor {
 		Boolean upperCaseKeys = BooleanCaster
 		    .attempt( ( ( IStruct ) SettingsUtil.getSetting( KeyDictionary.transpiler, Struct.EMPTY ) ).get( KeyDictionary.upperCaseKeys ) )
 		    .getOrDefault( false );
-		System.out.println( "onJSONQuerySerialize firing.  Upper case keys setting: " + upperCaseKeys );
+		System.out.println( "[QueryListener.onJSONQuerySerialize] entered; upperCaseKeys=" + upperCaseKeys + ", interceptKeys=" + interceptData.keySet() );
 		if ( !upperCaseKeys ) {
+			System.out.println( "[QueryListener.onJSONQuerySerialize] exiting early; upperCaseKeys=false" );
 			return;
 		}
 
 		Object data = interceptData.get( Key.data );
+		System.out.println(
+		    "[QueryListener.onJSONQuerySerialize] dataType=" + ( data == null ? "null" : data.getClass().getName() ) + ", isStruct="
+		        + ( data instanceof IStruct )
+		        + ", isArray=" + ( data instanceof Array ) );
 		// Upper case all top level keys of the struct
 		if ( data instanceof IStruct sData ) {
+			System.out.println( "[QueryListener.onJSONQuerySerialize] struct branch entered; keys(before)=" + sData.keySet() );
 			// This applies to the outer keys of both row and column formats:
 			// {"ROWCOUNT":1,"COLUMNS":["COL1","COL2","COLUMN3"],"DATA":{"COL1":["brad"],"COL2":["luis"],"COLUMN3":["jon"]}}
 			// {"COLUMNS":["COL1","COL2","COLUMN3"],"DATA":[["brad","luis","jon"]]}
@@ -131,40 +137,58 @@ public class QueryListener extends BaseInterceptor {
 				sData.remove( key );
 				sData.put( Key.of( key.toString().toUpperCase() ), rowObj );
 			}
+			System.out.println( "[QueryListener.onJSONQuerySerialize] struct keys uppercased; keys(after)=" + sData.keySet() );
 			// if data looks like this, then also upper case column names
 			// {"COLUMNS":["COL1","COL2","COLUMN3"],"DATA":[["brad","luis","jon"]]}
 			if ( sData.containsKey( Key.columns ) ) {
-				Object	columnsObj		= sData.get( Key.columns );
+				Object columnsObj = sData.get( Key.columns );
+				System.out.println(
+				    "[QueryListener.onJSONQuerySerialize] columns branch entered; columnsType="
+				        + ( columnsObj == null ? "null" : columnsObj.getClass().getName() ) );
 				// Applies to row/column query JSON where COLUMNS may come through as a native String[]:
 				// {"COLUMNS":["col1","COL2","CoLuMn3"],"DATA":[["brad","luis","jon"]]}
 				// {"ROWCOUNT":1,"COLUMNS":["col1","COL2","CoLuMn3"],"DATA":{"col1":["brad"],"COL2":["luis"],"CoLuMn3":["jon"]}}
-				Array	columnsArray	= null;
+				Array columnsArray = null;
 				if ( columnsObj instanceof Array castedColumnsArray ) {
 					columnsArray = castedColumnsArray;
+					System.out.println( "[QueryListener.onJSONQuerySerialize] columns recognized as BoxLang Array; size=" + columnsArray.size() );
 				} else if ( columnsObj instanceof String[] nativeColumnsArray ) {
 					columnsArray = new Array( nativeColumnsArray );
+					System.out.println( "[QueryListener.onJSONQuerySerialize] columns recognized as native String[]; size=" + nativeColumnsArray.length );
 				}
 
 				if ( columnsArray != null ) {
+					System.out.println( "[QueryListener.onJSONQuerySerialize] columns before uppercase=" + columnsArray );
 					for ( int i = 0; i < columnsArray.size(); i++ ) {
 						Object colNameObj = columnsArray.get( i );
 						if ( colNameObj instanceof String colName ) {
 							columnsArray.set( i, colName.toUpperCase() );
 						}
 					}
+					System.out.println( "[QueryListener.onJSONQuerySerialize] columns after uppercase=" + columnsArray );
+				} else {
+					System.out.println( "[QueryListener.onJSONQuerySerialize] columns branch had unsupported type; no mutation" );
 				}
+			} else {
+				System.out.println( "[QueryListener.onJSONQuerySerialize] columns branch skipped; COLUMNS key not present" );
 			}
 
 			// For column format, DATA is a struct keyed by column names:
 			// {"ROWCOUNT":1,"COLUMNS":["col1","COL2","CoLuMn3"],"DATA":{"col1":["brad"],"COL2":["luis"],"CoLuMn3":["jon"]}}
 			if ( sData.containsKey( Key.data ) && sData.get( Key.data ) instanceof IStruct sColumnData ) {
+				System.out.println( "[QueryListener.onJSONQuerySerialize] column DATA branch entered; dataKeys(before)=" + sColumnData.keySet() );
 				Key[] dataKeys = sColumnData.keySet().toArray( new Key[ 0 ] );
 				for ( Key dataKey : dataKeys ) {
 					Object colData = sColumnData.get( dataKey );
 					sColumnData.remove( dataKey );
 					sColumnData.put( Key.of( dataKey.getName().toUpperCase() ), colData );
 				}
+				System.out.println( "[QueryListener.onJSONQuerySerialize] column DATA keys uppercased; dataKeys(after)=" + sColumnData.keySet() );
+			} else {
+				System.out.println( "[QueryListener.onJSONQuerySerialize] column DATA branch skipped; DATA missing or not IStruct" );
 			}
+		} else {
+			System.out.println( "[QueryListener.onJSONQuerySerialize] struct branch skipped; data is not IStruct" );
 		}
 		// If data looks like this, fix each struct key to be upper case
 		// [{"COL1":"brad","COL2":"luis","COLUMN3":"jon"}]
@@ -172,16 +196,24 @@ public class QueryListener extends BaseInterceptor {
 		// We did it this way to keep the core "clean", but we can change this design and put a flagged behavior in the core
 		// or add another intercption point to pre-process things like column names that the core announces and we use to influence.
 		if ( data instanceof Array aData ) {
+			System.out.println( "[QueryListener.onJSONQuerySerialize] array-of-structs branch entered; size=" + aData.size() );
 			for ( int i = 0; i < aData.size(); i++ ) {
-				IStruct	sRow	= ( IStruct ) aData.get( i );
+				Object rowObj = aData.get( i );
+				System.out.println(
+				    "[QueryListener.onJSONQuerySerialize] row index=" + i + ", rowType=" + ( rowObj == null ? "null" : rowObj.getClass().getName() ) );
+				IStruct	sRow	= ( IStruct ) rowObj;
 				Key[]	keys	= sRow.keySet().toArray( new Key[ 0 ] );
 				for ( Key key : keys ) {
 					Object value = sRow.get( key );
 					sRow.remove( key );
 					sRow.put( Key.of( key.getName().toUpperCase() ), value );
 				}
+				System.out.println( "[QueryListener.onJSONQuerySerialize] row index=" + i + " keys(after)=" + sRow.keySet() );
 			}
+		} else {
+			System.out.println( "[QueryListener.onJSONQuerySerialize] array-of-structs branch skipped; data is not Array" );
 		}
+		System.out.println( "[QueryListener.onJSONQuerySerialize] complete" );
 	}
 
 }
