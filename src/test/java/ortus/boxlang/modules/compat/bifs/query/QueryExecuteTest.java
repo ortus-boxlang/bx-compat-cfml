@@ -78,4 +78,33 @@ public class QueryExecuteTest extends BaseIntegrationTest {
 		assertThat( variables.getAsBoolean( Key.of( "isColumnNull" ) ) ).isFalse();
 	}
 
+	@DisplayName( "It tests that query meta is modifiable" )
+	@Test
+	void testsQueryMetaIsModifiable() {
+		//@formatter:off
+		runtime.executeSource(
+		    """
+		    qryEmployees = queryNew(
+		      "name,age,dept,supervisor",
+		      "varchar,integer,varchar,varchar",
+		      [
+		      	["luis",43,"Exec","luis"],
+		      	["brad",44,"IT","luis"],
+		      	["Jon",nullValue(),"HR","luis"]
+		      	]
+		      )
+		                         q = queryExecute( "
+		           SELECT * from qryEmployees where name = 'Jon'
+		                ",
+		                      	[],
+		                      	{ dbType : "query", result : "myMeta" }
+		                      );
+		    myMeta.foo = "bar";
+		    result = myMeta.foo;
+		                      """,
+		    context );
+		//@formatter:on
+		assertThat( variables.get( result ) ).isEqualTo( "bar" );
+	}
+
 }

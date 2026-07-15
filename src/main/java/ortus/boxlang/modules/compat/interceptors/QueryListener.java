@@ -24,6 +24,7 @@ import ortus.boxlang.runtime.types.Array;
 import ortus.boxlang.runtime.types.IStruct;
 import ortus.boxlang.runtime.types.Query;
 import ortus.boxlang.runtime.types.Struct;
+import ortus.boxlang.runtime.types.unmodifiable.UnmodifiableStruct;
 
 /**
  * This interceptor is used to convert null values to empty strings in query results
@@ -63,6 +64,13 @@ public class QueryListener extends BaseInterceptor {
 		}
 
 		Query results = interceptData.getAsQuery( Key.data );
+
+		// the result struct that comes back from cfquery in CF can be modified.
+		if ( results.getMetaData() instanceof UnmodifiableStruct targetMeta ) {
+			IStruct modifiableMeta = targetMeta.toModifiable();
+			// No setter, so rely on the public field.
+			results.getBoxMeta().meta = modifiableMeta;
+		}
 
 		results.intStream().forEach( rowIndex -> {
 			Object[] rowData = results.getRow( rowIndex );
