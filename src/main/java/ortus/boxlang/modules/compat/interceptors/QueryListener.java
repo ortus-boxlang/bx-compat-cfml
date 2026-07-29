@@ -57,12 +57,6 @@ public class QueryListener extends BaseInterceptor {
 	 */
 	@InterceptionPoint
 	public void postQueryExecute( IStruct interceptData ) {
-		Boolean nullToEmpty = BooleanCaster.cast( SettingsUtil.getSetting( KeyDictionary.queryNullToEmpty, false ) );
-
-		if ( !nullToEmpty ) {
-			return;
-		}
-
 		Query results = interceptData.getAsQuery( Key.data );
 
 		// the result struct that comes back from cfquery in CF can be modified.
@@ -72,41 +66,6 @@ public class QueryListener extends BaseInterceptor {
 			results.getBoxMeta().meta = modifiableMeta;
 		}
 
-		results.intStream().forEach( rowIndex -> {
-			Object[] rowData = results.getRow( rowIndex );
-			for ( int i = 0; i < rowData.length; i++ ) {
-				if ( rowData[ i ] == null ) {
-					rowData[ i ] = "";
-				}
-			}
-		} );
-
-	}
-
-	/**
-	 * Listen for queryAddRow and manipulate the row data for CFML compatibility.
-	 *
-	 * Incoming data:
-	 * - query : The query object to which the row is being added.
-	 * - row : Row of data to be added, whether it be a struct or array.
-	 *
-	 * @param interceptData
-	 */
-	@InterceptionPoint
-	public void queryAddRow( IStruct interceptData ) {
-		Boolean nullToEmpty = BooleanCaster.cast( SettingsUtil.getSetting( KeyDictionary.queryNullToEmpty, false ) );
-
-		if ( !nullToEmpty ) {
-			return;
-		}
-
-		// Query query = interceptData.getAsQuery( Key.query );
-		Object[] rowData = ( Object[] ) interceptData.get( Key.row );
-		for ( int i = 0; i < rowData.length; i++ ) {
-			if ( rowData[ i ] == null ) {
-				rowData[ i ] = "";
-			}
-		}
 	}
 
 	/**

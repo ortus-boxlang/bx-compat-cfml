@@ -23,7 +23,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import ortus.boxlang.modules.compat.BaseIntegrationTest;
-import ortus.boxlang.runtime.scopes.Key;
 import ortus.boxlang.runtime.types.Query;
 
 public class QuerySetCellTest extends BaseIntegrationTest {
@@ -43,7 +42,7 @@ public class QuerySetCellTest extends BaseIntegrationTest {
 		);
 
 		Query query = variables.getAsQuery( result );
-		assertThat( query.getCell( Key.of( "name" ), 0 ) ).isEqualTo( "" );
-		assertThat( query.getCell( Key.of( "createdDate" ), 0 ) ).isEqualTo( null );
+		assertThat( query.getData().get( 0 )[ 0 ] ).isEqualTo( "" );
+		assertThat( query.getData().get( 0 )[ 1 ] ).isEqualTo( null );
 	}
 }
