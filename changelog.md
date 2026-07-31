@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.36.0] - 2026-07-31
+
 ### Added
 
 - [BLMODULES-255](https://ortussolutions.atlassian.net/browse/BLMODULES-255) - Added `allowIncludeClassFiles` module setting for CFML compat; allows `cfinclude` of CFC/BX files like CFML engines do
@@ -277,7 +279,8 @@ transpiler = {
 
 - First iteration of this module
 
-[unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.35.0...HEAD
+[unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.36.0...HEAD
+[1.36.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.35.0...v1.36.0
 [1.35.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.34.0...v1.35.0
 [1.34.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.33.0...v1.34.0
 [1.33.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.32.1...v1.33.0
