@@ -9,7 +9,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- [BLMODULES-255](https://ortussolutions.atlassian.net/browse/BLMODULES-255) - Added `allowIncludeClassFiles` module setting for CFML compat; allows `cfinclude` of CFC/BX files like CFML engines do
+
+### Fixed
+
+- [BL-2610](https://ortussolutions.atlassian.net/browse/BL-2610) - Query metadata (result struct) from `queryExecute`/`cfquery` is now modifiable, matching CFML engine behavior
+- [BLMODULES-257](https://ortussolutions.atlassian.net/browse/BLMODULES-257) - Query `upperCaseKeys` now gates Adobe-specific behavior behind `isAdobe` flag; Lucee mode preserves original column name case
+
+### Changed
+
+- Bump com.gradleup.shadow from 9.4.2 to 9.6.1
+
 ## [1.35.0] - 2026-07-10
+
+### Added
+
+- [BLMODULES-227](https://ortussolutions.atlassian.net/browse/BLMODULES-227) - New `Serialize()` BIF for CFML compat (JSON-only with sensible error messages for XML and unsupported types)
+- [BLMODULES-245](https://ortussolutions.atlassian.net/browse/BLMODULES-245) - New `IsDefined()` BIF override that handles literal dot-notation variable names for CFML compat (e.g., `"foo.bar"` treated as a variable name, not property access)
+- [BL-2544](https://ortussolutions.atlassian.net/browse/BL-2544) - Adobe-mode JSON query serialization now uppercases column names in COLUMNS array, DATA struct keys, and row struct keys to match Adobe CF behavior
+
+### Fixed
+
+- [BLMODULES-234](https://ortussolutions.atlassian.net/browse/BLMODULES-234) - DateTimeMaskCompat: Added `"mm-"` → `"MM-"` date mask replacement
+- [BL-2548](https://ortussolutions.atlassian.net/browse/BL-2548) - Set `defaultJSONQuerySerializationFormat` to `"row"` for CF compat when not explicitly configured; Override `DEFAULT_CLASS_REQUEST_CONTENT_TYPE` to match `DEFAULT_CONTENT_TYPE` in Adobe web runtime mode
+- Fixed duplicate changelog headers to allow GitHub releases
+
+### Changed
+
+- Bump com.diffplug.spotless from 8.5.1 to 8.8.0
+- Bump gradle-wrapper from 9.5.1 to 9.6.1
+- Bump actions/checkout from 6 to 7
+- Bump com.gradleup.shadow from 9.4.1 to 9.4.2
 
 ## [1.34.0] - 2026-05-26
 
@@ -175,8 +207,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.9.0] - 2024-10-15
 
-## [1.8.0] - 2024-10-10
-
 ### Fixed
 
 - Bug with json escape characters in `serializeJSON()`
@@ -201,8 +231,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.4.0] - 2024-09-16
 
 ## [1.3.0] - 2024-09-04
-
-## [1.2.0] - 2024-08-09
 
 ### Added
 
