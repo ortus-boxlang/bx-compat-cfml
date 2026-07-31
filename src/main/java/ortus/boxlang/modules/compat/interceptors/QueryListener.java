@@ -20,9 +20,11 @@ import ortus.boxlang.runtime.dynamic.casters.BooleanCaster;
 import ortus.boxlang.runtime.events.BaseInterceptor;
 import ortus.boxlang.runtime.events.InterceptionPoint;
 import ortus.boxlang.runtime.scopes.Key;
+import ortus.boxlang.runtime.types.Array;
 import ortus.boxlang.runtime.types.IStruct;
 import ortus.boxlang.runtime.types.Query;
 import ortus.boxlang.runtime.types.Struct;
+import ortus.boxlang.runtime.types.unmodifiable.UnmodifiableStruct;
 
 /**
  * This interceptor is used to convert null values to empty strings in query results
@@ -55,49 +57,15 @@ public class QueryListener extends BaseInterceptor {
 	 */
 	@InterceptionPoint
 	public void postQueryExecute( IStruct interceptData ) {
-		Boolean nullToEmpty = BooleanCaster.cast( SettingsUtil.getSetting( KeyDictionary.queryNullToEmpty, false ) );
-
-		if ( !nullToEmpty ) {
-			return;
-		}
-
 		Query results = interceptData.getAsQuery( Key.data );
 
-		results.intStream().forEach( rowIndex -> {
-			Object[] rowData = results.getRow( rowIndex );
-			for ( int i = 0; i < rowData.length; i++ ) {
-				if ( rowData[ i ] == null ) {
-					rowData[ i ] = "";
-				}
-			}
-		} );
-
-	}
-
-	/**
-	 * Listen for queryAddRow and manipulate the row data for CFML compatibility.
-	 *
-	 * Incoming data:
-	 * - query : The query object to which the row is being added.
-	 * - row : Row of data to be added, whether it be a struct or array.
-	 *
-	 * @param interceptData
-	 */
-	@InterceptionPoint
-	public void queryAddRow( IStruct interceptData ) {
-		Boolean nullToEmpty = BooleanCaster.cast( SettingsUtil.getSetting( KeyDictionary.queryNullToEmpty, false ) );
-
-		if ( !nullToEmpty ) {
-			return;
+		// the result struct that comes back from cfquery in CF can be modified.
+		if ( results.getMetaData() instanceof UnmodifiableStruct targetMeta ) {
+			IStruct modifiableMeta = targetMeta.toModifiable();
+			// No setter, so rely on the public field.
+			results.getBoxMeta().meta = modifiableMeta;
 		}
 
-		// Query query = interceptData.getAsQuery( Key.query );
-		Object[] rowData = ( Object[] ) interceptData.get( Key.row );
-		for ( int i = 0; i < rowData.length; i++ ) {
-			if ( rowData[ i ] == null ) {
-				rowData[ i ] = "";
-			}
-		}
 	}
 
 	/**
@@ -113,21 +81,78 @@ public class QueryListener extends BaseInterceptor {
 		Boolean upperCaseKeys = BooleanCaster
 		    .attempt( ( ( IStruct ) SettingsUtil.getSetting( KeyDictionary.transpiler, Struct.EMPTY ) ).get( KeyDictionary.upperCaseKeys ) )
 		    .getOrDefault( false );
-
 		if ( !upperCaseKeys ) {
 			return;
 		}
 
-		Object data = interceptData.get( Key.data );
-		// Upper case all top level keys of the struct
+		boolean	isAdobe	= SettingsUtil.isAdobe();
+		Object	data	= interceptData.get( Key.data );
+
+		// Upper case all top level keys of the struct (both Adobe and Lucee)
 		if ( data instanceof IStruct sData ) {
+			// This applies to the outer keys of both row and column formats:
+			// {"ROWCOUNT":1,"COLUMNS":[...],"DATA":{...}}
+			// {"COLUMNS":[...],"DATA":[[...]]}
 			Key[] keys = sData.keySet().toArray( new Key[ 0 ] );
 			for ( Key key : keys ) {
 				Object rowObj = sData.get( key );
 				sData.remove( key );
 				sData.put( Key.of( key.toString().toUpperCase() ), rowObj );
 			}
+
+			// Adobe only: upper case column names in the COLUMNS array
+			// Lucee preserves original column name case in the COLUMNS array
+			if ( isAdobe && sData.containsKey( Key.columns ) ) {
+				Object	columnsObj		= sData.get( Key.columns );
+				// Applies to row/column query JSON where COLUMNS may come through as a native String[]:
+				// {"COLUMNS":["col1","COL2","CoLuMn3"],"DATA":[["brad","luis","jon"]]}
+				// {"ROWCOUNT":1,"COLUMNS":["col1","COL2","CoLuMn3"],"DATA":{"col1":["brad"],"COL2":["luis"],"CoLuMn3":["jon"]}}
+				Array	columnsArray	= null;
+				if ( columnsObj instanceof Array castedColumnsArray ) {
+					columnsArray = castedColumnsArray;
+				} else if ( columnsObj instanceof String[] nativeColumnsArray ) {
+					columnsArray = Array.fromArray( nativeColumnsArray );
+				}
+
+				if ( columnsArray != null ) {
+					for ( int i = 0; i < columnsArray.size(); i++ ) {
+						Object colNameObj = columnsArray.get( i );
+						if ( colNameObj instanceof String colName ) {
+							columnsArray.set( i, colName.toUpperCase() );
+						}
+					}
+				}
+			}
+
+			// Both Adobe and Lucee: upper case DATA struct keys in column format
+			// {"ROWCOUNT":1,"COLUMNS":[...],"DATA":{"col1":["brad"],"COL2":["luis"],"CoLuMn3":["jon"]}}
+			if ( sData.containsKey( Key.data ) && sData.get( Key.data ) instanceof IStruct sColumnData ) {
+				Key[] dataKeys = sColumnData.keySet().toArray( new Key[ 0 ] );
+				for ( Key dataKey : dataKeys ) {
+					Object colData = sColumnData.get( dataKey );
+					sColumnData.remove( dataKey );
+					sColumnData.put( Key.of( dataKey.getName().toUpperCase() ), colData );
+				}
+			}
 		}
 
+		// Adobe only: upper case row struct keys in struct format
+		// Lucee preserves original column name case as struct keys
+		// [{"COL1":"brad","COL2":"luis","COLUMN3":"jon"}]
+		// This would perform better if the original struct was built with upper case keys in the first place.
+		// We did it this way to keep the core "clean", but we can change this design and put a flagged behavior in the core
+		// or add another intercption point to pre-process things like column names that the core announces and we use to influence.
+		if ( isAdobe && data instanceof Array aData ) {
+			for ( int i = 0; i < aData.size(); i++ ) {
+				IStruct	sRow	= ( IStruct ) aData.get( i );
+				Key[]	keys	= sRow.keySet().toArray( new Key[ 0 ] );
+				for ( Key key : keys ) {
+					Object value = sRow.get( key );
+					sRow.remove( key );
+					sRow.put( Key.of( key.getName().toUpperCase() ), value );
+				}
+			}
+		}
 	}
+
 }

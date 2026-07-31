@@ -128,7 +128,7 @@ import ortus.boxlang.runtime.types.Query;
 			// Treat empty strings as nulls to simulate Adobe/Lucee behavior full null support is DISABLED.
 			// Performs the following functions:
 			// 1. Coerce empty strings as nulls (on non-string query columns) when SETTING query values via queryAddRow, querySetCell, etc.
-			// 2. Coerce nulls as empty strings when populating a query from a JDBC query result set.
+			// 2. Coerce nulls as empty strings accessing a cell from a query.
 			// Defaults to true to simulate Adobe/Lucee behavior
 			queryNullToEmpty = true,
 			// CF will allow ANY java class to be generically cast into a struct (using public fields and getters) only excepting arrays and "simple" values.
@@ -150,7 +150,9 @@ import ortus.boxlang.runtime.types.Query;
 			// Whether to enable server start interception
 			serverStartEnabled = true,
 			// The server start class path.  Either a dot-delimited path that uses a mapping or an absolute path on disk
-			serverStartPath = ""
+			serverStartPath = "",
+			// Allows you to cfinclude CFC or BX files like CFML does.  
+			allowIncludeClassFiles = true
 		};
 
 		/**
@@ -213,6 +215,11 @@ import ortus.boxlang.runtime.types.Query;
 		// Backwards compat
 		if( structKeyExists( StructCasterLoose, "extraLooseStructCasting" ) ) {
 			StructCasterLoose.extraLooseStructCasting = settings.extraLooseStructCasting;
+		}
+
+		// Backwards compat
+		if( structKeyExists( BaseBoxContext, "allowIncludeClassFiles" ) ) {
+			BaseBoxContext.allowIncludeClassFiles = settings.allowIncludeClassFiles;
 		}
 
 		// Verify Engine
