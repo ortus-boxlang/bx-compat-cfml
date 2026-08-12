@@ -136,7 +136,9 @@ import ortus.boxlang.runtime.types.Query;
 			// BL will only use the generic class-to-struct logic for inputs which pass the isObject() test unless this flag is true
 			extraLooseStructCasting = true,
 			// Allow lenient JSON parsing that accepts single quotes, unquoted keys, trailing commas, and leading numeric zeroes
-			lenientJSONParsing = true,
+			lenientJSONParsing = null,
+			// Allow lenient JSON parsing of leading numeric zeroes
+			useLenientParsingLeadingZeros = null,
 			// The CF -> BL AST transpiler settings
 			// The transpiler is in the core, but will eventually live in this module, so the settings are here.
             transpiler = {
@@ -232,14 +234,10 @@ import ortus.boxlang.runtime.types.Query;
 			settings.isLucee = true;
 		} else if( settings.engine == "adobe" ){
 			settings.isAdobe = true;
-			settings.lenientJSONParsing = false;
 		}
 
-		// Backwards compat
-		if( structKeyExists( JSONUtil, "useLenientParsing" ) ){
-			JSONUtil.useLenientParsing = settings.lenientJSONParsing;
-			JSONUtil.resetBuilders();
-		}
+		// Extracted for testing purposes
+		configureJSONParsing();
 
 		// Load the Lucee or Adobe compatibility interceptor
 		if( settings.isLucee ){
@@ -355,6 +353,29 @@ import ortus.boxlang.runtime.types.Query;
 			// Fire after all modules have been loaded
 		}, "onModuleServiceStartup" );
 
+	}
+
+	/**
+	 * Apply the module JSON parsing settings to the core JSON builders.
+	 */
+	public function configureJSONParsing(){
+		if( settings.isLucee ){
+			settings.lenientJSONParsing = settings.lenientJSONParsing ?: true;
+		} else if( settings.isAdobe ){
+			settings.lenientJSONParsing = settings.lenientJSONParsing ?: false;
+		}
+
+		// Both engines allow leading zeroes by default, but users can explicitly disable them.
+		settings.useLenientParsingLeadingZeros = settings.useLenientParsingLeadingZeros ?: true;
+
+			// Backwards compat
+		if( structKeyExists( JSONUtil, "useLenientParsing" ) ){
+			JSONUtil.useLenientParsing = settings.lenientJSONParsing;
+			if( structKeyExists( JSONUtil, "useLenientParsingLeadingZeros" ) ){
+				JSONUtil.useLenientParsingLeadingZeros = settings.useLenientParsingLeadingZeros;
+			}
+			JSONUtil.resetBuilders();
+		}
 	}
 
 	/**
