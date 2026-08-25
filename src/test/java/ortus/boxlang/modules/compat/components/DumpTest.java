@@ -1,0 +1,1290 @@
+/**
+ * [BoxLang]
+ *
+ * Copyright [2023] [Ortus Solutions, Corp]
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package ortus.boxlang.modules.compat.components;
+
+import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import ortus.boxlang.compiler.parser.BoxSourceType;
+import ortus.boxlang.modules.compat.BaseIntegrationTest;
+import ortus.boxlang.runtime.BoxRuntime;
+import ortus.boxlang.runtime.context.ScriptingRequestBoxContext;
+import ortus.boxlang.runtime.scopes.IScope;
+import ortus.boxlang.runtime.scopes.Key;
+import ortus.boxlang.runtime.scopes.VariablesScope;
+import ortus.boxlang.runtime.util.FileSystemUtil;
+
+public class DumpTest extends BaseIntegrationTest {
+
+	static BoxRuntime			instance;
+	ScriptingRequestBoxContext	context;
+	IScope						variables;
+	ByteArrayOutputStream		baos;
+	static Key					result	= new Key( "result" );
+
+	@BeforeAll
+	public static void setUp() {
+		instance = BoxRuntime.getInstance( true );
+	}
+
+	@AfterAll
+	public static void teardown() {
+
+	}
+
+	@BeforeEach
+	public void setupEach() {
+		context = new ScriptingRequestBoxContext( instance.getRuntimeContext() );
+		context.setOut( new PrintStream( ( baos = new ByteArrayOutputStream() ), true ) );
+		variables = context.getScopeNearby( VariablesScope.name );
+	}
+
+	@DisplayName( "It can dump tag" )
+	@Test
+	public void testCanDumpTag() {
+		// @formatter:off
+		instance.executeSource(
+		    """
+		       	<cfdump var="My Value" format="html">
+		    """,
+		    context, BoxSourceType.CFTEMPLATE );
+		// @formatter:on
+		assertThat( baos.toString() ).contains( "My Value" );
+		// If we change our cfdump template, this may break
+		assertThat( baos.toString() ).contains( "String" );
+	}
+
+	@DisplayName( "It can dump tag" )
+	@Test
+	public void testCanDumpXMLName() {
+		// @formatter:off
+		instance.executeSource(
+		    """
+		       	<cfdump var="#XMLParse( '<root><item attr="value" /></root>' ).root#" format="html">
+		    """,
+		    context, BoxSourceType.CFTEMPLATE );
+		// @formatter:on
+		assertThat( baos.toString() ).contains( "root" );
+		assertThat( baos.toString() ).contains( "item" );
+	}
+
+	@DisplayName( "It can dump tag struct" )
+	@Test
+	public void testCanDumpTagStruct() {
+		// @formatter:off
+		instance.executeSource(
+		    """
+		       	<cfdump var="#{ foo : 'bar' }#" format="html">
+		    """,
+		    context, BoxSourceType.CFTEMPLATE );
+		// @formatter:on
+		assertThat( baos.toString() ).contains( "bar" );
+	}
+
+	@DisplayName( "It can dump byte array" )
+	@Test
+	public void testCanDumpByteArray() {
+		// @formatter:off
+		instance.executeSource(
+		    """
+		       	<cfdump var="#'brad'.getBytes()#" format="html">
+		    """,
+		    context, BoxSourceType.CFTEMPLATE );
+		// @formatter:on
+		assertThat( baos.toString() ).contains( "Raw" );
+		assertThat( baos.toString() ).contains( "98,114,97,100" );
+	}
+
+	@DisplayName( "It can dump empty byte array" )
+	@Test
+	public void testCanDumpEmptyByteArray() {
+		// @formatter:off
+		instance.executeSource(
+		    """
+		       	<cfdump var="#''.getBytes()#" format="html">
+		    """,
+		    context, BoxSourceType.CFTEMPLATE );
+		// @formatter:on
+		assertThat( baos.toString() ).contains( "Raw" );
+		assertThat( baos.toString() ).contains( "[]" );
+	}
+
+	@DisplayName( "It can dump truncated byte array over 1000 chars" )
+	@Test
+	public void testCanDumpTruncatedByteArray() {
+		// @formatter:off
+		instance.executeSource(
+		    """
+		       	<cfdump var="#repeatstring("*", 1001).getBytes()#" format="html">
+		    """,
+		    context, BoxSourceType.CFTEMPLATE );
+		// @formatter:on
+		assertThat( baos.toString() ).contains( "Raw" );
+		assertThat( baos.toString() ).contains( "... truncated" );
+	}
+
+	@DisplayName( "It can dump tag struct with sorted keys" )
+	@Test
+	public void testCanDumpTagStructSorted() {
+		// @formatter:off
+		instance.executeSource(
+		    """
+		       	<cfdump var="#{ 'z_key' : 'z', 'p_key' : 'p', 'a_key' : 'a', 'b_key' : 'b' }#" format="html">
+		    """,
+		    context, BoxSourceType.CFTEMPLATE );
+		// @formatter:on
+		assertThat( baos.toString() ).matches( "(?s).*a_key.*b_key.*p_key.*z_key.*" );
+	}
+
+	@DisplayName( "It can dump tag sorted struct with sorted keys" )
+	@Test
+	public void testCanDumpTagSortedStructSorted() {
+		// @formatter:off
+		instance.executeSource(
+		    """
+		       	<cfdump var="#[ 'z_key' : 'z', 'p_key' : 'p', 'a_key' : 'a', 'b_key' : 'b' ]#" format="html">
+		    """,
+		    context, BoxSourceType.CFTEMPLATE );
+		// @formatter:on
+		assertThat( baos.toString() ).matches( "(?s).*z_key.*p_key.*a_key.*b_key.*" );
+	}
+
+	@DisplayName( "It can dump BL tag" )
+	@Test
+	public void testCanDumpBLTag() {
+		// @formatter:off
+		instance.executeSource(
+		    """
+		    	<bx:dump var='My Value'>
+		    """,
+		    context, BoxSourceType.BOXTEMPLATE );
+		// @formatter:on
+		assertThat( baos.toString() ).contains( "My Value" );
+	}
+
+	@DisplayName( "It can dump BL tag 2" )
+	@Test
+	public void testCanDumpBLTag2() {
+		// @formatter:off
+		instance.executeSource(
+		    """
+		    	<bx:try>
+					<bx:throw message="inner" />
+					<bx:catch type="any">
+						<bx:dump var="#bxCatch#" />
+					</bx:catch>
+				</bx:try>
+		    """,
+		    context, BoxSourceType.BOXTEMPLATE );
+		// @formatter:on
+		assertThat( baos.toString() ).contains( "inner" );
+	}
+
+	@DisplayName( "It can dump script" )
+	@Test
+	public void testCanDumpScript() {
+		// @formatter:off
+		instance.executeSource(
+		    """
+		       	bx:dump var="My Value" format="html";
+		    """,
+		    context );
+		// @formatter:on
+		assertThat( baos.toString() ).contains( "My Value" );
+		// If we change our cfdump template, this may break
+		assertThat( baos.toString() ).contains( "String" );
+	}
+
+	@DisplayName( "It can dump ACF script" )
+	@Test
+	public void testCanDumpACFScript() {
+		// @formatter:off
+		instance.executeSource(
+		    """
+		      	cfdump( var="My Value");
+		    """,
+		    context, BoxSourceType.CFSCRIPT );
+		// @formatter:on
+		assertThat( baos.toString() ).contains( "My Value" );
+	}
+
+	@DisplayName( "It can dump using the BIF" )
+	@Test
+	public void testCanDumpUsingBIF() {
+		// @formatter:off
+		instance.executeSource(
+		    """
+		      	dump( "My Value");
+		    """,
+		    context );
+		// @formatter:on
+		assertThat( baos.toString() ).contains( "My Value" );
+	}
+
+	@DisplayName( "It can dump an XML object" )
+	@Test
+	public void testCanDumpEmptyXML() {
+		// @formatter:off
+		instance.executeSource(
+		    """
+				<cfset myXML = xmlNew()/>
+				<cfdump var="#myXML#" format="html">
+		    """,
+		    context, BoxSourceType.CFTEMPLATE );
+		// @formatter:onp
+		assertThat( baos.toString() ).contains( "xml" );
+	}
+
+	@DisplayName( "It can dump an isEmpty method " )
+	@Test
+	public void testCanDumpisEmptyMethod() {
+		// @formatter:off
+		instance.executeSource(
+		    """
+				cfc = new src.test.java.ortus.boxlang.modules.compat.components.ClassWithIsEmpty();
+				dump( var = cfc, format = "html" );
+		    """,
+		    context );
+ 		assertThat( baos.toString() ).contains( "<strong>isEmpty</strong>" );
+		// @formatter:on
+	}
+
+	@DisplayName( "It can dump a Duration" )
+	@Test
+	public void testCanDumpDuration() {
+		// @formatter:off
+		instance.executeSource(
+		    """
+				timespan = createTimeSpan( 0, 1, 0, 0 );
+				dump( var = timespan, format = "html" );
+		    """,
+		    context );
+ 		assertThat( baos.toString() ).contains( "Timespan:" );
+ 		assertThat( baos.toString() ).contains( "0, 1, 0, 0" );
+		// @formatter:on
+	}
+
+	@DisplayName( "It can dump an array list " )
+	@Test
+	public void testCanDumpAnArrayInHTML() {
+		// @formatter:off
+		instance.executeSource(
+		    """
+				val = [1,2,3,null,5];
+				dump( var = val, format = "html" );
+		    """,
+		    context );
+			assertThat( baos.toString().replaceAll( "[ \\t\\r\\n]", "" ) ).contains( "Array:5" );
+			// @formatter:on
+	}
+
+	@DisplayName( "It can dump an struct in html" )
+	@Test
+	public void testCanDumpAnStructHTML() {
+		// @formatter:off
+		instance.executeSource(
+		    """
+				val = {"a":1, "b":2, "c":3, "d":4, "brad":"wood"};
+				dump( var = val, format = "html" );
+		    """,
+		    context );
+			//System.out.println( baos.toString() );
+			String results = baos.toString().replaceAll( "[ \\t\\r\\n]", "" );
+ 		assertThat( results ).contains( "brad" );
+ 		assertThat( results ).contains( "wood" );
+		// @formatter:on
+	}
+
+	@DisplayName( "It can dump an Array data type" )
+	@Test
+	public void testCanDumpArray() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					val = [ "apple", "banana", "cherry" ];
+					dump( var = val, format = "html" );
+				""",
+				context );
+			// @formatter:on
+		assertThat( baos.toString() ).contains( "Array" );
+	}
+
+	@DisplayName( "It can dump a Boolean data type" )
+	@Test
+	public void testCanDumpBoolean() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					val = true;
+					dump( var = val, format = "html" );
+				""",
+				context );
+			// @formatter:on
+		assertThat( baos.toString() ).contains( "true" );
+	}
+
+	@DisplayName( "It can dump a BoxClass data type" )
+	@Test
+	public void testCanDumpBoxClass() {
+		// @formatter:off
+				instance.executeSource(
+					"""
+						cfc = new src.test.java.ortus.boxlang.modules.compat.components.TestDumpClass();
+						dump( var = cfc, format = "html" );
+					""",
+					context );
+				// @formatter:on
+		assertThat( baos.toString() ).contains( "components.TestDumpClass" );
+		assertThat( baos.toString() ).contains( "IDumpClass" );
+	}
+
+	@DisplayName( "It can dump a Class data type" )
+	@Test
+	public void testCanDumpClass() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					val = "Hello".getClass();
+					dump( var = val, format = "html" );
+				""",
+				context );
+			// @formatter:on
+		assertThat( baos.toString() ).contains( "Class" );
+	}
+
+	@DisplayName( "It can dump a DateTime data type" )
+	@Test
+	public void testCanDumpDateTime() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					// Assuming now() returns the current DateTime
+					val = now();
+					dump( var = val, format = "html" );
+				""",
+				context );
+			// @formatter:on
+		// Expect a date format marker (e.g. dashes)
+		assertThat( baos.toString() ).contains( "-" );
+	}
+
+	@DisplayName( "It can dump the Dump component" )
+	@Test
+	public void testCanDumpDump() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					dump( var = dump('testing innerdump'), format = "html" );
+				""",
+				context );
+			// @formatter:on
+		assertThat( baos.toString() ).contains( "innerdump" );
+	}
+
+	@DisplayName( "It can dump a Function data type" )
+	@Test
+	public void testCanDumpFunction() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					function add(a, b) { 
+						return a + b; 
+					}
+					dump( var = add, format = "html" );
+				""",
+				context );
+			// @formatter:on
+		assertThat( baos.toString() ).contains( "function" );
+	}
+
+	@DisplayName( "It can dump an Instant data type" )
+	@Test
+	public void testCanDumpInstant() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					import java.time.Instant;
+					val = Instant.now();
+					dump( var = val, format = "html" );
+				""",
+				context );
+			// @formatter:on
+		assertThat( baos.toString() ).contains( "Instant" );
+	}
+
+	@DisplayName( "It can dump a Key data type" )
+	@Test
+	public void testCanDumpKey() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					val = new ortus.boxlang.runtime.scopes.Key("testKey");
+					dump( var = val, format = "html" );
+				""",
+				context );
+			// @formatter:on
+		assertThat( baos.toString() ).contains( "testKey" );
+	}
+
+	@DisplayName( "It can dump a List data type" )
+	@Test
+	public void testCanDumpList() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					val = "apple, banana, cherry";
+					dump( var = val, format = "html" );
+				""",
+				context );
+			// @formatter:on
+		assertThat( baos.toString() ).contains( "apple" );
+	}
+
+	@DisplayName( "It can dump a Map data type" )
+	@Test
+	public void testCanDumpMap() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					import java.util.HashMap;
+					val = new HashMap();
+					val.put("key1", "value1");
+					val.put("key2", "value2");
+					val.put("key3", "value3");
+					dump( var = val, format = "html" );
+				""",
+				context );
+			// @formatter:on
+		assertThat( baos.toString() ).contains( "value1" );
+	}
+
+	@DisplayName( "It can dump a Null value" )
+	@Test
+	public void testCanDumpNull() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					dump( var = null, format = "html" );
+				""",
+				context );
+			// @formatter:on
+		assertThat( baos.toString() ).contains( "null" );
+	}
+
+	@DisplayName( "It can dump a Number data type" )
+	@Test
+	public void testCanDumpNumber() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					val = 12345;
+					dump( var = val, format = "html" );
+				""",
+				context );
+			// @formatter:on
+		assertThat( baos.toString() ).contains( "12345" );
+	}
+
+	@DisplayName( "It can dump a Query data type" )
+	@Test
+	public void testCanDumpQuery() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					val = queryExecute("SELECT 1",{},{ "dbtype": "query" });
+					dump( var = val, format = "html" );
+				""",
+				context );
+			// @formatter:on
+		assertThat( baos.toString().toLowerCase() ).contains( "1" );
+	}
+
+	@DisplayName( "It can dump a String data type" )
+	@Test
+	public void testCanDumpString() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					val = "Hello, BoxLang";
+					dump( var = val, format = "html" );
+				""",
+				context );
+			// @formatter:on
+		assertThat( baos.toString() ).contains( "Hello, BoxLang" );
+	}
+
+	@DisplayName( "It can dump a StringBuffer data type" )
+	@Test
+	public void testCanDumpStringBuffer() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					val = new java.lang.StringBuffer("Buffer Content");
+					dump( var = val, format = "html" );
+				""",
+				context );
+			// @formatter:on
+		assertThat( baos.toString() ).contains( "Buffer Content" );
+	}
+
+	@DisplayName( "It can dump a Box StringBuilder data type" )
+	@Test
+	public void testCanDumpBoxStringBuilder() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					val = stringBuilderNew("Buffer Content");
+					dump( var = val, format = "html" );
+				""",
+				context );
+			// @formatter:on
+		assertThat( baos.toString() ).contains( "String Buffer/Builder" );
+		assertThat( baos.toString() ).contains( "Buffer Content" );
+	}
+
+	@DisplayName( "It can dump a Struct data type" )
+	@Test
+	public void testCanDumpStruct() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					val = { "first": "John", "last": "Doe" };
+					dump( var = val, format = "html" );
+				""",
+				context );
+			// @formatter:on
+		assertThat( baos.toString() ).contains( "John" );
+	}
+
+	@DisplayName( "It can dump a Throwable" )
+	@Test
+	public void testCanDumpThrowable() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					e =  new java.lang.Exception("Test Exception");
+					dump( var = e, format = "html" );
+				""",
+				context );
+			// @formatter:on
+		assertThat( baos.toString() ).contains( "Test Exception" );
+	}
+
+	@DisplayName( "It can dump a ToString result" )
+	@Test
+	public void testCanDumpToString() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					val = ("Numeric to string").toString();
+					dump( var = val, format = "html" );
+				""",
+				context );
+			// @formatter:on
+		assertThat( baos.toString() ).contains( "Numeric to string" );
+	}
+
+	@DisplayName( "It can dump text to a file" )
+	@Test
+	public void testCanDumpTextToFile() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					val = "Hello, BoxLang";
+					filePath = expandPath( "/src/test/resources/tmp/dump_test.txt" );
+					if( fileExists( filePath ) ) fileDelete( filePath );
+					dump( var = val, format = "text", output = filePath );
+				""",
+				context );
+			// @formatter:on
+
+		Path filePath = Paths.get( variables.getAsString( Key.of( "filePath" ) ) );
+		assertWithMessage( "File [" + filePath + "] should exist" ).that( filePath.toFile().exists() ).isTrue();
+		String fileContents = FileSystemUtil.readString( filePath.toString(), FileSystemUtil.DEFAULT_CHARSET.name() );
+		assertThat( fileContents ).contains( "Hello, BoxLang" );
+		// Cleanup
+		filePath.toFile().delete();
+	}
+
+	@DisplayName( "It can dump HTML to a file" )
+	@Test
+	public void testCanDumpHTMLToFile() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					val = "Hello, BoxLang";
+					filePath = expandPath( "/src/test/resources/tmp/dump_test.html" );
+					if( fileExists( filePath ) ) fileDelete( filePath );
+					dump( var = val, format = "html", output = filePath );
+				""",
+				context );
+			// @formatter:on
+
+		Path filePath = Paths.get( variables.getAsString( Key.of( "filePath" ) ) );
+		assertWithMessage( "File [" + filePath + "] should exist" ).that( filePath.toFile().exists() ).isTrue();
+		String fileContents = FileSystemUtil.readString( filePath.toString(), FileSystemUtil.DEFAULT_CHARSET.name() );
+		assertThat( fileContents ).contains( "Hello, BoxLang" );
+		assertThat( fileContents ).contains( "<style>" );
+		// Cleanup
+		filePath.toFile().delete();
+	}
+
+	@DisplayName( "It can dump to a file in temp dir" )
+	@Test
+	public void testCanDumpToFileInTempDir() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					val = "Hello, BoxLang";
+					fileName = "dump_test.txt";
+					filePath = getTempDirectory() & "/" & fileName;
+					if( fileExists( filePath ) ) fileDelete( filePath );
+					dump( var = val, format = "text", output = fileName );
+				""",
+				context );
+			// @formatter:on
+
+		Path filePath = Paths.get( variables.getAsString( Key.of( "filePath" ) ) );
+		assertWithMessage( "File [" + filePath + "] should exist" ).that( filePath.toFile().exists() ).isTrue();
+		String fileContents = FileSystemUtil.readString( filePath.toString(), FileSystemUtil.DEFAULT_CHARSET.name() );
+		assertThat( fileContents ).contains( "Hello, BoxLang" );
+		// Cleanup
+		filePath.toFile().delete();
+	}
+
+	@DisplayName( "It can append text to a file" )
+	@Test
+	public void testCanAppendTextToFile() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					filePath = expandPath( "/src/test/resources/tmp/extra/deep/dump_test.txt" );
+					parent = expandPath( "/src/test/resources/tmp/extra" );
+					if( directoryExists( parent ) ) directoryDelete( parent, true );
+					dump( var = "dump one", format = "text", output = filePath );
+					dump( var = "dump two", format = "text", output = filePath );
+					dump( var = "dump three", format = "text", output = filePath );
+				""",
+				context );
+			// @formatter:on
+
+		Path filePath = Paths.get( variables.getAsString( Key.of( "filePath" ) ) );
+		assertWithMessage( "File [" + filePath + "] should exist" ).that( filePath.toFile().exists() ).isTrue();
+		String fileContents = FileSystemUtil.readString( filePath.toString(), FileSystemUtil.DEFAULT_CHARSET.name() );
+		assertThat( fileContents ).contains( "dump one" );
+		assertThat( fileContents ).contains( "dump two" );
+		assertThat( fileContents ).contains( "dump three" );
+		// Cleanup
+		filePath.toFile().delete();
+		filePath.getParent().toFile().delete();
+		filePath.getParent().getParent().toFile().delete();
+	}
+
+	@DisplayName( "It shows properties from super class" )
+	@Test
+	public void testShowsPropertiesFromSuperClass() {
+		// @formatter:off
+			instance.executeSource(
+				"""
+					dump( var = new src.test.java.ortus.boxlang.modules.compat.components.DumpChild(), format = "html" );
+				""",
+				context );
+			// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "childProperty" );
+		assertThat( output ).contains( "I am a child property" );
+
+		assertThat( output ).contains( "parentProperty" );
+		assertThat( output ).contains( "I am a parent property" );
+
+	}
+
+	@DisplayName( "It can dump SQL date and time objects which don't correctly implement the java.util.Date interface" )
+	@Test
+	public void testCanDumpSqlDateAndTimeObjects() {
+		variables.put( "sqlDate", java.sql.Date.valueOf( "2023-01-01" ) );
+		// @formatter:off
+			instance.executeSource(
+				"""
+					dump( var = sqlDate, format = "html" );
+				""",
+				context );
+			// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "2023-01-01" );
+
+		variables.put( "sqlTime", java.sql.Time.valueOf( "12:34:56" ) );
+		// @formatter:off
+		// We need to use text format here as otherwise the colons are HTML encoded
+			instance.executeSource(
+				"""
+					dump( var = sqlTime, format = "text" );
+				""",
+				context );
+			// @formatter:on
+		output = baos.toString();
+		assertThat( output ).contains( "12:34:56" );
+
+	}
+
+	@DisplayName( "It can dump a BoxFile object" )
+	@Test
+	public void testCanDumpBoxFile() {
+		// @formatter:off
+		instance.executeSource(
+			"""
+				myFile = fileOpen( getTempFile( getTempDirectory(), "dumptest" ), "read" );
+				dump( var = myFile, format = "html" );
+				fileClose( myFile );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "Box File" );
+		assertThat( output ).contains( "path" );
+		assertThat( output ).contains( "mode" );
+		assertThat( output ).contains( "read" );
+	}
+
+	@DisplayName( "It can dump a Range data type" )
+	@Test
+	public void testCanDumpRange() {
+		// @formatter:off
+		instance.executeSource(
+			"""
+				val = 1..10;
+				dump( var = val, format = "html" );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "Range:" );
+		assertThat( output ).contains( "1..10" );
+		assertThat( output ).contains( "From" );
+		assertThat( output ).contains( "To" );
+		assertThat( output ).contains( "Step" );
+		assertThat( output ).contains( "Element Type" );
+		assertThat( output ).contains( "Integer" );
+		assertThat( output ).contains( "Ascending" );
+		assertThat( output ).contains( "true" );
+		assertThat( output ).contains( "Iterable" );
+		assertThat( output ).contains( "Bounded" );
+	}
+
+	@DisplayName( "It can dump a half-bounded Range" )
+	@Test
+	public void testCanDumpHalfBoundedRange() {
+		// @formatter:off
+		instance.executeSource(
+			"""
+				val = 1..;
+				dump( var = val, format = "html" );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "Range:" );
+		assertThat( output ).contains( "1.." );
+		assertThat( output ).contains( "[open]" );
+	}
+
+	@DisplayName( "It can dump an exclusive Range" )
+	@Test
+	public void testCanDumpExclusiveRange() {
+		// @formatter:off
+		instance.executeSource(
+			"""
+				val = 1..<10;
+				dump( var = val, format = "html" );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "Range:" );
+		assertThat( output ).contains( "1..&lt;10" );
+	}
+
+	@DisplayName( "It can dump a Set data type" )
+	@Test
+	public void testCanDumpSet() {
+		// @formatter:off
+		instance.executeSource(
+			"""
+				val = setNew( type="linked", values=[ "apple", "banana", "cherry" ] );
+				dump( var = val, format = "html" );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "Set" );
+		assertThat( output ).contains( "LINKED" );
+		assertThat( output ).contains( "caseSensitive" );
+		assertThat( output ).contains( "synchronized" );
+		assertThat( output ).contains( "apple" );
+		assertThat( output ).contains( "banana" );
+		assertThat( output ).contains( "cherry" );
+	}
+
+	@DisplayName( "It can dump an empty Set" )
+	@Test
+	public void testCanDumpEmptySet() {
+		// @formatter:off
+		instance.executeSource(
+			"""
+				val = setNew();
+				dump( var = val, format = "html" );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "Set" );
+		assertThat( output ).contains( "DEFAULT" );
+		assertThat( output ).contains( "0" );
+	}
+
+	@DisplayName( "It can dump a char array as a string representation" )
+	@Test
+	public void testCanDumpCharArray() {
+		// @formatter:off
+		instance.executeSource(
+		    """
+		       	<cfdump var="#'brad'.toCharArray()#" format="html">
+		    """,
+		    context, BoxSourceType.CFTEMPLATE );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "b" );
+		assertThat( output ).contains( "r" );
+		assertThat( output ).contains( "a" );
+		assertThat( output ).contains( "d" );
+	}
+
+	@DisplayName( "It can dump a native Java Set" )
+	@Test
+	public void testCanDumpNativeJavaSet() {
+		// @formatter:off
+		instance.executeSource(
+			"""
+				import java.util.HashSet;
+				val = new HashSet( ["brad", "BRAD", "wood"] );
+				dump( var = val, format = "html" );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "java.util.HashSet" );
+		assertThat( output ).contains( "brad" );
+		assertThat( output ).doesNotContain( "caseSensitive" );
+		assertThat( output ).doesNotContain( "synchronized" );
+	}
+
+	/**
+	 * --------------------------------------------------------------------------
+	 * depth / maxRows
+	 * --------------------------------------------------------------------------
+	 * depth limits recursion (1-based): -1 (default) is unlimited, 0 shows nothing,
+	 * 1 shows the top level with no recursion, 2 recurses once, 3 recurses twice, etc.
+	 * maxRows limits the number of rows/items shown per level (1-based) with the same
+	 * -1/0/N semantics, independently of depth.
+	 */
+	private static final String NESTED_STRUCT_SOURCE = """
+	                                                   val = { "alpha": "a",
+	                                                   		"beta" : {
+	                                                   			"charlie": "c",
+	                                                   			"delta": "d"
+	                                                   		},
+	                                                   		"echo" : {
+	                                                   			"foxtrot" : {
+	                                                   				"golf" : "g",
+	                                                   				"hotel" : "h"
+	                                                   			}
+	                                                   		}
+	                                                   	};
+	                                                   """;
+
+	@DisplayName( "It defaults depth and maxRows to unlimited (-1) when omitted" )
+	@Test
+	public void testDepthAndMaxRowsDefaultToUnlimited() {
+		// @formatter:off
+		instance.executeSource(
+			NESTED_STRUCT_SOURCE + """
+			dump( var = val, format = "html" );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "alpha" );
+		assertThat( output ).contains( "charlie" );
+		assertThat( output ).contains( "golf" );
+	}
+
+	@DisplayName( "It treats an explicit depth of -1 the same as the default (unlimited)" )
+	@Test
+	public void testDepthNegativeOneIsUnlimited() {
+		// @formatter:off
+		instance.executeSource(
+			NESTED_STRUCT_SOURCE + """
+			dump( var = val, format = "html", depth = -1 );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "alpha" );
+		assertThat( output ).contains( "charlie" );
+		assertThat( output ).contains( "golf" );
+	}
+
+	@DisplayName( "It shows nothing when depth is 0" )
+	@Test
+	public void testDepthZeroShowsNothing() {
+		// @formatter:off
+		instance.executeSource(
+			NESTED_STRUCT_SOURCE + """
+			dump( var = val, format = "html", depth = 0 );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "Depth Limit reached" );
+		assertThat( output ).doesNotContain( "alpha" );
+		assertThat( output ).doesNotContain( "charlie" );
+		assertThat( output ).doesNotContain( "golf" );
+	}
+
+	@DisplayName( "It shows only the top level with no recursion when depth is 1" )
+	@Test
+	public void testDepthOneShowsNoRecursion() {
+		// @formatter:off
+		instance.executeSource(
+			NESTED_STRUCT_SOURCE + """
+			dump( var = val, format = "html", depth = 1 );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "alpha" );
+		// alpha's value is a plain scalar string with nothing further to recurse into, so it must
+		// still render fully even though depth=1 blocks recursion into the *container* values (beta/echo)
+		assertThat( output ).contains( ">a<" );
+		assertThat( output ).contains( "beta" );
+		assertThat( output ).contains( "echo" );
+		assertThat( output ).doesNotContain( "charlie" );
+		assertThat( output ).doesNotContain( "golf" );
+	}
+
+	@DisplayName( "It does not hide scalar leaf values behind the depth limit, only containers" )
+	@Test
+	public void testDepthDoesNotHideScalarLeafValues() {
+		// @formatter:off
+		instance.executeSource(
+			"""
+			val = { "name": "Brad", "age": 42, "active": true };
+			dump( var = val, format = "html", depth = 1 );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		// depth=1 means "top level, no recursion into containers" - but these are all scalars with
+		// nothing to recurse into, so their actual values must be shown rather than "Depth Limit reached"
+		assertThat( output ).doesNotContain( "Depth Limit reached" );
+		assertThat( output ).contains( "Brad" );
+		assertThat( output ).contains( "42" );
+		assertThat( output ).contains( "true" );
+	}
+
+	@DisplayName( "It recurses one level in when depth is 2" )
+	@Test
+	public void testDepthTwoRecursesOnce() {
+		// @formatter:off
+		instance.executeSource(
+			NESTED_STRUCT_SOURCE + """
+			dump( var = val, format = "html", depth = 2 );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "alpha" );
+		assertThat( output ).contains( "charlie" );
+		assertThat( output ).contains( "foxtrot" );
+		assertThat( output ).doesNotContain( "golf" );
+	}
+
+	@DisplayName( "It recurses two levels in when depth is 3" )
+	@Test
+	public void testDepthThreeRecursesTwice() {
+		// @formatter:off
+		instance.executeSource(
+			NESTED_STRUCT_SOURCE + """
+			dump( var = val, format = "html", depth = 3 );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "alpha" );
+		assertThat( output ).contains( "charlie" );
+		assertThat( output ).contains( "foxtrot" );
+		assertThat( output ).contains( "golf" );
+		assertThat( output ).contains( "hotel" );
+	}
+
+	@DisplayName( "It shows nothing when maxRows is 0" )
+	@Test
+	public void testMaxRowsZeroShowsNothing() {
+		// @formatter:off
+		instance.executeSource(
+			"""
+			val = { "alpha": "a", "bravo": "b", "charlie": "c" };
+			dump( var = val, format = "html", maxRows = 0 );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "0/3" );
+		assertThat( output ).doesNotContain( "alpha" );
+		assertThat( output ).doesNotContain( "bravo" );
+		assertThat( output ).doesNotContain( "charlie" );
+	}
+
+	@DisplayName( "It limits the number of struct keys shown per level with maxRows" )
+	@Test
+	public void testMaxRowsLimitsStructKeys() {
+		// @formatter:off
+		instance.executeSource(
+			"""
+			val = { "alpha": "a", "bravo": "b", "charlie": "c" };
+			dump( var = val, format = "html", maxRows = 2 );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "2/3" );
+		assertThat( output ).contains( "alpha" );
+		assertThat( output ).contains( "bravo" );
+		assertThat( output ).doesNotContain( "charlie" );
+	}
+
+	@DisplayName( "It limits the number of array items shown per level with maxRows" )
+	@Test
+	public void testMaxRowsLimitsArrayItems() {
+		// @formatter:off
+		instance.executeSource(
+			"""
+			val = [ "alpha", "bravo", "charlie", "delta" ];
+			dump( var = val, format = "html", maxRows = 2 );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "2/4" );
+		assertThat( output ).contains( "alpha" );
+		assertThat( output ).contains( "bravo" );
+		assertThat( output ).doesNotContain( "charlie" );
+		assertThat( output ).doesNotContain( "delta" );
+	}
+
+	@DisplayName( "It treats an explicit maxRows of -1 the same as the default (unlimited)" )
+	@Test
+	public void testMaxRowsNegativeOneIsUnlimited() {
+		// @formatter:off
+		instance.executeSource(
+			"""
+			val = [ "alpha", "bravo", "charlie", "delta" ];
+			dump( var = val, format = "html", maxRows = -1 );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "alpha" );
+		assertThat( output ).contains( "bravo" );
+		assertThat( output ).contains( "charlie" );
+		assertThat( output ).contains( "delta" );
+		assertThat( output ).doesNotContain( "4/4" );
+	}
+
+	@DisplayName( "It limits the number of query rows shown per level with maxRows" )
+	@Test
+	public void testMaxRowsLimitsQueryRows() {
+		// @formatter:off
+		instance.executeSource(
+			"""
+			qry = queryNew( "id", "integer" );
+			queryAddRow( qry, [ { id: 1 }, { id: 2 }, { id: 3 } ] );
+			dump( var = qry, format = "html", maxRows = 1 );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "1/3" );
+	}
+
+	@DisplayName( "It combines depth and maxRows together" )
+	@Test
+	public void testDepthAndMaxRowsCombined() {
+		// @formatter:off
+		instance.executeSource(
+			"""
+				val = { "alpha": "a",
+						"beta" : {
+							"charlie": "c",
+							"delta": "d"
+						},
+						"echo" : {
+							"foxtrot" : {
+								"golf" : "g",
+								"hotel" : "h"
+							}
+						},
+						"india" : "i"
+					};
+
+				dump( var = val, format = "html", depth = 2, maxRows = 3 );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "3/4" );
+		assertThat( output ).contains( "alpha" );
+		assertThat( output ).contains( "beta" );
+		assertThat( output ).contains( "echo" );
+		assertThat( output ).contains( "charlie" );
+		assertThat( output ).doesNotContain( "golf" );
+		assertThat( output ).doesNotContain( "india" );
+	}
+
+	@DisplayName( "It limits the number of Set items shown per level with maxRows" )
+	@Test
+	public void testMaxRowsLimitsSetItems() {
+		// @formatter:off
+		instance.executeSource(
+			"""
+			val = setNew( type = "linked", values = [ "alpha", "bravo", "charlie" ] );
+			dump( var = val, format = "html", maxRows = 2 );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "2/3" );
+		assertThat( output ).contains( "alpha" );
+		assertThat( output ).contains( "bravo" );
+		assertThat( output ).doesNotContain( "charlie" );
+	}
+
+	@DisplayName( "It limits recursion into Set items with depth" )
+	@Test
+	public void testDepthLimitsSetRecursion() {
+		// @formatter:off
+		instance.executeSource(
+			"""
+			val = setOf( { "nested" : "value" } );
+			dump( var = val, format = "html", depth = 1 );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "Depth Limit reached" );
+		assertThat( output ).doesNotContain( "nested" );
+	}
+
+	@DisplayName( "It supports depth and maxRows on the dump component/tag" )
+	@Test
+	public void testDepthAndMaxRowsOnComponent() {
+		// @formatter:off
+		instance.executeSource(
+			"""
+				<bx:script>
+					val = { "alpha": "a", "bravo": "b", "charlie": "c" };
+				</bx:script>
+				<bx:dump var="#val#" format="html" maxRows="2">
+			""",
+			context, BoxSourceType.BOXTEMPLATE );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "2/3" );
+		assertThat( output ).contains( "alpha" );
+		assertThat( output ).contains( "bravo" );
+		assertThat( output ).doesNotContain( "charlie" );
+	}
+
+	@DisplayName( "It still accepts the deprecated top argument on the BIF, folding it into maxRows" )
+	@Test
+	public void testDeprecatedTopFoldsIntoMaxRowsOnBIF() {
+		// @formatter:off
+		instance.executeSource(
+			"""
+			val = { "alpha": "a", "bravo": "b", "charlie": "c" };
+			dump( var = val, format = "html", top = 2 );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "2/3" );
+		assertThat( output ).contains( "alpha" );
+		assertThat( output ).contains( "bravo" );
+		assertThat( output ).doesNotContain( "charlie" );
+	}
+
+	@DisplayName( "It still accepts the deprecated top attribute on the dump component/tag, folding it into maxRows" )
+	@Test
+	public void testDeprecatedTopFoldsIntoMaxRowsOnComponent() {
+		// @formatter:off
+		instance.executeSource(
+			"""
+				<bx:script>
+					val = { "alpha": "a", "bravo": "b", "charlie": "c" };
+				</bx:script>
+				<bx:dump var="#val#" format="html" top="2">
+			""",
+			context, BoxSourceType.BOXTEMPLATE );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "2/3" );
+		assertThat( output ).contains( "alpha" );
+		assertThat( output ).contains( "bravo" );
+		assertThat( output ).doesNotContain( "charlie" );
+	}
+
+	@DisplayName( "It prefers an explicit maxRows over the deprecated top when both are passed" )
+	@Test
+	public void testMaxRowsTakesPrecedenceOverDeprecatedTop() {
+		// @formatter:off
+		instance.executeSource(
+			"""
+			val = { "alpha": "a", "bravo": "b", "charlie": "c" };
+			dump( var = val, format = "html", top = 1, maxRows = 2 );
+			""",
+			context );
+		// @formatter:on
+		String output = baos.toString();
+		assertThat( output ).contains( "2/3" );
+		assertThat( output ).contains( "alpha" );
+		assertThat( output ).contains( "bravo" );
+		assertThat( output ).doesNotContain( "charlie" );
+	}
+}
