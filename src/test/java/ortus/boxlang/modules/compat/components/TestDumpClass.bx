@@ -1,0 +1,5 @@
+class implements="IDumpClass" {
+	public function init() {
+		return this;
+	}
+}

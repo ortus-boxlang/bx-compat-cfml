@@ -42,6 +42,6 @@
 	},
 	"boxlang": {
 		"moduleName": "compat-cfml",
-		"minimumVersion": "1.16.0"
+		"minimumVersion": "1.17.0"
 	}
 }
