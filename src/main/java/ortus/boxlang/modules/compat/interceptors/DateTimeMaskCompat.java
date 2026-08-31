@@ -98,6 +98,7 @@ public class DateTimeMaskCompat extends BaseInterceptor {
 		DATE_MASK_REPLACEMENTS.put( ".L", ".S" );
 		// A few common literal formats not caught by the above
 		DATE_MASK_REPLACEMENTS.put( "yyyymmdd", "yyyyMMdd" );
+		DATE_MASK_REPLACEMENTS.put( "YYYY", "yyyy" );
 	}
 
 	private static final Map<String, String> LITERAL_MASK_REPLACEMENTS = new LinkedHashMap<>();
