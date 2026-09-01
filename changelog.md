@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.39.0] - 2026-09-01
+
 ## [1.38.0] - 2026-08-28
 
 ## [1.37.0] - 2026-08-12
@@ -283,7 +285,8 @@ transpiler = {
 
 - First iteration of this module
 
-[unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.38.0...HEAD
+[unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.39.0...HEAD
+[1.39.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.38.0...v1.39.0
 [1.38.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.37.0...v1.38.0
 [1.37.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.36.0...v1.37.0
 [1.36.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.35.0...v1.36.0
