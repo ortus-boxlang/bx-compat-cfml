@@ -82,6 +82,18 @@ public class ParseDateTimeTest extends BaseIntegrationTest {
 
 	}
 
+	@DisplayName( "It can parse MMddYYYY" )
+	@Test
+	public void testCanParseMMddYYYY() {
+		runtime.executeSource(
+		    """
+		    result = parseDatetime( "09102019", "MMddYYYY" );
+		     """,
+		    context );
+		assertEquals( variables.getAsDateTime( result ).format( "MMddyyyy" ), "09102019" );
+
+	}
+
 	@DisplayName( "It tests the speed of both masked and non-masked parsing" )
 	@Test
 	@Disabled( "Disabled for CI performance. Comment to test locally" )
