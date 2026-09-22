@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `queryRepresentBitAsBoolean` module setting: controls how BIT query values are stored internally (booleans vs. numbers), defaulting to the configured engine (Lucee = booleans, Adobe = numbers). The resolved value is applied to `GenericJDBCDriver.representBitAsBoolean` via the extracted `ModuleConfig.configureQueryRepresentation()`. Added `QueryRepresentBitAsBooleanTest` covering every engine/setting combination.
+
 ## [1.39.0] - 2026-09-01
 
 ## [1.38.0] - 2026-08-28

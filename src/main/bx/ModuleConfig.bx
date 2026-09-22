@@ -242,13 +242,8 @@ import ortus.boxlang.runtime.jdbc.drivers.GenericJDBCDriver;
 			settings.isAdobe = true;
 		}
 
-		if( isNull( settings.queryRepresentBitAsBoolean ) ) {
-			settings.queryRepresentBitAsBoolean = settings.isLucee;
-		}
-
-		if( structKeyExists( GenericJDBCDriver, "representBitAsBoolean" ) ) {
-			GenericJDBCDriver.representBitAsBoolean = settings.queryRepresentBitAsBoolean;
-		}
+		// Apply the module query bit representation setting to the core JDBC driver
+		configureQueryRepresentation();
 
 		// Extracted for testing purposes
 		configureJSONParsing();
@@ -389,6 +384,27 @@ import ortus.boxlang.runtime.jdbc.drivers.GenericJDBCDriver;
 				JSONUtil.useLenientParsingLeadingZeros = settings.useLenientParsingLeadingZeros;
 			}
 			JSONUtil.resetBuilders();
+		}
+	}
+
+	/**
+	 * Apply the module setting that controls how BIT query values are represented.
+	 *
+	 * The setting `queryRepresentBitAsBoolean` defaults to `null`, in which case it
+	 * falls back to matching the configured engine: Lucee stores BIT values as booleans
+	 * (`true`/`false`), while Adobe stores them as numbers (`1`/`0`). The resolved value is
+	 * pushed into the core `GenericJDBCDriver.representBitAsBoolean` static flag.
+	 *
+	 * This is extracted into its own method so it can be exercised directly by tests for
+	 * every combination of the engine and the explicit setting value.
+	 */
+	public function configureQueryRepresentation(){
+		if( isNull( settings.queryRepresentBitAsBoolean ) ) {
+			settings.queryRepresentBitAsBoolean = settings.isLucee;
+		}
+
+		if( structKeyExists( GenericJDBCDriver, "representBitAsBoolean" ) ) {
+			GenericJDBCDriver.representBitAsBoolean = settings.queryRepresentBitAsBoolean;
 		}
 	}
 
