@@ -243,7 +243,7 @@ import ortus.boxlang.runtime.jdbc.drivers.GenericJDBCDriver;
 		}
 
 		if( isNull( settings.queryRepresentBitAsBoolean ) ) {
-			settings.queryRepresentBitAsBoolean = isLucee;
+			settings.queryRepresentBitAsBoolean = settings.isLucee;
 		}
 
 		if( structKeyExists( GenericJDBCDriver, "representBitAsBoolean" ) ) {
