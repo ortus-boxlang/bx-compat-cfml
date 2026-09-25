@@ -22,6 +22,7 @@ import java:ortus.boxlang.runtime.operators.Compare;
 import ortus.boxlang.runtime.dynamic.casters.StructCasterLoose;
 import ortus.boxlang.runtime.types.util.JSONUtil;
 import ortus.boxlang.runtime.types.Query;
+import ortus.boxlang.runtime.jdbc.drivers.GenericJDBCDriver;
 
  class {
 
@@ -131,6 +132,10 @@ import ortus.boxlang.runtime.types.Query;
 			// 2. Coerce nulls as empty strings accessing a cell from a query.
 			// Defaults to true to simulate Adobe/Lucee behavior
 			queryNullToEmpty = true,
+			// Boolean flag to determine how we represent a bit value internally.
+			// i.e. 1/0 or true/false. This is not a feature flag, since it's a global Boxlang
+			// behavior that controls what's in a boxlang query object, regardless of what JDBC driver supplied the data and how.
+			queryRepresentBitAsBoolean = null,
 			// CF will allow ANY java class to be generically cast into a struct (using public fields and getters) only excepting arrays and "simple" values.
 			// This allows even things like a closure to be passed into a struct BIF.
 			// BL will only use the generic class-to-struct logic for inputs which pass the isObject() test unless this flag is true
@@ -229,12 +234,16 @@ import ortus.boxlang.runtime.types.Query;
 			throw( "You must specify an [engine] in the settings. Valid engines are [adobe,lucee]" );
 		}
 
+
 		// Use the boolean identifier
 		if( settings.engine == "lucee" ){
 			settings.isLucee = true;
 		} else if( settings.engine == "adobe" ){
 			settings.isAdobe = true;
 		}
+
+		// Apply the module query bit representation setting to the core JDBC driver
+		configureQueryRepresentation();
 
 		// Extracted for testing purposes
 		configureJSONParsing();
@@ -375,6 +384,27 @@ import ortus.boxlang.runtime.types.Query;
 				JSONUtil.useLenientParsingLeadingZeros = settings.useLenientParsingLeadingZeros;
 			}
 			JSONUtil.resetBuilders();
+		}
+	}
+
+	/**
+	 * Apply the module setting that controls how BIT query values are represented.
+	 *
+	 * The setting `queryRepresentBitAsBoolean` defaults to `null`, in which case it
+	 * falls back to matching the configured engine: Lucee stores BIT values as booleans
+	 * (`true`/`false`), while Adobe stores them as numbers (`1`/`0`). The resolved value is
+	 * pushed into the core `GenericJDBCDriver.representBitAsBoolean` static flag.
+	 *
+	 * This is extracted into its own method so it can be exercised directly by tests for
+	 * every combination of the engine and the explicit setting value.
+	 */
+	public function configureQueryRepresentation(){
+		if( isNull( settings.queryRepresentBitAsBoolean ) ) {
+			settings.queryRepresentBitAsBoolean = settings.isLucee;
+		}
+
+		if( structKeyExists( GenericJDBCDriver, "representBitAsBoolean" ) ) {
+			GenericJDBCDriver.representBitAsBoolean = settings.queryRepresentBitAsBoolean;
 		}
 	}
 
