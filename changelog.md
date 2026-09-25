@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.40.0] - 2026-09-25
+
 ### Added
 
 - `queryRepresentBitAsBoolean` module setting: controls how BIT query values are stored internally (booleans vs. numbers), defaulting to the configured engine (Lucee = booleans, Adobe = numbers). The resolved value is applied to `GenericJDBCDriver.representBitAsBoolean` via the extracted `ModuleConfig.configureQueryRepresentation()`. Added `QueryRepresentBitAsBooleanTest` covering every engine/setting combination.
@@ -289,7 +291,8 @@ transpiler = {
 
 - First iteration of this module
 
-[unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.39.0...HEAD
+[unreleased]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.40.0...HEAD
+[1.40.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.39.0...v1.40.0
 [1.39.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.38.0...v1.39.0
 [1.38.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.37.0...v1.38.0
 [1.37.0]: https://github.com/ortus-boxlang/bx-compat-cfml/compare/v1.36.0...v1.37.0
