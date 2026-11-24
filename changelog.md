@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- [BL-2810](https://ortussolutions.atlassian.net/browse/BL-2810) - Treat zero-length `cachedWithin` as negative timeout to evict cache entry, same as `cacheTimeout` (BL-2374).
+
 ## [1.40.0] - 2026-09-25
 
 ### Added
