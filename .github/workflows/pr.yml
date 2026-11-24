@@ -1,16 +1,17 @@
 name: Pull Requests
 
+# Only pull requests trigger this workflow. A `push` trigger as well ran every PR commit twice (once per event).
+# Pushes to development, main and releases are covered by the snapshot and release workflows.
 on:
-  push:
-    branches-ignore:
-      - "main"
-      - "master"
-      - "development"
-      - "releases/v*"
   pull_request:
     branches:
       - "releases/v*"
       - development
+
+# A new commit on a PR cancels the run still in flight for the previous one
+concurrency:
+  group: pr-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   tests:
@@ -25,7 +26,7 @@ jobs:
   # Format PR
   format_check:
     name: Checks Source Code Formatting
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     permissions:
       checks: write
       pull-requests: write
@@ -40,10 +41,6 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 21
-
-      - uses: Ortus-Solutions/commandbox-action@v1.0.3
-        with:
-          cmd: run-script format:check
 
       - name: Verify Code Formatting
         run: ./gradlew spotlessCheck

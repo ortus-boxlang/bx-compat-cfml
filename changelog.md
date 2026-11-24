@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - [BL-2810](https://ortussolutions.atlassian.net/browse/BL-2810) - Treat zero-length `cachedWithin` as negative timeout to evict cache entry, same as `cacheTimeout` (BL-2374).
+- [BL-2811](https://ortussolutions.atlassian.net/browse/BL-2811) - Support the CFML `name` attribute on `<cfzip action="list">`, returning a query of all entries with the full entry path in the `name` column. Core columns are kept.
 
 ## [1.40.0] - 2026-09-25
 

@@ -101,20 +101,28 @@ jobs:
     name: Publish Test Results
     runs-on: ubuntu-latest
     needs: tests
-    if: always()
+    # Run on pass or fail so results are published, but skip runs superseded by a newer commit
+    if: ${{ !cancelled() }}
     permissions:
       checks: write
       pull-requests: write
       contents: read
       issues: read
     steps:
+      # test-reporter lists the git-tracked files to map failures to source lines, so it needs a checkout
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
       - name: Download Artifacts
         uses: actions/download-artifact@v8
         with:
           path: artifacts
 
       - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
+        uses: dorny/test-reporter@v2
         with:
-          files: |
-            artifacts/**/*.xml
+          name: Test Results
+          path: artifacts/**/*.xml
+          reporter: java-junit
+          # A build failure leaves no XML; don't add a second red check on top of the real one
+          fail-on-empty: false
