@@ -8,18 +8,18 @@ import ortus.boxlang.modules.compat.BaseIntegrationTest;
 public class ZipCompatTest extends BaseIntegrationTest {
 
 	// Builds a temp dir with a root file and a nested file, zips it to `zipFile`, and cleans up in `finally`
-	private static final String SETUP = """
-	                                    tmp = getTempDirectory() & "bxzip-" & createUUID() & "/";
-	                                    directoryCreate( tmp & "src/nested", true );
-	                                    fileWrite( tmp & "src/a.txt", "a" );
-	                                    fileWrite( tmp & "src/nested/b.txt", "b" );
-	                                    zipFile = tmp & "test.zip";
-	                                    bx:zip action="zip" file=zipFile source=tmp & "src" overwrite="true";
-	                                    """;
+	private static final String	SETUP		= """
+	                                          tmp = getTempDirectory() & "bxzip-" & createUUID() & "/";
+	                                          directoryCreate( tmp & "src/nested", true );
+	                                          fileWrite( tmp & "src/a.txt", "a" );
+	                                          fileWrite( tmp & "src/nested/b.txt", "b" );
+	                                          zipFile = tmp & "test.zip";
+	                                          bx:zip action="zip" file=zipFile source=tmp & "src" overwrite="true";
+	                                          """;
 
-	private static final String TEARDOWN = """
-	                                       directoryDelete( tmp, true );
-	                                       """;
+	private static final String	TEARDOWN	= """
+	                                          directoryDelete( tmp, true );
+	                                          """;
 
 	@DisplayName( "cfzip action=list with name returns a query with the full entry path in the name column" )
 	@Test
