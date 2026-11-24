@@ -1,0 +1,114 @@
+/**
+ * [BoxLang]
+ *
+ * Copyright [2023] [Ortus Solutions, Corp]
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ * ----
+ * COMPAT: Adds the CFML `name` attribute to `<cfzip action="list">`, which returns a query of the entries.
+ *
+ * Every other use of the component is delegated untouched to the core Zip component.
+ */
+import java:ortus.boxlang.runtime.components.ComponentDescriptor;
+import java:ortus.boxlang.runtime.components.zip.Zip as CoreZip;
+import java:ortus.boxlang.runtime.dynamic.ExpressionInterpreter;
+import java:ortus.boxlang.runtime.scopes.Key;
+
+@BoxComponent( "Zip" )
+@AllowsBody( true )
+@RequiresBody( false )
+class {
+
+	/**
+	 * CFML: `<cfzip action="list" file="..." name="qEntries">` returns a query in the `name` variable, with one row per entry.
+	 * The core component returns an array of structs in the `result` variable.
+	 *
+	 * For `action="list"` with a `name` attribute we run the core list and convert the array to a query.
+	 * Everything else is delegated to the core component as-is.
+	 *
+	 * @param context The context of the execution (IBoxContext)
+	 * @param attributes The attributes of the component that were passed in
+	 * @param body The body of the component that you can pass to `processBody(context, body, [buffer])` for execution and buffer retreival
+	 * @param executionState The execution state of the component. Each component get's one as an isolated state.
+	 *
+	 * @return A BodyResult instance or null for a default result return.
+	 */
+	function invoke( required context, Struct attributes, any body, Struct executionState ){
+		var isNamedList = attributes.keyExists( "name" )
+			&& attributes.keyExists( "action" )
+			&& attributes.action == "list"
+			&& !isNull( attributes.name )
+			&& len( attributes.name );
+
+		if( !isNamedList ){
+			return delegate( arguments );
+		}
+
+		// Run the core list into the requested `name` variable, then overwrite it with the equivalent query
+		var variableName = attributes.name;
+		attributes.delete( "name" );
+		attributes.result = variableName;
+		var bodyResult = delegate( arguments );
+
+		var entries = ExpressionInterpreter.getVariable( context, variableName, false );
+		ExpressionInterpreter.setVariable( context, variableName, entriesToQuery( entries ) );
+
+		return bodyResult;
+	}
+
+	/**
+	 * Run the core Zip component, including its attribute validation, defaults and body handling
+	 */
+	private function delegate( required struct args ){
+		// `body` is not defined for components without one, so read it from the arguments struct, which yields null
+		// The name is normally set by the ComponentService at registration, and the component stack needs it
+		var zipComponent = new CoreZip().setName( Key.of( "Zip" ) );
+		return new ComponentDescriptor(
+			Key.of( "Zip" ),
+			CoreZip,
+			javacast( "null", "" ),
+			javacast( "null", "" ),
+			zipComponent,
+			true,
+			false
+		).invoke( args.context, args.attributes, args.get( "body" ) );
+	}
+
+	/**
+	 * Convert the core list array of structs into a query.
+	 *
+	 * The `name` column holds the entry's full path inside the archive, as in Lucee and ACF.
+	 * Core's `name` is only the part after the last `/`, which drops directory segments and would hide `../` path traversal
+	 * from code that validates the entries. The original is still available in the `fullpath` column.
+	 */
+	private function entriesToQuery( required array entries ){
+		var columns = "comment,compressedSize,crc,creationTime,lastAccessTime,lastModifiedTime,dateLastModified,directory,fullpath,isDirectory,name,size,type";
+		var qry = queryNew( columns );
+		entries.each( ( entry ) => {
+			qry.addRow( {
+				"comment"          : entry.comment,
+				"compressedSize"   : entry.compressedSize,
+				"crc"              : entry.crc,
+				"creationTime"     : entry.creationTime,
+				"lastAccessTime"   : entry.lastAccessTime,
+				"lastModifiedTime" : entry.lastModifiedTime,
+				"dateLastModified" : entry.dateLastModified,
+				"directory"        : entry.directory,
+				"fullpath"         : entry.fullpath,
+				"isDirectory"      : entry.isDirectory,
+				"name"             : entry.fullpath,
+				"size"             : entry.size,
+				"type"             : entry.type
+			} );
+		} );
+		return qry;
+	}
+
+}
