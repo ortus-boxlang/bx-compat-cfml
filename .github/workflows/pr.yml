@@ -1,16 +1,17 @@
 name: Pull Requests
 
+# Only pull requests trigger this workflow. A `push` trigger as well ran every PR commit twice (once per event).
+# Pushes to development, main and releases are covered by the snapshot and release workflows.
 on:
-  push:
-    branches-ignore:
-      - "main"
-      - "master"
-      - "development"
-      - "releases/v*"
   pull_request:
     branches:
       - "releases/v*"
       - development
+
+# A new commit on a PR cancels the run still in flight for the previous one
+concurrency:
+  group: pr-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   tests:

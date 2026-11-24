@@ -114,7 +114,10 @@ jobs:
           path: artifacts
 
       - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
+        uses: dorny/test-reporter@v2
         with:
-          files: |
-            artifacts/**/*.xml
+          name: Test Results
+          path: artifacts/**/*.xml
+          reporter: java-junit
+          # A build failure leaves no XML; don't add a second red check on top of the real one
+          fail-on-empty: false
