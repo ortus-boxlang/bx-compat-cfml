@@ -101,7 +101,8 @@ jobs:
     name: Publish Test Results
     runs-on: ubuntu-latest
     needs: tests
-    if: always()
+    # Run on pass or fail so results are published, but skip runs superseded by a newer commit
+    if: ${{ !cancelled() }}
     permissions:
       checks: write
       pull-requests: write
