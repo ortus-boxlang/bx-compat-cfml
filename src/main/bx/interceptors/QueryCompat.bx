@@ -108,8 +108,10 @@ class{
 			}
 		}
 		var zeroTimespan = createTimeSpan( 0, 0, 0, 0 );
-		if( structOptions.keyExists( "cacheTimeout" ) && !isNull( structOptions.cacheTimeout ) && zeroTimespan.equals( structOptions.cacheTimeout ) ){
-			// Treat 0 cacheTimeout as negative timeout. In the core, this evicts the cache entry.
+		// Check the merged timeout so the `cachedWithin` alias (written to modifiedOptions above) is covered too
+		var effectiveTimeout = modifiedOptions.keyExists( "cacheTimeout" ) ? modifiedOptions.cacheTimeout : ( structOptions.keyExists( "cacheTimeout" ) ? structOptions.cacheTimeout : javacast( "null", "" ) );
+		if( !isNull( effectiveTimeout ) && zeroTimespan.equals( effectiveTimeout ) ){
+			// Treat 0 cacheTimeout/cachedWithin as negative timeout. In the core, this evicts the cache entry.
 			modifiedOptions.cacheTimeout = createTimeSpan( -1, 0, 0, 0 );
 		}
 

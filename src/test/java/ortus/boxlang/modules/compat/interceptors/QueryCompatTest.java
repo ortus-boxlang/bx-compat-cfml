@@ -28,6 +28,26 @@ public class QueryCompatTest extends BaseIntegrationTest {
 		// @formatter:on
 	}
 
+	@DisplayName( "It converts zero cachedWithin to negative timeouts" )
+	@Test
+	public void testZeroCachedWithin() {
+		// @formatter:off
+		runtime.executeSource(
+		    """
+				import java:ortus.boxlang.runtime.jdbc.QueryOptions;
+				import src.main.bx.interceptors.QueryCompat;
+				options = new QueryOptions({
+					cachedWithin: createTimeSpan( 0, 0, 0, 0 )
+				});
+
+				interceptData = { bindings : [], options : options };
+				new QueryCompat().onQueryBuild( interceptData );
+				assert interceptData.options.cacheTimeout < 0;
+			   """,
+		    context );
+		// @formatter:on
+	}
+
 	@DisplayName( "Query map turns string null values to empty strings" )
 	@Test
 	public void testQueryMapTurnsStringNullsToEmpty() {
