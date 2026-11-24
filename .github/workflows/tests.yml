@@ -108,6 +108,10 @@ jobs:
       contents: read
       issues: read
     steps:
+      # test-reporter lists the git-tracked files to map failures to source lines, so it needs a checkout
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
       - name: Download Artifacts
         uses: actions/download-artifact@v8
         with:
