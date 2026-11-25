@@ -34,7 +34,9 @@ public class DirectoryCopy extends ortus.boxlang.runtime.bifs.global.io.Director
 		    new Argument( false, "boolean", Key.recurse, false ),
 		    new Argument( false, "any", Key.filter, "*" ),
 		    new Argument( false, "boolean", Key.createPath, true ),
-		    new Argument( false, "boolean", Key.overwrite, true )
+		    // This overriden class exists to change the default of this BIF. Consider changing this to use the transpiler
+		    new Argument( false, "boolean", Key.overwrite, true ),
+		    new Argument( false, "boolean", Key.of( "followLinks" ), false )
 		};
 	}
 
