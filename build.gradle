@@ -71,7 +71,13 @@ compileTestJava{
 	// Make sure the service loaders are created before testing
 	dependsOn compileJava, serviceLoaderBuild
 }
-compileTestJava.finalizedBy( shadowJar )
+
+task removeProjectServiceLoaderResources(type: Delete) {
+	dependsOn shadowJar
+	delete file( "${buildDir}/resources/main/META-INF/services" )
+}
+
+compileTestJava.finalizedBy( removeProjectServiceLoaderResources )
 
 /**
  * Clean up
@@ -153,6 +159,9 @@ spotless {
  * - Copies the src/main/bx/** to build/module/ folder.
  */
 task createModuleStructure(type: Copy) {
+	doFirst {
+		delete destinationDir
+	}
     dependsOn jar
     from( 'build/libs' ) {
 		// Note: I have no idea why gradle still adds the -all to the .jar in this directory
